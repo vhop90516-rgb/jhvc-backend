@@ -13,8 +13,7 @@ import (
 
 func main() {
 	cfg := config.Load()
-
-	db, err := database.Connect(cfg.GetDSN()) // ⬅️ CAMBIO AQUÍ: DSN() → GetDSN()
+	db, err := database.Connect(cfg.GetDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,11 +32,8 @@ func main() {
 	r := gin.Default()
 	r.Use(corsMiddleware())
 
-	// Templates
-	r.LoadHTMLGlob("templates/*")
-
-	// Static
-	r.Static("/static", "./static")
+	// Templates - Ruta corregida para Render
+	r.LoadHTMLGlob("../../templates/*")
 
 	// HTML Routes
 	r.GET("/", func(c *gin.Context) {
@@ -66,7 +62,6 @@ func main() {
 		protected.Use(middleware.AuthMiddleware(authService))
 		{
 			protected.GET("/profile", authHandler.GetProfile)
-
 			// Calculadora routes
 			protected.GET("/calculadora/configuraciones", calcHandler.GetConfiguraciones)
 			protected.GET("/calculadora/calcular", calcHandler.Calcular)
@@ -82,12 +77,10 @@ func corsMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type,Authorization")
-
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
 		}
-
 		c.Next()
 	}
 }
