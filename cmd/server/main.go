@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,11 @@ func main() {
 	}
 	defer db.Close()
 
+	// Crear tablas automáticamente
+	if err := createTables(db); err != nil {
+		log.Fatal("Error creando tablas:", err)
+	}
+
 	// Auth module
 	authRepo := auth.NewRepository(db)
 	authService := auth.NewService(authRepo, cfg.JWTSecret)
@@ -32,7 +38,7 @@ func main() {
 	r := gin.Default()
 	r.Use(corsMiddleware())
 
-	// Templates - Ruta corregida para Render
+	// Templates
 	r.LoadHTMLGlob("../../templates/*")
 
 	// HTML Routes
@@ -83,4 +89,34 @@ func corsMiddleware() gin.HandlerFunc {
 		}
 		c.Next()
 	}
+}
+
+func createTables(db *sql.DB) error {
+	schema := `
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        full_name VARCHAR(255) NOT NULL,
+        company_name VARCHAR(255),
+        phone VARCHAR(20),
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS sessions (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        token TEXT NOT NULL,
+        ip_address VARCHAR(45),
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    `
+	_, err := db.Exec(schema)
+	if err != nil {
+		return err
+	}
+	log.Println("✅ Tablas verificadas/creadas correctamente")
+	return nil
 }
