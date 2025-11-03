@@ -16,7 +16,7 @@ func Load() *Config {
 	return &Config{
 		Port:      getEnv("PORT", "8080"),
 		DBHost:    getEnv("DB_HOST", "127.0.0.1"),
-		DBPort:    getEnv("DB_PORT", "3306"),
+		DBPort:    getEnv("DB_PORT", "5432"),
 		DBUser:    getEnv("DB_USER", "root"),
 		DBPass:    getEnv("DB_PASS", "hectorvc"),
 		DBName:    getEnv("DB_NAME", "jhvc_system"),
@@ -25,7 +25,12 @@ func Load() *Config {
 }
 
 func (c *Config) DSN() string {
-	return c.DBUser + ":" + c.DBPass + "@tcp(" + c.DBHost + ":" + c.DBPort + ")/" + c.DBName + "?parseTime=true"
+	return "host=" + c.DBHost +
+		" port=" + c.DBPort +
+		" user=" + c.DBUser +
+		" password=" + c.DBPass +
+		" dbname=" + c.DBName +
+		" sslmode=require"
 }
 
 func getEnv(key, def string) string {
