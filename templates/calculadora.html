@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Calculadora Fiscal México</title>
+    <style>
+
+            @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(100px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideOut {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(100px);
+        }
+    }
+   :root {
+       --primary: #003d82;
+       --primary-light: #0052a8;
+       --primary-dark: #002857;
+       --secondary: #00639e;
+       --accent: #0078d4;
+       --success: #107c10;
+       --success-light: #10a810;
+       --warning: #ff8c00;
+       --error: #d13438;
+       --gray-50: #fafafa;
+       --gray-100: #f5f5f5;
+       --gray-200: #e0e0e0;
+       --gray-300: #bdbdbd;
+       --gray-400: #9e9e9e;
+       --gray-500: #757575;
+       --gray-600: #616161;
+       --gray-700: #424242;
+       --gray-800: #212121;
+       --white: #ffffff;
+       --border: #d0d0d0;
+       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+       --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+       --shadow-md: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
+       --shadow-lg: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
+   }
+
+   * { 
+       margin: 0; 
+       padding: 0; 
+       box-sizing: border-box; 
+   }
+
+   body {
+       font-family: 'Segoe UI', 'Arial', sans-serif;
+       background: #e8edf2;
+       height: 100vh;
+       color: var(--gray-800);
+       line-height: 1.5;
+       overflow: hidden;
+       display: flex;
+       flex-direction: column;
+   }
+
+   /* Header profesional */
+   .header {
+       background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+       color: white;
+       padding: 15px 0;
+       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+       z-index: 100;
+       flex-shrink: 0;
+   }
+
+   .header-content {
+       max-width: 100%;
+       margin: 0 auto;
+       padding: 0 30px;
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+   }
+
+   .logo-section {
+       display: flex;
+       align-items: center;
+       gap: 15px;
+   }
+
+   .logo-icon {
+       font-size: 1.8rem;
+   }
+
+   .logo-text h1 {
+       font-size: 1.3rem;
+       font-weight: 600;
+       margin: 0;
+       color: white;
+   }
+
+   .logo-text p {
+       font-size: 0.8rem;
+       opacity: 0.9;
+       margin: 0;
+   }
+
+   .header-info {
+       text-align: right;
+       font-size: 0.8rem;
+   }
+
+   /* Container principal con flex */
+   .main-container {
+       display: flex;
+       flex: 1;
+       overflow: hidden;
+       gap: 20px;
+       padding: 20px;
+   }
+
+   /* Sidebar izquierdo - Menú de opciones */
+   .sidebar {
+       width: 420px;
+       background: var(--white);
+       border-radius: 12px;
+       box-shadow: var(--shadow-md);
+       border: 1px solid var(--border);
+       display: flex;
+       flex-direction: column;
+       overflow: hidden;
+       flex-shrink: 0;
+   }
+
+   .sidebar-header {
+       background: var(--gray-100);
+       padding: 20px;
+       border-bottom: 1px solid var(--border);
+   }
+
+   .sidebar-header h2 {
+       font-size: 1.1rem;
+       color: var(--primary);
+       font-weight: 600;
+   }
+
+   .menu-options {
+       display: flex;
+       flex-direction: column;
+       padding: 15px;
+       gap: 10px;
+       border-bottom: 1px solid var(--border);
+   }
+
+   .menu-btn {
+       background: var(--white);
+       border: 2px solid var(--border);
+       padding: 15px 20px;
+       border-radius: 8px;
+       font-size: 15px;
+       font-weight: 500;
+       cursor: pointer;
+       transition: all 0.2s ease;
+       text-align: left;
+       display: flex;
+       align-items: center;
+       gap: 10px;
+       color: var(--gray-700);
+   }
+
+   .menu-btn:hover {
+       border-color: var(--primary);
+       background: var(--gray-50);
+   }
+
+   .menu-btn.active {
+       background: var(--primary);
+       color: var(--white);
+       border-color: var(--primary);
+       box-shadow: var(--shadow-md);
+   }
+
+   .menu-btn-icon {
+       font-size: 1.3rem;
+   }
+
+   .menu-content {
+       flex: 1;
+       overflow-y: auto;
+       padding: 20px;
+   }
+
+   .calculator-form {
+       display: none;
+   }
+
+   .calculator-form.active {
+       display: block;
+       animation: fadeInLeft 0.3s ease;
+   }
+
+   .form-group {
+       margin-bottom: 18px;
+   }
+
+   label {
+       display: block;
+       margin-bottom: 6px;
+       font-weight: 500;
+       color: var(--gray-700);
+       font-size: 0.9rem;
+   }
+
+   input, select {
+       width: 100%;
+       padding: 10px 12px;
+       border: 1px solid var(--border);
+       border-radius: 8px;
+       font-size: 14px;
+       background: var(--white);
+       color: var(--gray-800);
+       transition: all 0.2s ease;
+       font-family: inherit;
+   }
+
+   input:focus, select:focus {
+       outline: none;
+       border-color: var(--primary);
+       box-shadow: 0 0 0 2px rgba(0, 61, 130, 0.1);
+   }
+
+   input:hover, select:hover {
+       border-color: var(--gray-400);
+   }
+
+   input[type="number"] {
+       font-family: 'Consolas', 'Courier New', monospace;
+       text-align: right;
+   }
+
+   select {
+       cursor: pointer;
+       appearance: none;
+       background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%23616161"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>');
+       background-repeat: no-repeat;
+       background-position: right 10px center;
+       background-size: 16px;
+       padding-right: 35px;
+   }
+
+   button {
+       background: var(--primary);
+       color: var(--white);
+       border: none;
+       padding: 12px 20px;
+       border-radius: 8px;
+       font-size: 14px;
+       font-weight: 500;
+       cursor: pointer;
+       width: 100%;
+       transition: all 0.2s ease;
+       font-family: inherit;
+   }
+
+   button:hover {
+       background: var(--primary-light);
+   }
+
+   button:active {
+       background: var(--primary-dark);
+       transform: scale(0.98);
+   }
+
+   /* Panel derecho - Resultados */
+   .results-panel {
+       flex: 1;
+       background: var(--white);
+       border-radius: 12px;
+       box-shadow: var(--shadow-md);
+       border: 1px solid var(--border);
+       display: flex;
+       flex-direction: column;
+       overflow: hidden;
+   }
+
+   .results-header {
+       background: var(--gray-100);
+       padding: 20px;
+       border-bottom: 1px solid var(--border);
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+   }
+
+   .results-header h2 {
+       font-size: 1.1rem;
+       color: var(--primary);
+       font-weight: 600;
+   }
+
+   .results-content {
+       flex: 1;
+       overflow-y: auto;
+       padding: 20px;
+   }
+
+   .empty-state {
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       justify-content: center;
+       height: 100%;
+       color: var(--gray-400);
+       text-align: center;
+   }
+
+   .empty-state-icon {
+       font-size: 4rem;
+       margin-bottom: 15px;
+   }
+
+   .empty-state h3 {
+       font-size: 1.2rem;
+       color: var(--gray-500);
+       margin-bottom: 8px;
+   }
+
+   .empty-state p {
+       font-size: 0.95rem;
+   }
+
+   /* Resultado */
+   .resultado {
+       background: #f0f9ff;
+       border: 2px solid #0078d4;
+       padding: 25px;
+       border-radius: 12px;
+       animation: fadeInRight 0.3s ease;
+   }
+
+   .resultado h3 {
+       margin-bottom: 15px;
+       font-size: 1.2rem;
+       font-weight: 600;
+       color: var(--primary);
+       border-bottom: 2px solid var(--primary);
+       padding-bottom: 10px;
+   }
+
+   .resultado-grid {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+       gap: 15px;
+       margin-top: 20px;
+   }
+
+   .resultado-item {
+       background: var(--white);
+       padding: 15px;
+       border-radius: 8px;
+       border: 1px solid var(--border);
+       box-shadow: var(--shadow-sm);
+   }
+
+   .resultado-item strong {
+       display: block;
+       margin-bottom: 8px;
+       font-size: 0.85rem;
+       font-weight: 600;
+       color: var(--gray-600);
+       text-transform: uppercase;
+   }
+
+   .resultado-valor {
+       font-size: 1.4rem;
+       font-weight: 700;
+       font-family: 'Consolas', 'Courier New', monospace;
+       color: var(--gray-800);
+   }
+
+   .resultado-item.total {
+       background: var(--primary);
+       color: var(--white);
+       border: none;
+       box-shadow: var(--shadow-md);
+   }
+
+   .resultado-item.total strong {
+       color: rgba(255, 255, 255, 0.9);
+   }
+
+   .resultado-item.total .resultado-valor {
+       color: var(--white);
+       font-size: 1.6rem;
+   }
+
+   .error {
+       background: #fef2f2;
+       border: 1px solid var(--error);
+       color: #991b1b;
+       padding: 15px;
+       border-radius: 8px;
+       display: flex;
+       align-items: center;
+       gap: 10px;
+       font-weight: 500;
+   }
+
+   .error::before {
+       content: '⚠';
+       font-size: 1.3rem;
+       color: var(--error);
+   }
+
+   /* Botones de acción */
+   .action-buttons {
+       display: flex;
+       gap: 10px;
+       margin-top: 20px;
+   }
+
+   .btn-add {
+       background: var(--success);
+       flex: 1;
+   }
+
+   .btn-add:hover {
+       background: var(--success-light);
+   }
+
+   .btn-clear {
+       background: var(--error);
+       flex: 1;
+   }
+
+   .btn-clear:hover {
+       background: #b92b2f;
+   }
+
+   /* Tabla de cálculos múltiples */
+   .tabla-section {
+       margin-top: 20px;
+       padding-top: 20px;
+       border-top: 2px solid var(--border);
+   }
+
+   .tabla-header {
+       margin-bottom: 15px;
+   }
+
+   .tabla-header h3 {
+       color: var(--primary);
+       font-size: 1.1rem;
+       font-weight: 600;
+   }
+
+   table {
+       width: 100%;
+       border-collapse: collapse;
+       background: white;
+       border: 1px solid var(--border);
+       border-radius: 12px;
+       overflow: hidden;
+       font-size: 0.85rem;
+   }
+
+   thead {
+       background: var(--gray-100);
+       border-bottom: 2px solid var(--border);
+   }
+
+   thead th {
+       padding: 10px 8px;
+       text-align: left;
+       font-weight: 600;
+       color: var(--gray-700);
+       font-size: 0.8rem;
+       text-transform: uppercase;
+       border-right: 1px solid var(--border);
+   }
+
+   thead th:last-child {
+       border-right: none;
+   }
+
+   tbody tr {
+       border-bottom: 1px solid var(--border);
+       transition: background 0.1s;
+   }
+
+   tbody tr:hover {
+       background: var(--gray-50);
+   }
+
+   tbody td {
+       padding: 8px;
+       border-right: 1px solid var(--border);
+       font-family: 'Consolas', 'Courier New', monospace;
+       font-size: 0.8rem;
+   }
+
+   tbody td:nth-child(2),
+   tbody td:nth-child(3) {
+       font-family: 'Segoe UI', 'Arial', sans-serif;
+       font-size: 0.75rem;
+   }
+
+   tbody td:last-child {
+       border-right: none;
+       font-weight: 600;
+   }
+
+   tfoot {
+       background: #e3f2fd;
+       font-weight: 700;
+       border-top: 2px solid var(--primary);
+   }
+
+   tfoot td {
+       padding: 10px 8px;
+       color: var(--primary);
+       border-right: 1px solid var(--border);
+       font-size: 0.8rem;
+   }
+
+   tfoot td:last-child {
+       border-right: none;
+   }
+
+   /* Sección de configuraciones en el panel derecho */
+   .config-display {
+       margin-top: 20px;
+       padding-top: 20px;
+       border-top: 2px solid var(--border);
+   }
+
+   .config-display h3 {
+       color: var(--primary);
+       margin-bottom: 15px;
+       font-size: 1rem;
+       font-weight: 600;
+   }
+
+   .config-grid {
+       display: grid;
+       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+       gap: 12px;
+       max-height: 300px;
+       overflow-y: auto;
+   }
+
+   .config-item {
+       background: var(--white);
+       padding: 12px;
+       border: 1px solid var(--border);
+       border-radius: 8px;
+       border-left: 3px solid var(--primary);
+       transition: all 0.2s ease;
+   }
+
+   .config-item:hover {
+       box-shadow: var(--shadow-md);
+       border-left-color: var(--accent);
+   }
+
+   .config-item strong {
+       color: var(--primary);
+       display: block;
+       margin-bottom: 4px;
+       font-weight: 600;
+       font-size: 0.9rem;
+   }
+
+   .config-item small {
+       color: var(--gray-600);
+       font-size: 0.8rem;
+       line-height: 1.5;
+   }
+
+   /* Scrollbar personalizado */
+   ::-webkit-scrollbar {
+       width: 8px;
+       height: 8px;
+   }
+
+   ::-webkit-scrollbar-track {
+       background: var(--gray-100);
+   }
+
+   ::-webkit-scrollbar-thumb {
+       background: var(--gray-400);
+       border-radius: 8px;
+   }
+
+   ::-webkit-scrollbar-thumb:hover {
+       background: var(--gray-500);
+   }
+
+   /* Animaciones */
+   @keyframes fadeInLeft {
+       from {
+           opacity: 0;
+           transform: translateX(-20px);
+       }
+       to {
+           opacity: 1;
+           transform: translateX(0);
+       }
+   }
+
+   @keyframes fadeInRight {
+       from {
+           opacity: 0;
+           transform: translateX(20px);
+       }
+       to {
+           opacity: 1;
+           transform: translateX(0);
+       }
+   }
+
+   /* Responsive Design */
+   @media (max-width: 1200px) {
+       .main-container {
+           flex-direction: column;
+           overflow-y: auto;
+       }
+
+       .sidebar {
+           width: 100%;
+           max-height: 50vh;
+       }
+
+       .results-panel {
+           min-height: 400px;
+       }
+   }
+
+   @media (max-width: 768px) {
+       .header-content {
+           padding: 0 15px;
+           flex-direction: column;
+           gap: 10px;
+           text-align: center;
+       }
+
+       .header-info {
+           text-align: center;
+       }
+
+       .main-container {
+           padding: 10px;
+           gap: 10px;
+       }
+
+       .sidebar, .results-panel {
+           border-radius: 8px;
+       }
+
+       .menu-content, .results-content {
+           padding: 15px;
+       }
+
+       table {
+           font-size: 0.75rem;
+       }
+
+       thead th, tbody td, tfoot td {
+           padding: 6px 4px;
+       }
+
+       .config-grid {
+           grid-template-columns: 1fr;
+       }
+   }
+</style>
+</head>
+<body>
+   <!-- Header Profesional -->
+   <div class="header">
+       <div class="header-content">
+           <div class="logo-section">
+               <div class="logo-icon">🧮</div>
+               <div class="logo-text">
+                   <h1>Cálculadora Fiscal Para Facturacion</h1>
+                   <p>JHVC Soluciones Contables</p>
+               </div>
+           </div>
+           <div class="header-info">
+             
+           </div>
+       </div>
+   </div>
+
+   <!-- Container Principal con Sidebar + Resultados -->
+   <div class="main-container">
+       <!-- SIDEBAR IZQUIERDO - Menú y Formularios -->
+       <div class="sidebar">
+           <div class="sidebar-header">
+               <h2>🎯 Módulo de Cálculos</h2>
+           </div>
+
+           <!-- Menú de Opciones -->
+           <div class="menu-options">
+               <button class="menu-btn active" onclick="cambiarMenu('quitar-iva')" id="btn-quitar-iva">
+                   <span class="menu-btn-icon">➖</span>
+                   <span>Quitar IVA</span>
+               </button>
+               <button class="menu-btn" onclick="cambiarMenu('directo')" id="btn-directo">
+                   <span class="menu-btn-icon">➕</span>
+                   <span>Cálculo Directo</span>
+               </button>
+               <button class="menu-btn" onclick="cambiarMenu('inverso')" id="btn-inverso">
+                   <span class="menu-btn-icon">🔄</span>
+                   <span>Cálculo Inverso</span>
+               </button>
+           </div>
+
+           <!-- Contenido del Menú -->
+           <div class="menu-content">
+               <!-- QUITAR IVA -->
+               <div id="form-quitar-iva" class="calculator-form active">
+                   <div class="form-group">
+                       <label>Precio CON IVA:</label>
+                       <input type="number" id="precioConIVA" placeholder="1160.00" step="0.01">
+                   </div>
+                   
+                   <div class="form-group">
+                       <label>Tasa de IVA:</label>
+                       <select id="tasaIVA">
+                           <option value="0.16">16% (General)</option>
+                           <option value="0.08">8% (Frontera Norte)</option>
+                           <option value="0.0">0% (Exento)</option>
+                       </select>
+                   </div>
+                   
+                   <button onclick="quitarIVA()">Calcular</button>
+               </div>
+
+               <!-- CÁLCULO DIRECTO -->
+               <div id="form-directo" class="calculator-form">
+                   <div class="form-group">
+                       <label>Subtotal (sin impuestos):</label>
+                       <input type="number" id="subtotalDirecto" placeholder="1000.00" step="0.01">
+                   </div>
+                   
+                   <div class="form-group">
+                       <label>Configuración:</label>
+                       <select id="configDirecto"></select>
+                   </div>
+                   
+                   <div class="form-group">
+                       <label>Retención IVA Especial (opcional):</label>
+                       <input type="number" id="retencionEspecialDirecto" placeholder="0.04 para 4%" step="0.01" value="0">
+                   </div>
+                   
+                   <button onclick="calcularDirecto()">Calcular</button>
+               </div>
+
+               <!-- CÁLCULO INVERSO -->
+               <div id="form-inverso" class="calculator-form">
+                   <div class="form-group">
+                       <label>Total Final:</label>
+                       <input type="number" id="totalInverso" placeholder="1000.00" step="0.01">
+                   </div>
+                   
+                   <div class="form-group">
+                       <label>Configuración:</label>
+                       <select id="configInverso"></select>
+                   </div>
+                   
+                   <div class="form-group">
+                       <label>Retención IVA Especial (opcional):</label>
+                       <input type="number" id="retencionEspecialInverso" placeholder="0.04 para 4%" step="0.01" value="0">
+                   </div>
+                   
+                   <button onclick="calcularInverso()">Calcular</button>
+               </div>
+           </div>
+       </div>
+
+       <!-- PANEL DERECHO - Resultados -->
+       <div class="results-panel">
+           <div class="results-header">
+               <h2>📊 Resultados</h2>
+               <div class="action-buttons">
+                   <button class="btn-add" onclick="agregarATabla()" style="width: auto; padding: 8px 16px;">
+                       ➕ Agregar a Tabla
+                   </button>
+               </div>
+           </div>
+
+           <div class="results-content" id="results-content">
+               <!-- Estado vacío inicial -->
+               <div class="empty-state" id="empty-state">
+                   <div class="empty-state-icon">📋</div>
+                   <h3>Sin resultados</h3>
+                   <p>Selecciona un método de cálculo y completa los datos para ver los resultados aquí.</p>
+               </div>
+
+               <!-- Aquí se mostrarán los resultados -->
+               <div id="resultado"></div>
+
+               <!-- Tabla de cálculos múltiples -->
+               <div id="tablaSection" style="display: none;" class="tabla-section">
+                   <div class="tabla-header">
+                       <h3>📊 Registro de Cálculos Múltiples</h3>
+                   </div>
+                   <table>
+                       <thead>
+                           <tr>
+                               <th>#</th>
+                               <th>Tipo</th>
+                               <th>Config</th>
+                               <th>Subtotal</th>
+                               <th>IVA</th>
+                               <th>ISH</th>
+                               <th>Ret. ISR</th>
+                               <th>Ret. IVA</th>
+                               <th>Total</th>
+                           </tr>
+                       </thead>
+                       <tbody id="tablaBody"></tbody>
+                       <tfoot id="tablaFoot"></tfoot>
+                   </table>
+                   <div class="action-buttons">
+                       <button class="btn-clear" onclick="limpiarTabla()">🗑️ Limpiar Tabla</button>
+                   </div>
+               </div>
+
+               <!-- Configuraciones disponibles -->
+               <div class="config-display">
+                   <h3>⚙️ Configuraciones Fiscales Disponibles</h3>
+                   <div class="config-grid" id="listaConfiguraciones"></div>
+               </div>
+           </div>
+       </div>
+   </div>
+
+   <script>
+       let configuraciones = [];
+       let ultimoResultado = null;
+       let calculos = [];
+       let contadorID = 1;
+       
+       // Función para cambiar entre menús
+       function cambiarMenu(menuId) {
+           // Ocultar todos los formularios
+           document.querySelectorAll('.calculator-form').forEach(form => {
+               form.classList.remove('active');
+           });
+           
+           // Desactivar todos los botones
+           document.querySelectorAll('.menu-btn').forEach(btn => {
+               btn.classList.remove('active');
+           });
+           
+           // Activar el formulario seleccionado
+           document.getElementById('form-' + menuId).classList.add('active');
+           document.getElementById('btn-' + menuId).classList.add('active');
+       }
+       
+
+
+       function copiarAlPortapapeles(valor) {
+            // Limpiar el número: quitar $, comas y espacios
+            const numeroLimpio = valor.replace(/[$,\s]/g, '');
+            
+            navigator.clipboard.writeText(numeroLimpio).then(() => {
+                // Mostrar feedback visual
+                const toast = document.createElement('div');
+                toast.textContent = '✓ Copiado: ' + numeroLimpio;
+                toast.style.cssText = 'position:fixed;top:20px;right:20px;background:#107c10;color:white;padding:12px 20px;border-radius:8px;z-index:9999;font-weight:600;animation:slideIn 0.3s ease;';
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => toast.remove(), 300);
+                }, 2000);
+            }).catch(err => {
+                alert('Error al copiar: ' + err);
+            });
+        }
+        async function cargarConfiguraciones() {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('/api/calculadora/configuraciones', {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                throw new Error('Error al cargar configuraciones');
+            }
+            
+            const data = await response.json();
+            configuraciones = data.data;
+        
+            const selectDirecto = document.getElementById('configDirecto');
+            const selectInverso = document.getElementById('configInverso');
+            const listaDiv = document.getElementById('listaConfiguraciones');
+            
+            selectDirecto.innerHTML = '';
+            selectInverso.innerHTML = '';
+            listaDiv.innerHTML = '';
+            
+            configuraciones.forEach((config, index) => {
+                const option1 = document.createElement('option');
+                option1.value = index;
+                option1.textContent = config.descripcion;
+                selectDirecto.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = index;
+                option2.textContent = config.descripcion;
+                selectInverso.appendChild(option2);
+                
+                const configDiv = document.createElement('div');
+                configDiv.className = 'config-item';
+                configDiv.innerHTML = '<strong>' + config.descripcion + '</strong><small>IVA: ' + (config.iva_rate * 100).toFixed(2) + '% | ISR: ' + (config.isr_rate * 100).toFixed(2) + '% | ISH: ' + (config.ish_rate * 100).toFixed(2) + '% | Ret. IVA: ' + (config.iva_retencion ? '2/3 del IVA' : 'No') + '</small>';
+                listaDiv.appendChild(configDiv);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarError('Error cargando configuraciones');
+        }
+    }
+       
+       function quitarIVA() {
+           const precioConIVA = parseFloat(document.getElementById('precioConIVA').value);
+           const tasaIVA = parseFloat(document.getElementById('tasaIVA').value);
+           
+           if (isNaN(precioConIVA) || precioConIVA <= 0) {
+               mostrarError('Por favor ingresa un precio válido');
+               return;
+           }
+           
+           const factor = 1 + tasaIVA;
+           const precioSinIVA = precioConIVA / factor;
+           const ivaCalculado = precioConIVA - precioSinIVA;
+           
+           ultimoResultado = {
+               subtotal: precioSinIVA,
+               iva: ivaCalculado,
+               ish: 0,
+               retencion_isr: 0,
+               retencion_iva: 0,
+               total: precioConIVA,
+               factor: factor,
+               tipo_calculo: 'quitar_iva',
+               configuracion: 'Quitar IVA ' + (tasaIVA * 100).toFixed(0) + '%'
+           };
+           
+           mostrarResultado(ultimoResultado);
+       }
+       
+       async function calcularDirecto() {
+           const subtotal = parseFloat(document.getElementById('subtotalDirecto').value);
+           const configIndex = parseInt(document.getElementById('configDirecto').value);
+           const retencionEspecial = parseFloat(document.getElementById('retencionEspecialDirecto').value) || 0;
+           
+           if (isNaN(subtotal) || subtotal <= 0) {
+               mostrarError('Por favor ingresa un subtotal válido');
+               return;
+           }
+           
+           await enviarCalculo('directo', subtotal, configIndex, retencionEspecial);
+       }
+       
+       async function calcularInverso() {
+           const total = parseFloat(document.getElementById('totalInverso').value);
+           const configIndex = parseInt(document.getElementById('configInverso').value);
+           const retencionEspecial = parseFloat(document.getElementById('retencionEspecialInverso').value) || 0;
+           
+           if (isNaN(total) || total <= 0) {
+               mostrarError('Por favor ingresa un total válido');
+               return;
+           }
+           
+           await enviarCalculo('inverso', total, configIndex, retencionEspecial);
+       }
+       
+         // Reemplaza la función enviarCalculo() existente con esta:
+        
+         async function enviarCalculo(tipo, monto, configIndex, retencionEspecial) {
+        try {
+            const token = localStorage.getItem('token');
+            const params = new URLSearchParams({
+                tipo: tipo,
+                monto: monto.toString(),
+                config: configIndex.toString(),
+                retencion_especial: retencionEspecial.toString()
+            });
+            
+            const response = await fetch('/api/calculadora/calcular?' + params, {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                throw new Error('Error en el cálculo');
+            }
+            
+            const data = await response.json();
+            ultimoResultado = data.data;
+            mostrarResultado(data.data);
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarError('Error de conexión: ' + error.message);
+        }
+    }
+       
+        function mostrarResultado(resultado) {
+            const emptyState = document.getElementById('empty-state');
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+            
+            const div = document.getElementById('resultado');
+            let tipoTexto = '';
+            if (resultado.tipo_calculo === 'directo') tipoTexto = 'Directo';
+            else if (resultado.tipo_calculo === 'inverso') tipoTexto = 'Inverso';
+            else if (resultado.tipo_calculo === 'quitar_iva') tipoTexto = 'Quitar IVA';
+            
+            let html = '<div class="resultado">';
+            html += '<h3>Resultado del Cálculo ' + tipoTexto + '</h3>';
+            html += '<p><strong>' + resultado.configuracion + '</strong></p>';
+            html += '<div class="resultado-grid">';
+            
+            const subtotalLabel = resultado.tipo_calculo === 'quitar_iva' ? 'Precio SIN IVA' : 'Subtotal';
+            html += '<div class="resultado-item" onclick="copiarAlPortapapeles(\'' + formatearNumero(resultado.subtotal) + '\')" style="cursor:pointer;" title="Click para copiar"><strong>' + subtotalLabel + '</strong><div class="resultado-valor">$' + formatearNumero(resultado.subtotal) + '</div></div>';
+            
+            html += '<div class="resultado-item" onclick="copiarAlPortapapeles(\'' + formatearNumero(resultado.iva) + '\')" style="cursor:pointer;" title="Click para copiar"><strong>IVA</strong><div class="resultado-valor">$' + formatearNumero(resultado.iva) + '</div></div>';
+            
+            if (resultado.ish && resultado.ish > 0) {
+                html += '<div class="resultado-item" onclick="copiarAlPortapapeles(\'' + formatearNumero(resultado.ish) + '\')" style="cursor:pointer;" title="Click para copiar"><strong>ISH (5%)</strong><div class="resultado-valor">$' + formatearNumero(resultado.ish) + '</div></div>';
+            }
+            
+            if (resultado.tipo_calculo !== 'quitar_iva') {
+                html += '<div class="resultado-item" onclick="copiarAlPortapapeles(\'' + formatearNumero(resultado.retencion_isr) + '\')" style="cursor:pointer;" title="Click para copiar"><strong>Ret. ISR</strong><div class="resultado-valor">-$' + formatearNumero(resultado.retencion_isr) + '</div></div>';
+                html += '<div class="resultado-item" onclick="copiarAlPortapapeles(\'' + formatearNumero(resultado.retencion_iva) + '\')" style="cursor:pointer;" title="Click para copiar"><strong>Ret. IVA</strong><div class="resultado-valor">-$' + formatearNumero(resultado.retencion_iva) + '</div></div>';
+            }
+            
+            const totalLabel = resultado.tipo_calculo === 'quitar_iva' ? 'Precio CON IVA' : 'TOTAL';
+            html += '<div class="resultado-item total" onclick="copiarAlPortapapeles(\'' + formatearNumero(resultado.total) + '\')" style="cursor:pointer;" title="Click para copiar"><strong>' + totalLabel + '</strong><div class="resultado-valor">$' + formatearNumero(resultado.total) + '</div></div>';
+            
+            if (resultado.factor > 0) {
+                html += '<div class="resultado-item" onclick="copiarAlPortapapeles(\'' + resultado.factor.toFixed(6) + '\')" style="cursor:pointer;" title="Click para copiar"><strong>Factor</strong><div class="resultado-valor">' + resultado.factor.toFixed(6) + '</div></div>';
+            }
+            
+            html += '</div></div>';
+            div.innerHTML = html;
+        }
+
+       function agregarATabla() {
+           if (!ultimoResultado) {
+               alert('Primero calcula un resultado');
+               return;
+           }
+           
+           calculos.push({
+               id: contadorID++,
+               ...ultimoResultado
+           });
+           
+           actualizarTabla();
+           document.getElementById('tablaSection').style.display = 'block';
+       }
+
+       function actualizarTabla() {
+           const tbody = document.getElementById('tablaBody');
+           const tfoot = document.getElementById('tablaFoot');
+           
+           tbody.innerHTML = '';
+           
+           let totales = {
+               subtotal: 0,
+               iva: 0,
+               ish: 0,
+               retISR: 0,
+               retIVA: 0,
+               total: 0
+           };
+           
+           calculos.forEach((calc) => {
+               const tr = document.createElement('tr');
+               tr.innerHTML = '<td>' + calc.id + '</td>' +
+                   '<td>' + calc.tipo_calculo + '</td>' +
+                   '<td><small>' + calc.configuracion + '</small></td>' +
+                   '<td>$' + formatearNumero(calc.subtotal) + '</td>' +
+                   '<td>$' + formatearNumero(calc.iva) + '</td>' +
+                   '<td>$' + formatearNumero(calc.ish || 0) + '</td>' +
+                   '<td>-$' + formatearNumero(calc.retencion_isr) + '</td>' +
+                   '<td>-$' + formatearNumero(calc.retencion_iva) + '</td>' +
+                   '<td><strong>$' + formatearNumero(calc.total) + '</strong></td>';
+               tbody.appendChild(tr);
+               
+               totales.subtotal += calc.subtotal;
+               totales.iva += calc.iva;
+               totales.ish += (calc.ish || 0);
+               totales.retISR += calc.retencion_isr;
+               totales.retIVA += calc.retencion_iva;
+               totales.total += calc.total;
+           });
+           
+           tfoot.innerHTML = '<tr>' +
+               '<td colspan="3"><strong>TOTALES:</strong></td>' +
+               '<td><strong>$' + formatearNumero(totales.subtotal) + '</strong></td>' +
+               '<td><strong>$' + formatearNumero(totales.iva) + '</strong></td>' +
+               '<td><strong>$' + formatearNumero(totales.ish) + '</strong></td>' +
+               '<td><strong>-$' + formatearNumero(totales.retISR) + '</strong></td>' +
+               '<td><strong>-$' + formatearNumero(totales.retIVA) + '</strong></td>' +
+               '<td><strong>$' + formatearNumero(totales.total) + '</strong></td>' +
+               '</tr>';
+       }
+
+       function limpiarTabla() {
+           if (confirm('¿Limpiar todos los cálculos de la tabla?')) {
+               calculos = [];
+               contadorID = 1;
+               document.getElementById('tablaBody').innerHTML = '';
+               document.getElementById('tablaFoot').innerHTML = '';
+               document.getElementById('tablaSection').style.display = 'none';
+           }
+       }
+       
+       function mostrarError(mensaje) {
+           // Ocultar estado vacío
+           const emptyState = document.getElementById('empty-state');
+           if (emptyState) {
+               emptyState.style.display = 'none';
+           }
+           
+           document.getElementById('resultado').innerHTML = '<div class="error">Error: ' + mensaje + '</div>';
+       }
+       
+       function formatearNumero(num) {
+           return num.toFixed(2);
+       }
+       
+       // Seleccionar todo el contenido al hacer clic en cualquier input
+       document.addEventListener('DOMContentLoaded', function() {
+           // Función para seleccionar todo el contenido
+           function selectAllOnClick(event) {
+               event.target.select();
+           }
+           
+           // Agregar evento a todos los inputs
+           function addSelectAllToInputs() {
+               const inputs = document.querySelectorAll('input[type="number"]');
+               inputs.forEach(input => {
+                   input.addEventListener('click', selectAllOnClick);
+                   input.addEventListener('focus', selectAllOnClick);
+               });
+           }
+           
+           // Ejecutar al cargar y después de cada actualización
+           addSelectAllToInputs();
+           
+           // Observar cambios en el DOM para nuevos inputs
+           const observer = new MutationObserver(function() {
+               addSelectAllToInputs();
+           });
+           
+           observer.observe(document.body, {
+               childList: true,
+               subtree: true
+           });
+           
+           // ENTER para activar cálculos
+           // Quitar IVA
+           document.getElementById('precioConIVA').addEventListener('keypress', function(e) {
+               if (e.key === 'Enter') {
+                   e.preventDefault();
+                   quitarIVA();
+               }
+           });
+           
+           document.getElementById('tasaIVA').addEventListener('keypress', function(e) {
+               if (e.key === 'Enter') {
+                   e.preventDefault();
+                   quitarIVA();
+               }
+           });
+           
+           // Cálculo Directo
+           document.getElementById('subtotalDirecto').addEventListener('keypress', function(e) {
+               if (e.key === 'Enter') {
+                   e.preventDefault();
+                   calcularDirecto();
+               }
+           });
+           
+           document.getElementById('configDirecto').addEventListener('keypress', function(e) {
+               if (e.key === 'Enter') {
+                   e.preventDefault();
+                   calcularDirecto();
+               }
+           });
+           
+           document.getElementById('retencionEspecialDirecto').addEventListener('keypress', function(e) {
+               if (e.key === 'Enter') {
+                   e.preventDefault();
+                   calcularDirecto();
+               }
+           });
+           
+           // Cálculo Inverso
+           document.getElementById('totalInverso').addEventListener('keypress', function(e) {
+               if (e.key === 'Enter') {
+                   e.preventDefault();
+                   calcularInverso();
+               }
+           });
+           
+           document.getElementById('configInverso').addEventListener('keypress', function(e) {
+               if (e.key === 'Enter') {
+                   e.preventDefault();
+                   calcularInverso();
+               }
+           });
+           
+           document.getElementById('retencionEspecialInverso').addEventListener('keypress', function(e) {
+               if (e.key === 'Enter') {
+                   e.preventDefault();
+                   calcularInverso();
+               }
+           });
+       });
+       
+       cargarConfiguraciones();
+
+
+            // Verificar autenticación
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login';
+        }
+   </script>
+</body>
+</html>
