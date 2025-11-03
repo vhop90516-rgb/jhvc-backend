@@ -13,7 +13,8 @@ import (
 
 func main() {
 	cfg := config.Load()
-	db, err := database.Connect(cfg.DSN())
+
+	db, err := database.Connect(cfg.GetDSN()) // ⬅️ CAMBIO AQUÍ: DSN() → GetDSN()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,10 +82,12 @@ func corsMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type,Authorization")
+
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
 		}
+
 		c.Next()
 	}
 }

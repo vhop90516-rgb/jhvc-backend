@@ -33,6 +33,15 @@ func (c *Config) DSN() string {
 		" sslmode=require"
 }
 
+func (c *Config) GetDSN() string {
+	// Primero intenta usar DATABASE_URL si existe
+	if dbURL := os.Getenv("DATABASE_URL"); dbURL != "" {
+		return dbURL
+	}
+	// Si no, construye el DSN con las variables individuales
+	return c.DSN()
+}
+
 func getEnv(key, def string) string {
 	if v := os.Getenv(key); v != "" {
 		return v
