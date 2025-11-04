@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 
+	_ "github.com/joho/godotenv/autoload" // ← SOLO ESTO SE AGREGA (carga .env automáticamente si existe)
+
 	"github.com/gin-gonic/gin"
 	"github.com/jhvc/backend/internal/config"
 	"github.com/jhvc/backend/internal/database"
@@ -14,6 +16,7 @@ import (
 
 func main() {
 	cfg := config.Load()
+
 	db, err := database.Connect(cfg.GetDSN())
 	if err != nil {
 		log.Fatal(err)
@@ -45,15 +48,19 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(200, "landing.html", nil)
 	})
+
 	r.GET("/register", func(c *gin.Context) {
 		c.HTML(200, "register.html", nil)
 	})
+
 	r.GET("/login", func(c *gin.Context) {
 		c.HTML(200, "login.html", nil)
 	})
+
 	r.GET("/dashboard", func(c *gin.Context) {
 		c.HTML(200, "dashboard.html", nil)
 	})
+
 	r.GET("/calculadora", func(c *gin.Context) {
 		c.HTML(200, "calculadora.html", nil)
 	})
@@ -68,6 +75,7 @@ func main() {
 		protected.Use(middleware.AuthMiddleware(authService))
 		{
 			protected.GET("/profile", authHandler.GetProfile)
+
 			// Calculadora routes
 			protected.GET("/calculadora/configuraciones", calcHandler.GetConfiguraciones)
 			protected.GET("/calculadora/calcular", calcHandler.Calcular)
@@ -83,10 +91,12 @@ func corsMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type,Authorization")
+
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
 		}
+
 		c.Next()
 	}
 }
@@ -113,10 +123,12 @@ func createTables(db *sql.DB) error {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     `
+
 	_, err := db.Exec(schema)
 	if err != nil {
 		return err
 	}
+
 	log.Println("✅ Tablas verificadas/creadas correctamente")
 	return nil
 }
