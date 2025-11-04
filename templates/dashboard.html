@@ -109,9 +109,11 @@
             margin-left: var(--sidebar-width);
         }
         
-        .topbar {
-            background: white;
-            padding: 1rem 2rem;
+        /* Nuevo estilo de header similar al sistema contable */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
             box-shadow: var(--shadow);
             display: flex;
             justify-content: space-between;
@@ -119,14 +121,46 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            font-style: italic;
         }
         
-        .topbar-left h1 {
-            font-size: 1.5rem;
-            color: var(--primary-color);
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
         
-        .topbar-right {
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .header-title i {
+            font-size: 2rem;
+        }
+        
+        .user-badge {
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 5px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+        
+        .header-right {
             display: flex;
             align-items: center;
             gap: 1.5rem;
@@ -137,18 +171,43 @@
             align-items: center;
             gap: 0.75rem;
             cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .user-menu:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            background: var(--primary-color);
-            color: white;
+            background: white;
+            color: var(--primary-color);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .user-name {
             font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .user-role {
+            font-size: 0.85rem;
+            opacity: 0.9;
         }
         
         .content {
@@ -170,6 +229,12 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
         }
         
         .stat-icon {
@@ -272,6 +337,23 @@
             .main-content {
                 margin-left: 0;
             }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .header-title {
+                font-size: 1.2rem;
+            }
+            
+            .user-badge {
+                font-size: 0.9rem;
+                padding: 3px 10px;
+            }
+            
+            .user-info {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -300,7 +382,7 @@
                         <i class="fas fa-file-alt"></i>
                         <span>AutoTranscribe</span>
                     </a>
-                      <a href="/calculadora" class="nav-item">
+                    <a href="/calculadora" class="nav-item">
                         <i class="fas fa-receipt"></i>
                         <span>Calculadora Facturas</span>
                     </a>
@@ -333,14 +415,21 @@
         </aside>
         
         <main class="main-content">
-            <header class="topbar">
-                <div class="topbar-left">
-                    <h1>Dashboard</h1>
+            <header class="header">
+                <div class="header-left">
+                    <div class="header-title">
+                        <i class="fas fa-chart-line"></i>
+                        Dashboard
+                        <span class="user-badge" id="userBadge">Usuario</span>
+                    </div>
                 </div>
-                <div class="topbar-right">
+                <div class="header-right">
                     <div class="user-menu">
-                        <div class="user-avatar">JH</div>
-                        <span id="userName">Usuario</span>
+                        <div class="user-avatar" id="userAvatar">JH</div>
+                        <div class="user-info">
+                            <span class="user-name" id="userName">Usuario</span>
+                            <span class="user-role">Plan Gratis</span>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -398,13 +487,13 @@
                         </a>
                     </div>
                     
-                     <div class="service-card">
-                    <h3><i class="fas fa-calculator"></i> Calculadora de Facturas</h3>
-                    <p>Calcula totales, IVA y retenciones de facturas de forma rápida y precisa.</p>
-                    <a href="/calculadora" class="btn">
-                        <i class="fas fa-arrow-right"></i> Calcular
-                    </a>
-                </div>
+                    <div class="service-card">
+                        <h3><i class="fas fa-calculator"></i> Calculadora de Facturas</h3>
+                        <p>Calcula totales, IVA y retenciones de facturas de forma rápida y precisa.</p>
+                        <a href="/calculadora" class="btn">
+                            <i class="fas fa-arrow-right"></i> Calcular
+                        </a>
+                    </div>
                     
                     <div class="service-card">
                         <h3><i class="fas fa-plug"></i> API Integration</h3>
@@ -418,31 +507,32 @@
         </main>
     </div>
     
-     <script>
-    // Prevenir caché
-    window.onpageshow = function(event) {
-        if (event.persisted) {
-            window.location.reload();
-        }
-    };
+    <script>
+        // Prevenir caché
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
 
-    // Verificar autenticación
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.replace('/login');
-    }
-    
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user.full_name) {
-        const initials = user.full_name.split(' ').map(n => n[0]).join('').toUpperCase();
-        document.querySelector('.user-avatar').textContent = initials;
-        document.getElementById('userName').textContent = user.full_name;
-    }
-    
-    function logout() {
-        localStorage.clear();
-        window.location.replace('/');
-    }
-</script>
+        // Verificar autenticación
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.replace('/login');
+        }
+        
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (user.full_name) {
+            const initials = user.full_name.split(' ').map(n => n[0]).join('').toUpperCase();
+            document.getElementById('userAvatar').textContent = initials;
+            document.getElementById('userName').textContent = user.full_name;
+            document.getElementById('userBadge').textContent = user.full_name;
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.replace('/');
+        }
+    </script>
 </body>
 </html>
