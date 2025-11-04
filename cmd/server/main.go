@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
@@ -40,8 +41,9 @@ func main() {
 	r := gin.Default()
 	r.Use(corsMiddleware())
 
-	// Templates - Ruta relativa desde donde se ejecuta
-	templatesPath := filepath.Join("templates", "*.html")
+	// Templates - Detectar ruta según dónde se ejecuta
+	templatesPath := getTemplatesPath()
+	log.Println("📁 Cargando templates desde:", templatesPath)
 	r.LoadHTMLGlob(templatesPath)
 
 	// HTML Routes
@@ -106,6 +108,41 @@ func main() {
 
 	log.Println("🚀 Server: http://localhost:" + cfg.Port)
 	r.Run(":" + cfg.Port)
+}
+
+// getTemplatesPath detecta automáticamente la ruta correcta de templates
+func getTemplatesPath() string {
+	// Opciones de rutas posibles
+	paths := []string{
+		"templates/*.html",         // Ejecutando desde backend/
+		"../../templates/*.html",   // Ejecutando desde backend/cmd/server/
+		"backend/templates/*.html", // Ejecutando desde raíz del proyecto
+	}
+
+	for _, path := range paths {
+		matches, _ := filepath.Glob(path)
+		if len(matches) > 0 {
+			return path
+		}
+	}
+
+	// Si no encuentra nada, intentar con ruta absoluta
+	execPath, _ := os.Executable()
+	execDir := filepath.Dir(execPath)
+
+	// Buscar templates subiendo directorios
+	for i := 0; i < 3; i++ {
+		testPath := filepath.Join(execDir, "templates", "*.html")
+		matches, _ := filepath.Glob(testPath)
+		if len(matches) > 0 {
+			return testPath
+		}
+		execDir = filepath.Dir(execDir)
+	}
+
+	// Fallback - buscar desde working directory
+	workDir, _ := os.Getwd()
+	return filepath.Join(workDir, "templates", "*.html")
 }
 
 func corsMiddleware() gin.HandlerFunc {
