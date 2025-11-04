@@ -31,7 +31,7 @@
             background: var(--light-color);
         }
         
-        /* HEADER EN TODO EL ANCHO ARRIBA */
+        /* HEADER */
         .header {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
@@ -53,6 +53,13 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+        
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
         }
         
         .header-title {
@@ -135,14 +142,14 @@
             opacity: 0.9;
         }
         
-        /* LAYOUT CON SIDEBAR Y CONTENIDO */
+        /* DASHBOARD LAYOUT */
         .dashboard {
             display: flex;
             margin-top: var(--header-height);
             min-height: calc(100vh - var(--header-height));
         }
         
-        /* SIDEBAR A LA IZQUIERDA */
+        /* SIDEBAR */
         .sidebar {
             width: var(--sidebar-width);
             background: var(--primary-color);
@@ -153,21 +160,7 @@
             bottom: 0;
             overflow-y: auto;
             z-index: 100;
-        }
-        
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .sidebar-logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: white;
-            text-decoration: none;
+            transition: transform 0.3s ease;
         }
         
         .sidebar-nav {
@@ -214,11 +207,12 @@
             width: 20px;
         }
         
-        /* CONTENIDO PRINCIPAL */
+        /* MAIN CONTENT */
         .main-content {
             flex: 1;
             margin-left: var(--sidebar-width);
             padding: 2rem;
+            transition: margin-left 0.3s ease;
         }
         
         .stats-grid {
@@ -253,6 +247,7 @@
             justify-content: center;
             font-size: 1.5rem;
             color: white;
+            flex-shrink: 0;
         }
         
         .stat-icon.blue {
@@ -285,7 +280,7 @@
         
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
         }
         
@@ -314,6 +309,7 @@
         .service-card p {
             color: var(--text-color);
             margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
         
         .btn {
@@ -336,38 +332,126 @@
             transform: translateY(-2px);
         }
         
+        /* MOBILE STYLES */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
+            :root {
+                --header-height: 60px;
             }
             
-            .main-content {
-                margin-left: 0;
+            .menu-toggle {
+                display: block;
             }
             
             .header {
-                padding: 1rem;
+                padding: 0.75rem 1rem;
             }
             
             .header-title {
+                font-size: 1.3rem;
+            }
+            
+            .header-title i {
                 font-size: 1.5rem;
             }
             
             .user-badge {
-                font-size: 0.9rem;
-                padding: 3px 10px;
+                font-size: 0.85rem;
+                padding: 4px 10px;
+                margin-left: 5px;
             }
             
             .user-info {
                 display: none;
             }
+            
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .stat-info h3 {
+                font-size: 1.5rem;
+            }
+            
+            .stat-info p {
+                font-size: 0.85rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .service-card {
+                padding: 1.5rem;
+            }
+            
+            .service-card h3 {
+                font-size: 1.1rem;
+            }
+            
+            .service-card p {
+                font-size: 0.9rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-title {
+                font-size: 1.1rem;
+            }
+            
+            .user-badge {
+                display: none;
+            }
+            
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .service-card {
+                padding: 1.25rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- HEADER EN TODO EL ANCHO ARRIBA -->
     <header class="header">
         <div class="header-left">
+            <i class="fas fa-bars menu-toggle" onclick="toggleSidebar()"></i>
             <div class="header-title">
                 <i class="fas fa-chart-line"></i>
                 JHVC
@@ -385,15 +469,12 @@
         </div>
     </header>
     
-    <!-- DASHBOARD CON SIDEBAR Y CONTENIDO -->
     <div class="dashboard">
-        <aside class="sidebar">
-             
-            
+        <aside class="sidebar" id="sidebar">
             <nav class="sidebar-nav">
                 <div class="nav-section">
                     <div class="nav-section-title">Principal</div>
-                    <a href="#" class="nav-item active">
+                    <a href="#" class="nav-item active" onclick="closeSidebarOnMobile()">
                         <i class="fas fa-home"></i>
                         <span>Dashboard</span>
                     </a>
@@ -401,22 +482,22 @@
                 
                 <div class="nav-section">
                     <div class="nav-section-title">Servicios</div>
-                    <a href="#" class="nav-item">
+                    <a href="#" class="nav-item" onclick="closeSidebarOnMobile()">
                         <i class="fas fa-file-alt"></i>
                         <span>AutoTranscribe</span>
                     </a>
-                    <a href="/calculadora" class="nav-item">
+                    <a href="/calculadora" class="nav-item" onclick="closeSidebarOnMobile()">
                         <i class="fas fa-receipt"></i>
                         <span>Calculadora Facturas</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <a href="#" class="nav-item" onclick="closeSidebarOnMobile()">
                         <i class="fas fa-plug"></i>
                         <span>Integraciones API</span>
                     </a>
                 </div>
-                <!-- Después de los enlaces existentes, agrega: -->
-                <div id="adminLink" style="display: none;">
-                    <a href="/admin" style="display: flex; align-items: center; gap: 10px; padding: 15px; background: linear-gradient(135deg, #dc3545, #c82333); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px;">
+                
+                <div id="adminLink" style="display: none; padding: 0 1.5rem;">
+                    <a href="/admin" style="display: flex; align-items: center; gap: 10px; padding: 15px; background: linear-gradient(135deg, #dc3545, #c82333); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px;" onclick="closeSidebarOnMobile()">
                         <i class="fas fa-shield-alt"></i>
                         <span>Panel Admin</span>
                     </a>
@@ -424,15 +505,15 @@
                 
                 <div class="nav-section">
                     <div class="nav-section-title">Cuenta</div>
-                    <a href="#" class="nav-item">
+                    <a href="#" class="nav-item" onclick="closeSidebarOnMobile()">
                         <i class="fas fa-user"></i>
                         <span>Mi Perfil</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <a href="#" class="nav-item" onclick="closeSidebarOnMobile()">
                         <i class="fas fa-credit-card"></i>
                         <span>Suscripción</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <a href="#" class="nav-item" onclick="closeSidebarOnMobile()">
                         <i class="fas fa-cog"></i>
                         <span>Configuración</span>
                     </a>
@@ -516,14 +597,13 @@
         </main>
     </div>
     
-     <script>
-        // Prevenir caché
+    <script>
         window.onpageshow = function(event) {
             if (event.persisted) {
                 window.location.reload();
             }
         };
-        // Verificar autenticación
+        
         const token = localStorage.getItem('token');
         if (!token) {
             window.location.replace('/login');
@@ -537,9 +617,18 @@
             document.getElementById('userBadge').textContent = user.full_name;
         }
         
-        // Mostrar panel admin si es administrador
         if (user && user.is_admin) {
             document.getElementById('adminLink').style.display = 'block';
+        }
+        
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        
+        function closeSidebarOnMobile() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
         }
         
         function logout() {
