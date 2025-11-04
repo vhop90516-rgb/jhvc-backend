@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - JHVC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0c4d7b;
+            --secondary: #17a2b8;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --light: #f8f9fa;
+            --dark: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--light);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab:hover {
+            transform: translateY(-2px);
+        }
+        
+        .content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--light);
+        }
+        
+        th {
+            background: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-active {
+            background: var(--success);
+            color: white;
+        }
+        
+        .badge-inactive {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .badge-expired {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--light);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 36px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            opacity: 0.9;
+        }
+        
+        .no-access {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .no-access i {
+            font-size: 64px;
+            color: var(--danger);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-shield-alt"></i> Panel de Administración</h1>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Salir
+            </button>
+        </div>
+        
+        <div id="accessDenied" class="no-access" style="display: none;">
+            <i class="fas fa-ban"></i>
+            <h2>Acceso Denegado</h2>
+            <p>No tienes permisos de administrador</p>
+            <button class="btn btn-primary" onclick="window.location.href='/dashboard'">
+                Ir al Dashboard
+            </button>
+        </div>
+        
+        <div id="adminContent" style="display: none;">
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="totalUsers">0</h3>
+                    <p>Usuarios Totales</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="activeUsers">0</h3>
+                    <p>Usuarios Activos</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalCodes">0</h3>
+                    <p>Códigos Generados</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="activeLicenses">0</h3>
+                    <p>Licencias Activas</p>
+                </div>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('users')">
+                    <i class="fas fa-users"></i> Usuarios
+                </button>
+                <button class="tab" onclick="showTab('codes')">
+                    <i class="fas fa-ticket-alt"></i> Códigos
+                </button>
+                <button class="tab" onclick="showTab('licenses')">
+                    <i class="fas fa-key"></i> Licencias
+                </button>
+            </div>
+            
+            <div class="content">
+                <!-- USUARIOS -->
+                <div id="usersSection" class="section active">
+                    <h2>Gestión de Usuarios</h2>
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Empresa</th>
+                                <th>Estado</th>
+                                <th>Licencia</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                
+                <!-- CÓDIGOS -->
+                <div id="codesSection" class="section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2>Códigos de Invitación</h2>
+                        <button class="btn btn-success" onclick="showCreateCodeModal()">
+                            <i class="fas fa-plus"></i> Generar Código
+                        </button>
+                    </div>
+                    <table id="codesTable">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Usos</th>
+                                <th>Estado</th>
+                                <th>Expira</th>
+                                <th>Creado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                
+                <!-- LICENCIAS -->
+                <div id="licensesSection" class="section">
+                    <h2>Todas las Licencias</h2>
+                    <table id="licensesTable">
+                        <thead>
+                            <tr>
+                                <th>ID Usuario</th>
+                                <th>Módulos</th>
+                                <th>Expira</th>
+                                <th>Estado</th>
+                                <th>Creada</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL CREAR CÓDIGO -->
+    <div id="createCodeModal" class="modal">
+        <div class="modal-content">
+            <h2>Generar Código de Invitación</h2>
+            <form id="createCodeForm">
+                <div class="form-group">
+                    <label>Máximo de Usos</label>
+                    <input type="number" id="maxUses" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Días de Validez (0 = sin límite)</label>
+                    <input type="number" id="daysValid" min="0" value="0">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        <i class="fas fa-check"></i> Crear
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('createCodeModal')" style="flex: 1;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- MODAL EDITAR LICENCIA -->
+    <div id="editLicenseModal" class="modal">
+        <div class="modal-content">
+            <h2>Editar Licencia</h2>
+            <form id="editLicenseForm">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label>Módulos (Ctrl+Click para múltiples)</label>
+                    <select id="editModules" multiple style="height: 100px;">
+                        <option value="calculadora">Calculadora</option>
+                        <option value="modulo2">Módulo 2</option>
+                        <option value="modulo3">Módulo 3</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Días de Validez (0 = sin límite)</label>
+                    <input type="number" id="editDaysValid" min="0" value="30">
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="editIsActive">
+                        <option value="true">Activa</option>
+                        <option value="false">Inactiva</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('editLicenseModal')" style="flex: 1;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        const API_URL = '/api';
+        let token = localStorage.getItem('token');
+        
+        // Verificar acceso admin
+        async function checkAdminAccess() {
+            try {
+                const response = await fetch(`${API_URL}/admin/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.status === 403) {
+                    document.getElementById('accessDenied').style.display = 'block';
+                    return false;
+                }
+                
+                if (!response.ok) {
+                    throw new Error('Error de autenticación');
+                }
+                
+                document.getElementById('adminContent').style.display = 'block';
+                return true;
+            } catch (error) {
+                document.getElementById('accessDenied').style.display = 'block';
+                return false;
+            }
+        }
+        
+        // Cargar datos iniciales
+        async function loadData() {
+            const hasAccess = await checkAdminAccess();
+            if (!hasAccess) return;
+            
+            await Promise.all([
+                loadUsers(),
+                loadCodes(),
+                loadLicenses()
+            ]);
+            
+            updateStats();
+        }
+        
+        // Cargar usuarios
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_URL}/admin/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                const tbody = document.querySelector('#usersTable tbody');
+                tbody.innerHTML = '';
+                
+                data.data.forEach(item => {
+                    const user = item;
+                    const license = item.license;
+                    
+                    let licenseInfo = 'Sin licencia';
+                    if (license) {
+                        const modules = license.modules.join(', ');
+                        const expires = license.expires_at ? 
+                            new Date(license.expires_at).toLocaleDateString() : 
+                            'Sin límite';
+                        licenseInfo = `${modules} (${expires})`;
+                    }
+                    
+                    const row = `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.full_name}</td>
+                            <td>${user.email}</td>
+                            <td>${user.company_name || '-'}</td>
+                            <td>
+                                <span class="badge ${user.is_active ? 'badge-active' : 'badge-inactive'}">
+                                    ${user.is_active ? 'Activo' : 'Inactivo'}
+                                </span>
+                                ${user.is_admin ? '<span class="badge badge-warning">ADMIN</span>' : ''}
+                            </td>
+                            <td style="font-size: 12px;">${licenseInfo}</td>
+                            <td>
+                                <button class="btn btn-primary" onclick="editLicense(${user.id})" title="Editar Licencia">
+                                    <i class="fas fa-key"></i>
+                                </button>
+                                ${!user.is_admin ? `
+                                    <button class="btn ${user.is_active ? 'btn-danger' : 'btn-success'}" 
+                                            onclick="toggleUserStatus(${user.id}, ${!user.is_active})">
+                                        <i class="fas fa-${user.is_active ? 'ban' : 'check'}"></i>
+                                    </button>
+                                ` : ''}
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error loading users:', error);
+                alert('Error al cargar usuarios');
+            }
+        }
+        
+        // Cargar códigos
+        async function loadCodes() {
+            try {
+                const response = await fetch(`${API_URL}/admin/codes`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                const tbody = document.querySelector('#codesTable tbody');
+                tbody.innerHTML = '';
+                
+                data.data.forEach(code => {
+                    const expiresAt = code.expires_at ? 
+                        new Date(code.expires_at).toLocaleDateString() : 
+                        'Sin límite';
+                    
+                    const createdAt = new Date(code.created_at).toLocaleDateString();
+                    
+                    let status = 'badge-active';
+                    if (!code.is_active) {
+                        status = 'badge-inactive';
+                    } else if (code.current_uses >= code.max_uses) {
+                        status = 'badge-expired';
+                    }
+                    
+                    const row = `
+                        <tr>
+                            <td><code>${code.code}</code></td>
+                            <td>${code.current_uses} / ${code.max_uses}</td>
+                            <td>
+                                <span class="badge ${status}">
+                                    ${code.is_active ? (code.current_uses >= code.max_uses ? 'Agotado' : 'Activo') : 'Inactivo'}
+                                </span>
+                            </td>
+                            <td>${expiresAt}</td>
+                            <td>${createdAt}</td>
+                            <td>
+                                <button class="btn ${code.is_active ? 'btn-danger' : 'btn-success'}" 
+                                        onclick="toggleCodeStatus(${code.id}, ${!code.is_active})">
+                                    <i class="fas fa-${code.is_active ? 'ban' : 'check'}"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error loading codes:', error);
+                alert('Error al cargar códigos');
+            }
+        }
+        
+        // Cargar licencias
+        async function loadLicenses() {
+            try {
+                const response = await fetch(`${API_URL}/admin/licenses`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                const tbody = document.querySelector('#licensesTable tbody');
+                tbody.innerHTML = '';
+                
+                data.data.forEach(license => {
+                    const modules = license.modules.join(', ') || 'Ninguno';
+                    const expiresAt = license.expires_at ? 
+                        new Date(license.expires_at).toLocaleDateString() : 
+                        'Sin límite';
+                    const createdAt = new Date(license.created_at).toLocaleDateString();
+                    
+                    const row = `
+                        <tr>
+                            <td>${license.user_id}</td>
+                            <td>${modules}</td>
+                            <td>${expiresAt}</td>
+                            <td>
+                                <span class="badge ${license.is_active ? 'badge-active' : 'badge-inactive'}">
+                                    ${license.is_active ? 'Activa' : 'Inactiva'}
+                                </span>
+                            </td>
+                            <td>${createdAt}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error loading licenses:', error);
+                alert('Error al cargar licencias');
+            }
+        }
+        
+        // Actualizar estadísticas
+        function updateStats() {
+            const usersRows = document.querySelectorAll('#usersTable tbody tr');
+            const codesRows = document.querySelectorAll('#codesTable tbody tr');
+            const licensesRows = document.querySelectorAll('#licensesTable tbody tr');
+            
+            let activeUsers = 0;
+            usersRows.forEach(row => {
+                if (row.textContent.includes('Activo')) activeUsers++;
+            });
+            
+            let activeLicenses = 0;
+            licensesRows.forEach(row => {
+                if (row.textContent.includes('Activa')) activeLicenses++;
+            });
+            
+            document.getElementById('totalUsers').textContent = usersRows.length;
+            document.getElementById('activeUsers').textContent = activeUsers;
+            document.getElementById('totalCodes').textContent = codesRows.length;
+            document.getElementById('activeLicenses').textContent = activeLicenses;
+        }
+        
+        // Cambiar tabs
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Section').classList.add('active');
+        }
+        
+        // Crear código
+        function showCreateCodeModal() {
+            document.getElementById('createCodeModal').classList.add('show');
+        }
+        
+        document.getElementById('createCodeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const maxUses = parseInt(document.getElementById('maxUses').value);
+            const daysValid = parseInt(document.getElementById('daysValid').value);
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/codes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ max_uses: maxUses, days_valid: daysValid })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error al crear código');
+                }
+                
+                alert(`Código creado: ${data.data.code}`);
+                closeModal('createCodeModal');
+                loadCodes();
+                updateStats();
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+        
+        // Toggle user status
+        async function toggleUserStatus(userId, isActive) {
+            if (!confirm(`¿${isActive ? 'Activar' : 'Desactivar'} este usuario?`)) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/users/${userId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ is_active: isActive })
+                });
+                
+                if (!response.ok) throw new Error('Error al actualizar usuario');
+                
+                loadUsers();
+                updateStats();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+        
+        // Toggle code status
+        async function toggleCodeStatus(codeId, isActive) {
+            if (!confirm(`¿${isActive ? 'Activar' : 'Desactivar'} este código?`)) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/codes/${codeId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ is_active: isActive })
+                });
+                
+                if (!response.ok) throw new Error('Error al actualizar código');
+                
+                loadCodes();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+        
+        // Editar licencia
+        function editLicense(userId) {
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('editLicenseModal').classList.add('show');
+        }
+        
+        document.getElementById('editLicenseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('editUserId').value;
+            const modules = Array.from(document.getElementById('editModules').selectedOptions).map(opt => opt.value);
+            const daysValid = parseInt(document.getElementById('editDaysValid').value);
+            const isActive = document.getElementById('editIsActive').value === 'true';
+            
+            try {
+              const response = await fetch(`${API_URL}/admin/license/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ 
+                        modules, 
+                        days_valid: daysValid,
+                        is_active: isActive
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Error al actualizar licencia');
+                
+                alert('Licencia actualizada correctamente');
+                closeModal('editLicenseModal');
+                loadUsers();
+                loadLicenses();
+                updateStats();
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+        
+        // Cerrar modales
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+        
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+        
+        // Inicializar
+        window.addEventListener('DOMContentLoaded', function() {
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            loadData();
+        });
+    </script>
+</body>
+</html>
