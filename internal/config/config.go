@@ -34,12 +34,17 @@ func (c *Config) DSN() string {
 }
 
 func (c *Config) GetDSN() string {
-	// Primero intenta usar DATABASE_URL si existe
+	// Primero intenta usar DATABASE_URL si existe (RENDER - con SSL)
 	if dbURL := os.Getenv("DATABASE_URL"); dbURL != "" {
 		return dbURL
 	}
-	// Si no, construye el DSN con las variables individuales
-	return c.DSN()
+	// Si no, construye el DSN con las variables individuales (LOCAL - sin SSL)
+	return "host=" + c.DBHost +
+		" port=" + c.DBPort +
+		" user=" + c.DBUser +
+		" password=" + c.DBPass +
+		" dbname=" + c.DBName +
+		" sslmode=disable"
 }
 
 func getEnv(key, def string) string {
