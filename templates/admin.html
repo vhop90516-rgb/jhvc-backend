@@ -557,8 +557,7 @@
         
     </style>
 </head>
-<body>
-    <!-- HEADER IGUAL AL DASHBOARD -->
+ <body>
     <header class="header">
         <div class="header-left">
             <div class="header-title">
@@ -625,7 +624,6 @@
             </div>
             
             <div class="content">
-                <!-- USUARIOS -->
                 <div id="usersSection" class="section active">
                     <h2>Gestión de Usuarios</h2>
                     <table id="usersTable">
@@ -644,7 +642,6 @@
                     </table>
                 </div>
                 
-                <!-- CÓDIGOS -->
                 <div id="codesSection" class="section">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                         <h2>Códigos de Invitación</h2>
@@ -667,7 +664,6 @@
                     </table>
                 </div>
                 
-                <!-- LICENCIAS -->
                 <div id="licensesSection" class="section">
                     <h2>Todas las Licencias</h2>
                     <table id="licensesTable">
@@ -687,7 +683,6 @@
         </div>
     </div>
     
-    <!-- MODAL CREAR CÓDIGO -->
     <div id="createCodeModal" class="modal">
         <div class="modal-content">
             <h2>Generar Código de Invitación</h2>
@@ -712,7 +707,6 @@
         </div>
     </div>
     
-    <!-- MODAL EDITAR LICENCIA -->
     <div id="editLicenseModal" class="modal">
         <div class="modal-content">
             <h2>Editar Licencia</h2>
@@ -720,11 +714,17 @@
                 <input type="hidden" id="editUserId">
                 <div class="form-group">
                     <label>Módulos (Ctrl+Click para múltiples)</label>
-                    <select id="editModules" multiple style="height: 100px;">
-                        <option value="calculadora">Calculadora</option>
-                        <option value="modulo2">Módulo 2</option>
-                        <option value="modulo3">Módulo 3</option>
+                    <select id="editModules" multiple style="height: 150px;">
+                        <option value="calculadora">📊 Calculadora de Impuestos</option>
+                        <option value="visor">👁️ Visor de Facturas CFDI</option>
+                        <option value="contabilidad">💰 Módulo de Contabilidad</option>
+                        <option value="nomina">👥 Gestión de Nómina</option>
+                        <option value="reportes">📈 Reportes Avanzados</option>
+                        <option value="facturacion">🧾 Facturación Electrónica</option>
                     </select>
+                    <small style="color: #666; display: block; margin-top: 5px;">
+                        Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples
+                    </small>
                 </div>
                 <div class="form-group">
                     <label>Días de Validez (0 = sin límite)</label>
@@ -748,11 +748,11 @@
             </form>
         </div>
     </div>
+    
     <script>
         const API_URL = '/api';
         let token = localStorage.getItem('token');
         
-        // Cargar datos del usuario en el header
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         if (user.full_name) {
             const initials = user.full_name.split(' ').map(n => n[0]).join('').toUpperCase();
@@ -761,7 +761,6 @@
             document.getElementById('userBadge').textContent = user.full_name;
         }
         
-        // Verificar acceso admin
         async function checkAdminAccess() {
             try {
                 const response = await fetch(`${API_URL}/admin/users`, {
@@ -785,7 +784,6 @@
             }
         }
         
-        // Cargar datos iniciales
         async function loadData() {
             const hasAccess = await checkAdminAccess();
             if (!hasAccess) return;
@@ -799,7 +797,6 @@
             updateStats();
         }
         
-        // Cargar usuarios
         async function loadUsers() {
             try {
                 const response = await fetch(`${API_URL}/admin/users`, {
@@ -814,13 +811,27 @@
                     const user = item;
                     const license = item.license;
                     
-                    let licenseInfo = 'Sin licencia';
-                    if (license) {
-                        const modules = license.modules.join(', ');
+                    let licenseInfo = '<span style="color: #999;">Sin licencia</span>';
+                    if (license && license.modules && license.modules.length > 0) {
+                        const moduleIcons = {
+                            'calculadora': '📊',
+                            'visor': '👁️',
+                            'contabilidad': '💰',
+                            'nomina': '👥',
+                            'reportes': '📈',
+                            'facturacion': '🧾'
+                        };
+                        
+                        const modulesHTML = license.modules.map(m => {
+                            const icon = moduleIcons[m] || '📦';
+                            return `<span class="badge badge-active" style="margin: 2px;">${icon} ${m}</span>`;
+                        }).join('');
+                        
                         const expires = license.expires_at ? 
-                            new Date(license.expires_at).toLocaleDateString() : 
-                            'Sin límite';
-                        licenseInfo = `${modules} (${expires})`;
+                            `<br><small>Expira: ${new Date(license.expires_at).toLocaleDateString()}</small>` : 
+                            '<br><small>Sin límite</small>';
+                        
+                        licenseInfo = modulesHTML + expires;
                     }
                     
                     const row = `
@@ -857,7 +868,6 @@
             }
         }
         
-        // Cargar códigos
         async function loadCodes() {
             try {
                 const response = await fetch(`${API_URL}/admin/codes`, {
@@ -909,7 +919,6 @@
             }
         }
         
-        // Cargar licencias
         async function loadLicenses() {
             try {
                 const response = await fetch(`${API_URL}/admin/licenses`, {
@@ -948,7 +957,6 @@
             }
         }
         
-        // Actualizar estadísticas
         function updateStats() {
             const usersRows = document.querySelectorAll('#usersTable tbody tr');
             const codesRows = document.querySelectorAll('#codesTable tbody tr');
@@ -970,7 +978,6 @@
             document.getElementById('activeLicenses').textContent = activeLicenses;
         }
         
-        // Cambiar tabs
         function showTab(tabName) {
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
@@ -979,7 +986,6 @@
             document.getElementById(tabName + 'Section').classList.add('active');
         }
         
-        // Crear código
         function showCreateCodeModal() {
             document.getElementById('createCodeModal').classList.add('show');
         }
@@ -1015,7 +1021,6 @@
             }
         });
         
-        // Toggle user status
         async function toggleUserStatus(userId, isActive) {
             if (!confirm(`¿${isActive ? 'Activar' : 'Desactivar'} este usuario?`)) return;
             
@@ -1038,7 +1043,6 @@
             }
         }
         
-        // Toggle code status
         async function toggleCodeStatus(codeId, isActive) {
             if (!confirm(`¿${isActive ? 'Activar' : 'Desactivar'} este código?`)) return;
             
@@ -1060,9 +1064,46 @@
             }
         }
         
-        // Editar licencia
-        function editLicense(userId) {
+        async function editLicense(userId) {
             document.getElementById('editUserId').value = userId;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                const userData = data.data.find(u => u.id === userId);
+                const license = userData?.license;
+                
+                const selectModules = document.getElementById('editModules');
+                Array.from(selectModules.options).forEach(opt => opt.selected = false);
+                
+                if (license) {
+                    if (license.modules) {
+                        license.modules.forEach(module => {
+                            const option = selectModules.querySelector(`option[value="${module}"]`);
+                            if (option) option.selected = true;
+                        });
+                    }
+                    
+                    if (license.expires_at) {
+                        const daysLeft = Math.ceil((new Date(license.expires_at) - new Date()) / (1000 * 60 * 60 * 24));
+                        document.getElementById('editDaysValid').value = Math.max(0, daysLeft);
+                    } else {
+                        document.getElementById('editDaysValid').value = 0;
+                    }
+                    
+                    document.getElementById('editIsActive').value = license.is_active.toString();
+                } else {
+                    document.getElementById('editDaysValid').value = 30;
+                    document.getElementById('editIsActive').value = 'true';
+                }
+                
+            } catch (error) {
+                console.error('Error al cargar licencia:', error);
+            }
+            
             document.getElementById('editLicenseModal').classList.add('show');
         }
         
@@ -1100,12 +1141,10 @@
             }
         });
         
-        // Cerrar modales
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('show');
         }
         
-        // Inicializar
         window.addEventListener('DOMContentLoaded', function() {
             if (!token) {
                 window.location.href = '/login';

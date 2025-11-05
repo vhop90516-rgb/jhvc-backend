@@ -232,4 +232,13 @@ func (h *Handler) GetAllLicenses(c *gin.Context) {
 		"success": true,
 		"data":    licenses,
 	})
+
+}
+
+// ✅ NUEVO ENDPOINT: Obtener módulos disponibles
+func (h *Handler) GetAvailableModules(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    GetModulesMap(),
+	})
 }

@@ -72,6 +72,7 @@ func main() {
 		// Rutas públicas
 		api.POST("/register", authHandler.Register)
 		api.POST("/login", authHandler.Login)
+		api.GET("/modules", authHandler.GetAvailableModules) // ✅ AGREGADO
 
 		// Rutas protegidas (requieren autenticación)
 		protected := api.Group("")
@@ -248,6 +249,32 @@ func createTables(db *sql.DB) error {
 		// Asegurar que el admin tenga is_admin = true
 		db.Exec("UPDATE users SET is_admin = true WHERE email = 'admin@jhvc.com'")
 		log.Println("✅ Usuario admin ya existe")
+	}
+
+	// ✅✅✅ MIGRACIÓN: Actualizar licencias existentes para agregar módulo "visor" ✅✅✅
+	log.Println("🔄 Actualizando módulos en licencias existentes...")
+	result, err := db.Exec(`
+		UPDATE licenses 
+		SET modules = 
+			CASE 
+				WHEN modules::jsonb @> '["calculadora"]'::jsonb THEN 
+					(modules::jsonb || '["visor"]'::jsonb)::text::jsonb
+				ELSE 
+					'["visor"]'::jsonb
+			END,
+			updated_at = CURRENT_TIMESTAMP
+		WHERE NOT modules::jsonb @> '["visor"]'::jsonb
+	`)
+
+	if err != nil {
+		log.Printf("⚠️ Advertencia al actualizar módulos: %v\n", err)
+	} else {
+		rowsAffected, _ := result.RowsAffected()
+		if rowsAffected > 0 {
+			log.Printf("✅ %d licencias actualizadas con módulo 'visor'\n", rowsAffected)
+		} else {
+			log.Println("✅ Todas las licencias ya tienen el módulo 'visor'")
+		}
 	}
 
 	log.Println("✅ Tablas verificadas/creadas correctamente")

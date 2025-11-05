@@ -65,9 +65,9 @@ func (s *Service) Register(req RegisterRequest) (*AuthResponse, error) {
 	s.repo.IncrementCodeUsage(invCode.ID)
 	s.repo.RecordCodeUsage(invCode.ID, int(userID))
 
-	// Crear licencia básica (30 días, módulo calculadora)
+	// ✅ CAMBIO AQUÍ: Crear licencia con módulo VISOR por defecto (30 días)
 	expiresAt := time.Now().Add(30 * 24 * time.Hour)
-	s.repo.CreateLicense(int(userID), invCode.ID, []string{"calculadora"}, &expiresAt)
+	s.repo.CreateLicense(int(userID), invCode.ID, []string{"visor"}, &expiresAt)
 
 	// Obtener usuario creado
 	user, err := s.repo.GetUserByID(int(userID))
@@ -230,6 +230,13 @@ func (s *Service) UpdateCodeStatus(codeID int, isActive bool) error {
 }
 
 func (s *Service) UpdateLicense(userID int, modules []string, daysValid int, isActive bool) error {
+	// ✅ VALIDAR QUE LOS MÓDULOS SEAN VÁLIDOS
+	for _, module := range modules {
+		if !IsValidModule(module) {
+			return errors.New("módulo inválido: " + module)
+		}
+	}
+
 	var expiresAt *time.Time
 	if daysValid > 0 {
 		exp := time.Now().Add(time.Duration(daysValid) * 24 * time.Hour)
