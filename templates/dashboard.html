@@ -513,6 +513,26 @@
                         <i class="fas fa-credit-card"></i>
                         <span>Suscripción</span>
                     </a>
+                    <div class="card mt-3">
+                    <div class="card-header bg-primary text-white">
+                        <i class="fas fa-desktop me-2"></i>Token para Aplicación Local
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-3">Usa este token en tu aplicación de escritorio:</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="appToken" readonly value="Haz clic en 'Mostrar'">
+                            <button class="btn btn-primary" onclick="mostrarToken()">
+                                <i class="fas fa-eye me-2"></i>Mostrar
+                            </button>
+                            <button class="btn btn-success" onclick="copiarToken()">
+                                <i class="fas fa-copy me-2"></i>Copiar
+                            </button>
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>Solo necesitas copiarlo una vez
+                        </small>
+                    </div>
+                </div>
                     <a href="#" class="nav-item" onclick="closeSidebarOnMobile()">
                         <i class="fas fa-cog"></i>
                         <span>Configuración</span>
@@ -636,5 +656,19 @@
             window.location.replace('/');
         }
     </script>
+
+    <script>
+function mostrarToken() {
+    const token = localStorage.getItem('token');
+    document.getElementById('appToken').value = token || 'No hay token';
+}
+
+function copiarToken() {
+    const tokenInput = document.getElementById('appToken');
+    tokenInput.select();
+    document.execCommand('copy');
+    alert('✅ Token copiado al portapapeles');
+}
+</script>
 </body>
 </html>
