@@ -1,0 +1,4 @@
+.env
+cmd/server/.env
+*.env
+.git
