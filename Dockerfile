@@ -1,16 +1,18 @@
 FROM golang:1.23.0-bookworm AS builder
-
 WORKDIR /usr/src/app
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
+# ✅ Copiar todo EXCEPTO .env (dockerignore debe funcionar aquí)
 COPY . .
+
+# ✅ BORRAR cualquier .env que se haya colado
+RUN rm -f .env cmd/server/.env *.env
 
 RUN go build -v -o /run-app ./cmd/server
 
 FROM debian:bookworm
-
 RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /run-app /usr/local/bin/run-app
