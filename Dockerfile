@@ -4,11 +4,7 @@ WORKDIR /usr/src/app
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
-# ✅ Copiar todo EXCEPTO .env (dockerignore debe funcionar aquí)
 COPY . .
-
-# ✅ BORRAR cualquier .env que se haya colado
-RUN rm -f .env cmd/server/.env *.env
 
 RUN go build -v -o /run-app ./cmd/server
 

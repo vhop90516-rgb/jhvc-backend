@@ -12,19 +12,11 @@ import (
 	"github.com/jhvc/backend/internal/middleware"
 	"github.com/jhvc/backend/internal/modules/auth"
 	"github.com/jhvc/backend/internal/modules/calculadora"
-	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
-	// ✅ Cargar .env SOLO si NO estamos en Railway
-	// ✅ Solo cargar .env si existe el archivo (desarrollo local)
-	godotenv.Load("cmd/server/.env")
-
 	cfg := config.Load()
-
-	// ✅ LOG para debug
-	log.Println("🔧 DSN:", cfg.GetDSN())
 
 	db, err := database.Connect(cfg.GetDSN())
 	if err != nil {
@@ -36,25 +28,20 @@ func main() {
 		log.Fatal("Error creando tablas:", err)
 	}
 
-	// Auth module
 	authRepo := auth.NewRepository(db)
 	authService := auth.NewService(authRepo, cfg.JWTSecret)
 	authHandler := auth.NewHandler(authService)
 
-	// Calculadora module
 	calcService := calculadora.NewService()
 	calcHandler := calculadora.NewHandler(calcService)
 
-	// Router
 	r := gin.Default()
 	r.Use(corsMiddleware())
 
-	// Templates - Detectar ruta según dónde se ejecuta
 	templatesPath := getTemplatesPath()
 	log.Println("📁 Cargando templates desde:", templatesPath)
 	r.LoadHTMLGlob(templatesPath)
 
-	// HTML Routes
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(200, "landing.html", nil)
 	})
@@ -74,22 +61,18 @@ func main() {
 		c.HTML(200, "admin.html", nil)
 	})
 
-	// API Routes
 	api := r.Group("/api")
 	{
-		// Rutas públicas
 		api.POST("/register", authHandler.Register)
 		api.POST("/login", authHandler.Login)
 		api.GET("/modules", authHandler.GetAvailableModules)
 
-		// Rutas protegidas (requieren autenticación)
 		protected := api.Group("")
 		protected.Use(middleware.AuthMiddleware(authService))
 		{
 			protected.GET("/profile", authHandler.GetProfile)
 			protected.GET("/license", authHandler.GetUserLicense)
 
-			// Calculadora - REQUIERE LICENCIA CON MÓDULO "calculadora"
 			calc := protected.Group("/calculadora")
 			calc.Use(middleware.LicenseMiddleware(authService, "calculadora"))
 			{
@@ -98,7 +81,6 @@ func main() {
 			}
 		}
 
-		// ADMIN ROUTES - Solo administradores
 		admin := api.Group("/admin")
 		admin.Use(middleware.AuthMiddleware(authService))
 		admin.Use(middleware.AdminMiddleware(authService))
@@ -119,9 +101,7 @@ func main() {
 	r.Run(":" + cfg.Port)
 }
 
-// getTemplatesPath detecta automáticamente la ruta correcta de templates
 func getTemplatesPath() string {
-	// Opciones de rutas posibles
 	paths := []string{
 		"templates/*.html",
 		"../../templates/*.html",
@@ -135,11 +115,9 @@ func getTemplatesPath() string {
 		}
 	}
 
-	// Si no encuentra nada, intentar con ruta absoluta
 	execPath, _ := os.Executable()
 	execDir := filepath.Dir(execPath)
 
-	// Buscar templates subiendo directorios
 	for i := 0; i < 3; i++ {
 		testPath := filepath.Join(execDir, "templates", "*.html")
 		matches, _ := filepath.Glob(testPath)
@@ -149,7 +127,6 @@ func getTemplatesPath() string {
 		execDir = filepath.Dir(execDir)
 	}
 
-	// Fallback - buscar desde working directory
 	workDir, _ := os.Getwd()
 	return filepath.Join(workDir, "templates", "*.html")
 }
@@ -225,7 +202,6 @@ func createTables(db *sql.DB) error {
 		return err
 	}
 
-	// ALTER TABLE - Agregar columna is_admin si no existe
 	var columnExists bool
 	err = db.QueryRow(`
         SELECT EXISTS (
@@ -243,7 +219,6 @@ func createTables(db *sql.DB) error {
 		}
 	}
 
-	// Crear admin por defecto
 	var adminExists bool
 	db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE email = 'admin@jhvc.com')").Scan(&adminExists)
 	if !adminExists {
@@ -258,7 +233,6 @@ func createTables(db *sql.DB) error {
 		log.Println("✅ Usuario admin ya existe")
 	}
 
-	// Migración: Actualizar licencias existentes
 	log.Println("🔄 Actualizando módulos en licencias existentes...")
 	result, err := db.Exec(`
 		UPDATE licenses 
