@@ -12,12 +12,23 @@ import (
 	"github.com/jhvc/backend/internal/middleware"
 	"github.com/jhvc/backend/internal/modules/auth"
 	"github.com/jhvc/backend/internal/modules/calculadora"
-	_ "github.com/joho/godotenv/autoload"
+	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
+	// ✅ Cargar .env SOLO si NO estamos en Railway
+	if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
+		if err := godotenv.Load("cmd/server/.env"); err != nil {
+			log.Println("⚠️ No se encontró .env (usando variables de entorno del sistema)")
+		}
+	}
+
 	cfg := config.Load()
+
+	// ✅ LOG para debug
+	log.Println("🔧 DSN:", cfg.GetDSN())
+
 	db, err := database.Connect(cfg.GetDSN())
 	if err != nil {
 		log.Fatal(err)
@@ -72,7 +83,7 @@ func main() {
 		// Rutas públicas
 		api.POST("/register", authHandler.Register)
 		api.POST("/login", authHandler.Login)
-		api.GET("/modules", authHandler.GetAvailableModules) // ✅ AGREGADO
+		api.GET("/modules", authHandler.GetAvailableModules)
 
 		// Rutas protegidas (requieren autenticación)
 		protected := api.Group("")
@@ -115,9 +126,9 @@ func main() {
 func getTemplatesPath() string {
 	// Opciones de rutas posibles
 	paths := []string{
-		"templates/*.html",         // Ejecutando desde backend/
-		"../../templates/*.html",   // Ejecutando desde backend/cmd/server/
-		"backend/templates/*.html", // Ejecutando desde raíz del proyecto
+		"templates/*.html",
+		"../../templates/*.html",
+		"backend/templates/*.html",
 	}
 
 	for _, path := range paths {
@@ -246,12 +257,11 @@ func createTables(db *sql.DB) error {
         `, string(hashedPassword))
 		log.Println("✅ Usuario admin creado: admin@jhvc.com / admin123")
 	} else {
-		// Asegurar que el admin tenga is_admin = true
 		db.Exec("UPDATE users SET is_admin = true WHERE email = 'admin@jhvc.com'")
 		log.Println("✅ Usuario admin ya existe")
 	}
 
-	// ✅✅✅ MIGRACIÓN: Actualizar licencias existentes para agregar módulo "visor" ✅✅✅
+	// Migración: Actualizar licencias existentes
 	log.Println("🔄 Actualizando módulos en licencias existentes...")
 	result, err := db.Exec(`
 		UPDATE licenses 
