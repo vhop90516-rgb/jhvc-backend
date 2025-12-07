@@ -18,11 +18,8 @@ import (
 
 func main() {
 	// ✅ Cargar .env SOLO si NO estamos en Railway
-	if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
-		if err := godotenv.Load("cmd/server/.env"); err != nil {
-			log.Println("⚠️ No se encontró .env (usando variables de entorno del sistema)")
-		}
-	}
+	// ✅ Solo cargar .env si existe el archivo (desarrollo local)
+	godotenv.Load("cmd/server/.env")
 
 	cfg := config.Load()
 
