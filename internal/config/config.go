@@ -18,18 +18,13 @@ func Load() *Config {
 }
 
 func (c *Config) GetDSN() string {
-	if dbURL := os.Getenv("DATABASE_URL"); dbURL != "" {
-		log.Println("✅ Usando DATABASE_URL de Railway")
-		return dbURL
+	// Railway SIEMPRE proporciona DATABASE_URL
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		log.Fatal("DATABASE_URL no está configurada en Railway")
 	}
-
-	log.Println("✅ Usando variables locales (.env)")
-	return "host=" + getEnv("DB_HOST", "127.0.0.1") +
-		" port=" + getEnv("DB_PORT", "5432") +
-		" user=" + getEnv("DB_USER", "postgres") +
-		" password=" + getEnv("DB_PASS", "") +
-		" dbname=" + getEnv("DB_NAME", "jhvc_system") +
-		" sslmode=disable"
+	log.Println("✅ Usando DATABASE_URL de Railway")
+	return dbURL
 }
 
 func getEnv(key, def string) string {
