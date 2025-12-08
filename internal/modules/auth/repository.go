@@ -2,7 +2,6 @@ package auth
 
 import (
 	"database/sql"
-	"encoding/json"
 	"time"
 )
 
@@ -92,7 +91,6 @@ func (r *Repository) SaveSession(userID int, token, ipAddress string, expiresAt 
 	return err
 }
 
-// CÓDIGOS DE INVITACIÓN
 func (r *Repository) ValidateInvitationCode(code string) (*InvitationCode, error) {
 	var inv InvitationCode
 	var expiresAt sql.NullTime
@@ -134,51 +132,6 @@ func (r *Repository) RecordCodeUsage(codeID, userID int) error {
 	return err
 }
 
-func (r *Repository) CreateLicense(userID, codeID int, modules []string, expiresAt *time.Time) error {
-	modulesJSON, _ := json.Marshal(modules)
-
-	_, err := r.db.Exec(`
-        INSERT INTO licenses (user_id, invitation_code_id, modules, expires_at)
-        VALUES ($1, $2, $3, $4)
-    `, userID, codeID, modulesJSON, expiresAt)
-
-	return err
-}
-
-func (r *Repository) GetUserLicense(userID int) (*License, error) {
-	var lic License
-	var modulesJSON []byte
-	var expiresAt sql.NullTime
-
-	err := r.db.QueryRow(`
-        SELECT id, user_id, modules, expires_at, is_active, created_at
-        FROM licenses 
-        WHERE user_id = $1
-        ORDER BY created_at DESC LIMIT 1
-    `, userID).Scan(
-		&lic.ID, &lic.UserID, &modulesJSON, &expiresAt, &lic.IsActive, &lic.CreatedAt,
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	// Manejar JSON vacío o null
-	if len(modulesJSON) > 0 {
-		json.Unmarshal(modulesJSON, &lic.Modules)
-	}
-	if lic.Modules == nil {
-		lic.Modules = []string{}
-	}
-
-	if expiresAt.Valid {
-		lic.ExpiresAt = &expiresAt.Time
-	}
-
-	return &lic, nil
-}
-
-// ADMIN FUNCTIONS
 func (r *Repository) GetAllUsers() ([]User, error) {
 	rows, err := r.db.Query(`
         SELECT id, email, full_name, company_name, phone, is_active, is_admin, created_at
@@ -267,73 +220,6 @@ func (r *Repository) UpdateCodeStatus(codeID int, isActive bool) error {
 	return err
 }
 
-// ✅ FUNCIÓN CORREGIDA - UPSERT (INSERT o UPDATE)
-func (r *Repository) UpdateLicense(userID int, modules []string, expiresAt *time.Time, isActive bool) error {
-	modulesJSON, _ := json.Marshal(modules)
-
-	// Verificar si el usuario YA tiene una licencia
-	var existingLicenseID int
-	err := r.db.QueryRow("SELECT id FROM licenses WHERE user_id = $1 LIMIT 1", userID).Scan(&existingLicenseID)
-
-	if err == sql.ErrNoRows {
-		// NO EXISTE -> INSERT (crear nueva licencia)
-		_, err = r.db.Exec(`
-            INSERT INTO licenses (user_id, modules, expires_at, is_active, invitation_code_id)
-            VALUES ($1, $2, $3, $4, NULL)
-        `, userID, modulesJSON, expiresAt, isActive)
-	} else if err == nil {
-		// SÍ EXISTE -> UPDATE (actualizar licencia existente)
-		_, err = r.db.Exec(`
-            UPDATE licenses 
-            SET modules = $1, expires_at = $2, is_active = $3, updated_at = CURRENT_TIMESTAMP
-            WHERE user_id = $4
-        `, modulesJSON, expiresAt, isActive, userID)
-	}
-
-	return err
-}
-
-func (r *Repository) GetAllLicenses() ([]License, error) {
-	rows, err := r.db.Query(`
-        SELECT id, user_id, modules, expires_at, is_active, created_at
-        FROM licenses 
-        ORDER BY created_at DESC
-    `)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var licenses []License
-	for rows.Next() {
-		var lic License
-		var modulesJSON []byte
-		var expiresAt sql.NullTime
-
-		err := rows.Scan(&lic.ID, &lic.UserID, &modulesJSON, &expiresAt, &lic.IsActive, &lic.CreatedAt)
-		if err != nil {
-			continue
-		}
-
-		// Manejar JSON vacío o null
-		if len(modulesJSON) > 0 {
-			json.Unmarshal(modulesJSON, &lic.Modules)
-		}
-		if lic.Modules == nil {
-			lic.Modules = []string{}
-		}
-
-		if expiresAt.Valid {
-			lic.ExpiresAt = &expiresAt.Time
-		}
-
-		licenses = append(licenses, lic)
-	}
-
-	return licenses, nil
-}
-
-// PRODUCT LICENSES
 func (r *Repository) CreateProductLicense(licenseCode, clientName, clientEmail, productName string, maxDevices, daysValid int, notes string) error {
 	var expiresAt *time.Time
 	if daysValid > 0 {

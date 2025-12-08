@@ -65,7 +65,6 @@ func main() {
 	{
 		api.POST("/register", authHandler.Register)
 		api.POST("/login", authHandler.Login)
-		api.GET("/modules", authHandler.GetAvailableModules)
 
 		// ENDPOINT PÚBLICO PARA VERIFICAR LICENCIAS DE PRODUCTOS
 		api.POST("/verify-license", authHandler.VerifyProductLicense)
@@ -74,10 +73,8 @@ func main() {
 		protected.Use(middleware.AuthMiddleware(authService))
 		{
 			protected.GET("/profile", authHandler.GetProfile)
-			protected.GET("/license", authHandler.GetUserLicense)
 
 			calc := protected.Group("/calculadora")
-			calc.Use(middleware.LicenseMiddleware(authService, "calculadora"))
 			{
 				calc.GET("/configuraciones", calcHandler.GetConfiguraciones)
 				calc.GET("/calcular", calcHandler.Calcular)
@@ -90,13 +87,10 @@ func main() {
 		{
 			admin.GET("/users", authHandler.GetAllUsers)
 			admin.PUT("/users/:id/status", authHandler.UpdateUserStatus)
-			admin.PUT("/license/:userId", authHandler.UpdateLicense)
 
 			admin.POST("/codes", authHandler.CreateInvitationCode)
 			admin.GET("/codes", authHandler.GetAllInvitationCodes)
 			admin.PUT("/codes/:id/status", authHandler.UpdateCodeStatus)
-
-			admin.GET("/licenses", authHandler.GetAllLicenses)
 
 			// PRODUCT LICENSES CRUD
 			admin.POST("/product-licenses", authHandler.CreateProductLicense)
@@ -188,17 +182,6 @@ func createTables(db *sql.DB) error {
         expires_at TIMESTAMP
     );
     
-    CREATE TABLE IF NOT EXISTS licenses (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-        invitation_code_id INTEGER REFERENCES invitation_codes(id),
-        modules JSONB DEFAULT '[]',
-        expires_at TIMESTAMP,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    
     CREATE TABLE IF NOT EXISTS code_usage (
         id SERIAL PRIMARY KEY,
         invitation_code_id INTEGER REFERENCES invitation_codes(id),
@@ -257,31 +240,6 @@ func createTables(db *sql.DB) error {
 	} else {
 		db.Exec("UPDATE users SET is_admin = true WHERE email = 'admin@jhvc.com'")
 		log.Println("✅ Usuario admin ya existe")
-	}
-
-	log.Println("🔄 Actualizando módulos en licencias existentes...")
-	result, err := db.Exec(`
-		UPDATE licenses 
-		SET modules = 
-			CASE 
-				WHEN modules::jsonb @> '["calculadora"]'::jsonb THEN 
-					(modules::jsonb || '["visor"]'::jsonb)::text::jsonb
-				ELSE 
-					'["visor"]'::jsonb
-			END,
-			updated_at = CURRENT_TIMESTAMP
-		WHERE NOT modules::jsonb @> '["visor"]'::jsonb
-	`)
-
-	if err != nil {
-		log.Printf("⚠️ Advertencia al actualizar módulos: %v\n", err)
-	} else {
-		rowsAffected, _ := result.RowsAffected()
-		if rowsAffected > 0 {
-			log.Printf("✅ %d licencias actualizadas con módulo 'visor'\n", rowsAffected)
-		} else {
-			log.Println("✅ Todas las licencias ya tienen el módulo 'visor'")
-		}
 	}
 
 	log.Println("✅ Tablas verificadas/creadas correctamente")

@@ -25,23 +25,19 @@ func NewService(repo *Repository, jwtSecret string) *Service {
 }
 
 func (s *Service) Register(req RegisterRequest) (*AuthResponse, error) {
-	// Validar código de invitación
 	invCode, err := s.repo.ValidateInvitationCode(req.InvitationCode)
 	if err != nil {
 		return nil, errors.New("código de invitación inválido")
 	}
 
-	// Verificar si ya se usó el máximo de veces
 	if invCode.CurrentUses >= invCode.MaxUses {
 		return nil, errors.New("código de invitación agotado")
 	}
 
-	// Verificar expiración
 	if invCode.ExpiresAt != nil && time.Now().After(*invCode.ExpiresAt) {
 		return nil, errors.New("código de invitación expirado")
 	}
 
-	// Verificar si email existe
 	exists, err := s.repo.EmailExists(req.Email)
 	if err != nil {
 		return nil, err
@@ -50,33 +46,24 @@ func (s *Service) Register(req RegisterRequest) (*AuthResponse, error) {
 		return nil, errors.New("email ya registrado")
 	}
 
-	// Hash password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
 	}
 
-	// Crear usuario
 	userID, err := s.repo.CreateUser(req.Email, string(hashedPassword), req.FullName, req.CompanyName, req.Phone)
 	if err != nil {
 		return nil, err
 	}
 
-	// Incrementar uso del código
 	s.repo.IncrementCodeUsage(invCode.ID)
 	s.repo.RecordCodeUsage(invCode.ID, int(userID))
 
-	// ✅ CAMBIO AQUÍ: Crear licencia con módulo VISOR por defecto (30 días)
-	expiresAt := time.Now().Add(30 * 24 * time.Hour)
-	s.repo.CreateLicense(int(userID), invCode.ID, []string{"visor"}, &expiresAt)
-
-	// Obtener usuario creado
 	user, err := s.repo.GetUserByID(int(userID))
 	if err != nil {
 		return nil, err
 	}
 
-	// Generar token
 	token, err := s.generateToken(user.ID, user.Email, user.IsAdmin, 24*time.Hour)
 	if err != nil {
 		return nil, err
@@ -123,10 +110,6 @@ func (s *Service) Login(req LoginRequest) (*AuthResponse, error) {
 
 func (s *Service) GetProfile(userID int) (*User, error) {
 	return s.repo.GetUserByID(userID)
-}
-
-func (s *Service) GetUserLicense(userID int) (*License, error) {
-	return s.repo.GetUserLicense(userID)
 }
 
 func (s *Service) generateToken(userID int, email string, isAdmin bool, duration time.Duration) (string, error) {
@@ -194,7 +177,6 @@ func (s *Service) IsAdmin(tokenString string) (bool, error) {
 	return isAdmin, nil
 }
 
-// ADMIN FUNCTIONS
 func (s *Service) GenerateInvitationCode() string {
 	bytes := make([]byte, 16)
 	rand.Read(bytes)
@@ -230,28 +212,6 @@ func (s *Service) UpdateCodeStatus(codeID int, isActive bool) error {
 	return s.repo.UpdateCodeStatus(codeID, isActive)
 }
 
-func (s *Service) UpdateLicense(userID int, modules []string, daysValid int, isActive bool) error {
-	// ✅ VALIDAR QUE LOS MÓDULOS SEAN VÁLIDOS
-	for _, module := range modules {
-		if !IsValidModule(module) {
-			return errors.New("módulo inválido: " + module)
-		}
-	}
-
-	var expiresAt *time.Time
-	if daysValid > 0 {
-		exp := time.Now().Add(time.Duration(daysValid) * 24 * time.Hour)
-		expiresAt = &exp
-	}
-
-	return s.repo.UpdateLicense(userID, modules, expiresAt, isActive)
-}
-
-func (s *Service) GetAllLicenses() ([]License, error) {
-	return s.repo.GetAllLicenses()
-}
-
-// PRODUCT LICENSES SERVICE
 func (s *Service) GenerateProductLicenseCode() string {
 	bytes := make([]byte, 16)
 	rand.Read(bytes)

@@ -33,15 +33,6 @@ type AuthResponse struct {
 	User  User   `json:"user"`
 }
 
-type License struct {
-	ID        int        `json:"id"`
-	UserID    int        `json:"user_id"`
-	Modules   []string   `json:"modules"`
-	ExpiresAt *time.Time `json:"expires_at"`
-	IsActive  bool       `json:"is_active"`
-	CreatedAt time.Time  `json:"created_at"`
-}
-
 type InvitationCode struct {
 	ID          int        `json:"id"`
 	Code        string     `json:"code"`
@@ -53,7 +44,6 @@ type InvitationCode struct {
 	ExpiresAt   *time.Time `json:"expires_at,omitempty"`
 }
 
-// PRODUCT LICENSES
 type ProductLicense struct {
 	ID             int        `json:"id"`
 	LicenseCode    string     `json:"license_code"`

@@ -69,21 +69,6 @@ func (h *Handler) GetProfile(c *gin.Context) {
 	})
 }
 
-func (h *Handler) GetUserLicense(c *gin.Context) {
-	userID := c.GetInt("userID")
-	license, err := h.service.GetUserLicense(userID)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"success": false, "error": "Sin licencia activa"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    license,
-	})
-}
-
-// ADMIN HANDLERS
 func (h *Handler) GetAllUsers(c *gin.Context) {
 	users, err := h.service.GetAllUsers()
 	if err != nil {
@@ -91,24 +76,9 @@ func (h *Handler) GetAllUsers(c *gin.Context) {
 		return
 	}
 
-	// Obtener licencias de cada usuario
-	type UserWithLicense struct {
-		User
-		License *License `json:"license"`
-	}
-
-	var usersWithLicenses []UserWithLicense
-	for _, user := range users {
-		license, _ := h.service.GetUserLicense(user.ID)
-		usersWithLicenses = append(usersWithLicenses, UserWithLicense{
-			User:    user,
-			License: license,
-		})
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"data":    usersWithLicenses,
+		"data":    users,
 	})
 }
 
@@ -196,54 +166,6 @@ func (h *Handler) UpdateCodeStatus(c *gin.Context) {
 	})
 }
 
-func (h *Handler) UpdateLicense(c *gin.Context) {
-	userID, _ := strconv.Atoi(c.Param("userId"))
-
-	var req struct {
-		Modules   []string `json:"modules"`
-		DaysValid int      `json:"days_valid"`
-		IsActive  bool     `json:"is_active"`
-	}
-
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": err.Error()})
-		return
-	}
-
-	if err := h.service.UpdateLicense(userID, req.Modules, req.DaysValid, req.IsActive); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Licencia actualizada",
-	})
-}
-
-func (h *Handler) GetAllLicenses(c *gin.Context) {
-	licenses, err := h.service.GetAllLicenses()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    licenses,
-	})
-
-}
-
-// ✅ NUEVO ENDPOINT: Obtener módulos disponibles
-func (h *Handler) GetAvailableModules(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    GetModulesMap(),
-	})
-}
-
-// PRODUCT LICENSE HANDLERS
 func (h *Handler) CreateProductLicense(c *gin.Context) {
 	var req CreateProductLicenseRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

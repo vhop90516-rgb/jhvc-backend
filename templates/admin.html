@@ -463,40 +463,33 @@
             <div class="stats">
                 <div class="stat-card">
                     <h3 id="totalUsers">0</h3>
-                    <p>Usuarios Web</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="activeUsers">0</h3>
-                    <p>Activos</p>
+                    <p>Usuarios Totales</p>
                 </div>
                 <div class="stat-card">
                     <h3 id="totalProductLicenses">0</h3>
-                    <p>Licencias Productos</p>
+                    <p>Licencias Creadas</p>
                 </div>
                 <div class="stat-card">
                     <h3 id="activeProductLicenses">0</h3>
-                    <p>Activas</p>
+                    <p>Licencias Activas</p>
                 </div>
             </div>
             
             <div class="tabs">
                 <button class="tab active" onclick="showTab('users')">
-                    <i class="fas fa-users"></i> Usuarios Web
+                    <i class="fas fa-users"></i> Usuarios
                 </button>
                 <button class="tab" onclick="showTab('codes')">
                     <i class="fas fa-ticket-alt"></i> Códigos
                 </button>
-                <button class="tab" onclick="showTab('licenses')">
-                    <i class="fas fa-key"></i> Licencias Web
-                </button>
                 <button class="tab" onclick="showTab('productLicenses')">
-                    <i class="fas fa-certificate"></i> Licencias Productos
+                    <i class="fas fa-certificate"></i> Licencias
                 </button>
             </div>
             
             <div class="content">
                 <div id="usersSection" class="section active">
-                    <h2>Gestión de Usuarios Web</h2>
+                    <h2>Gestión de Usuarios</h2>
                     <table id="usersTable">
                         <thead>
                             <tr>
@@ -505,7 +498,6 @@
                                 <th>Email</th>
                                 <th>Empresa</th>
                                 <th>Estado</th>
-                                <th>Licencia</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -535,25 +527,9 @@
                     </table>
                 </div>
                 
-                <div id="licensesSection" class="section">
-                    <h2>Licencias Web (Usuarios Registrados)</h2>
-                    <table id="licensesTable">
-                        <thead>
-                            <tr>
-                                <th>ID Usuario</th>
-                                <th>Módulos</th>
-                                <th>Expira</th>
-                                <th>Estado</th>
-                                <th>Creada</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                
                 <div id="productLicensesSection" class="section">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                        <h2>Licencias de Productos (.exe)</h2>
+                        <h2>Licencias de Productos</h2>
                         <button class="btn btn-success" onclick="showCreateProductLicenseModal()">
                             <i class="fas fa-plus"></i> Crear Licencia
                         </button>
@@ -578,7 +554,6 @@
         </div>
     </div>
     
-    <!-- MODALES EXISTENTES -->
     <div id="createCodeModal" class="modal">
         <div class="modal-content">
             <h2>Generar Código de Invitación</h2>
@@ -603,49 +578,6 @@
         </div>
     </div>
     
-    <div id="editLicenseModal" class="modal">
-        <div class="modal-content">
-            <h2>Editar Licencia Web</h2>
-            <form id="editLicenseForm">
-                <input type="hidden" id="editUserId">
-                <div class="form-group">
-                    <label>Módulos (Ctrl+Click para múltiples)</label>
-                    <select id="editModules" multiple style="height: 150px;">
-                        <option value="calculadora">📊 Calculadora de Impuestos</option>
-                        <option value="visor">👁️ Visor de Facturas CFDI</option>
-                        <option value="contabilidad">💰 Módulo de Contabilidad</option>
-                        <option value="nomina">👥 Gestión de Nómina</option>
-                        <option value="reportes">📈 Reportes Avanzados</option>
-                        <option value="facturacion">🧾 Facturación Electrónica</option>
-                    </select>
-                    <small style="color: #666; display: block; margin-top: 5px;">
-                        Mantén presionado Ctrl (Cmd en Mac) para seleccionar múltiples
-                    </small>
-                </div>
-                <div class="form-group">
-                    <label>Días de Validez (0 = sin límite)</label>
-                    <input type="number" id="editDaysValid" min="0" value="30">
-                </div>
-                <div class="form-group">
-                    <label>Estado</label>
-                    <select id="editIsActive">
-                        <option value="true">Activa</option>
-                        <option value="false">Inactiva</option>
-                    </select>
-                </div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-success" style="flex: 1;">
-                        <i class="fas fa-save"></i> Guardar
-                    </button>
-                    <button type="button" class="btn btn-danger" onclick="closeModal('editLicenseModal')" style="flex: 1;">
-                        Cancelar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- NUEVO MODAL CREAR LICENCIA PRODUCTO -->
     <div id="createProductLicenseModal" class="modal">
         <div class="modal-content">
             <h2>Crear Licencia de Producto</h2>
@@ -686,7 +618,6 @@
         </div>
     </div>
     
-    <!-- NUEVO MODAL EDITAR LICENCIA PRODUCTO -->
     <div id="editProductLicenseModal" class="modal">
         <div class="modal-content">
             <h2>Editar Licencia de Producto</h2>
@@ -777,7 +708,6 @@
             await Promise.all([
                 loadUsers(),
                 loadCodes(),
-                loadLicenses(),
                 loadProductLicenses()
             ]);
             
@@ -794,33 +724,12 @@
                 const tbody = document.querySelector('#usersTable tbody');
                 tbody.innerHTML = '';
                 
-                data.data.forEach(item => {
-                    const user = item;
-                    const license = item.license;
-                    
-                    let licenseInfo = '<span style="color: #999;">Sin licencia</span>';
-                    if (license && license.modules && license.modules.length > 0) {
-                        const moduleIcons = {
-                            'calculadora': '📊',
-                            'visor': '👁️',
-                            'contabilidad': '💰',
-                            'nomina': '👥',
-                            'reportes': '📈',
-                            'facturacion': '🧾'
-                        };
-                        
-                        const modulesHTML = license.modules.map(m => {
-                            const icon = moduleIcons[m] || '📦';
-                            return `<span class="badge badge-active" style="margin: 2px;">${icon} ${m}</span>`;
-                        }).join('');
-                        
-                        const expires = license.expires_at ? 
-                            `<br><small>Expira: ${new Date(license.expires_at).toLocaleDateString()}</small>` : 
-                            '<br><small>Sin límite</small>';
-                        
-                        licenseInfo = modulesHTML + expires;
-                    }
-                    
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px;">No hay usuarios</td></tr>';
+                    return;
+                }
+                
+                data.data.forEach(user => {
                     const row = `
                         <tr>
                             <td>${user.id}</td>
@@ -833,11 +742,7 @@
                                 </span>
                                 ${user.is_admin ? '<span class="badge badge-warning">ADMIN</span>' : ''}
                             </td>
-                            <td style="font-size: 12px;">${licenseInfo}</td>
                             <td>
-                                <button class="btn btn-primary" onclick="editLicense(${user.id})" title="Editar Licencia">
-                                    <i class="fas fa-key"></i>
-                                </button>
                                 ${!user.is_admin ? `
                                     <button class="btn ${user.is_active ? 'btn-danger' : 'btn-success'}" 
                                             onclick="toggleUserStatus(${user.id}, ${!user.is_active})">
@@ -863,6 +768,11 @@
                 const data = await response.json();
                 const tbody = document.querySelector('#codesTable tbody');
                 tbody.innerHTML = '';
+                
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px;">No hay códigos</td></tr>';
+                    return;
+                }
                 
                 data.data.forEach(code => {
                     const expiresAt = code.expires_at ? 
@@ -901,43 +811,6 @@
                 });
             } catch (error) {
                 console.error('Error loading codes:', error);
-            }
-        }
-        
-        async function loadLicenses() {
-            try {
-                const response = await fetch(`${API_URL}/admin/licenses`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const data = await response.json();
-                const tbody = document.querySelector('#licensesTable tbody');
-                tbody.innerHTML = '';
-                
-                data.data.forEach(license => {
-                    const modules = license.modules.join(', ') || 'Ninguno';
-                    const expiresAt = license.expires_at ? 
-                        new Date(license.expires_at).toLocaleDateString() : 
-                        'Sin límite';
-                    const createdAt = new Date(license.created_at).toLocaleDateString();
-                    
-                    const row = `
-                        <tr>
-                            <td>${license.user_id}</td>
-                            <td>${modules}</td>
-                            <td>${expiresAt}</td>
-                            <td>
-                                <span class="badge ${license.is_active ? 'badge-active' : 'badge-inactive'}">
-                                    ${license.is_active ? 'Activa' : 'Inactiva'}
-                                </span>
-                            </td>
-                            <td>${createdAt}</td>
-                        </tr>
-                    `;
-                    tbody.innerHTML += row;
-                });
-            } catch (error) {
-                console.error('Error loading licenses:', error);
             }
         }
         
@@ -1019,20 +892,24 @@
         
         function updateStats() {
             const usersRows = document.querySelectorAll('#usersTable tbody tr');
-            let activeUsers = 0;
-            usersRows.forEach(row => {
-                if (row.textContent.includes('Activo')) activeUsers++;
-            });
-            
             const productLicensesRows = document.querySelectorAll('#productLicensesTable tbody tr');
-            let activeProductLicenses = 0;
-            productLicensesRows.forEach(row => {
-                if (row.textContent.includes('Activa')) activeProductLicenses++;
+            
+            let totalUsers = 0;
+            usersRows.forEach(row => {
+                if (!row.textContent.includes('No hay usuarios')) totalUsers++;
             });
             
-            document.getElementById('totalUsers').textContent = usersRows.length;
-            document.getElementById('activeUsers').textContent = activeUsers;
-            document.getElementById('totalProductLicenses').textContent = productLicensesRows.length;
+            let activeProductLicenses = 0;
+            let totalProductLicenses = 0;
+            productLicensesRows.forEach(row => {
+                if (!row.textContent.includes('No hay licencias')) {
+                    totalProductLicenses++;
+                    if (row.textContent.includes('Activa')) activeProductLicenses++;
+                }
+            });
+            
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('totalProductLicenses').textContent = totalProductLicenses;
             document.getElementById('activeProductLicenses').textContent = activeProductLicenses;
         }
         
@@ -1279,88 +1156,11 @@
             }
         }
         
-        async function editLicense(userId) {
-            document.getElementById('editUserId').value = userId;
-            
-            try {
-                const response = await fetch(`${API_URL}/admin/users`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                
-                const userData = data.data.find(u => u.id === userId);
-                const license = userData?.license;
-                
-                const selectModules = document.getElementById('editModules');
-                Array.from(selectModules.options).forEach(opt => opt.selected = false);
-                
-                if (license) {
-                    if (license.modules) {
-                        license.modules.forEach(module => {
-                            const option = selectModules.querySelector(`option[value="${module}"]`);
-                            if (option) option.selected = true;
-                        });
-                    }
-                    
-                    if (license.expires_at) {
-                        const daysLeft = Math.ceil((new Date(license.expires_at) - new Date()) / (1000 * 60 * 60 * 24));
-                        document.getElementById('editDaysValid').value = Math.max(0, daysLeft);
-                    } else {
-                        document.getElementById('editDaysValid').value = 0;
-                    }
-                    
-                    document.getElementById('editIsActive').value = license.is_active.toString();
-                } else {
-                    document.getElementById('editDaysValid').value = 30;
-                    document.getElementById('editIsActive').value = 'true';
-                }
-                
-            } catch (error) {
-                console.error('Error al cargar licencia:', error);
-            }
-            
-            document.getElementById('editLicenseModal').classList.add('show');
-        }
-        
-        document.getElementById('editLicenseForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const userId = document.getElementById('editUserId').value;
-            const modules = Array.from(document.getElementById('editModules').selectedOptions).map(opt => opt.value);
-            const daysValid = parseInt(document.getElementById('editDaysValid').value);
-            const isActive = document.getElementById('editIsActive').value === 'true';
-            
-            try {
-                const response = await fetch(`${API_URL}/admin/license/${userId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ 
-                        modules, 
-                        days_valid: daysValid,
-                        is_active: isActive
-                    })
-                });
-                
-                if (!response.ok) throw new Error('Error al actualizar licencia');
-                
-                alert('Licencia actualizada correctamente');
-                closeModal('editLicenseModal');
-                loadUsers();
-                loadLicenses();
-                updateStats();
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-        
         function downloadLicenseJSON(licenseId, licenseCode, productName) {
             const jsonContent = {
                 license_code: licenseCode,
                 product_name: productName,
-                activation_url: "https://jhvc-backend.onrender.com/api/verify-license"
+                activation_url: "https://jhvc-backend-production.up.railway.app/api/verify-license"
             };
             
             const blob = new Blob([JSON.stringify(jsonContent, null, 2)], { type: 'application/json' });
