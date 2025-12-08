@@ -332,3 +332,150 @@ func (r *Repository) GetAllLicenses() ([]License, error) {
 
 	return licenses, nil
 }
+
+// PRODUCT LICENSES
+func (r *Repository) CreateProductLicense(licenseCode, clientName, clientEmail, productName string, maxDevices, daysValid int, notes string) error {
+	var expiresAt *time.Time
+	if daysValid > 0 {
+		exp := time.Now().Add(time.Duration(daysValid) * 24 * time.Hour)
+		expiresAt = &exp
+	}
+
+	_, err := r.db.Exec(`
+        INSERT INTO product_licenses (license_code, client_name, client_email, product_name, max_devices, expires_at, notes)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `, licenseCode, clientName, clientEmail, productName, maxDevices, expiresAt, notes)
+	return err
+}
+
+func (r *Repository) GetAllProductLicenses() ([]ProductLicense, error) {
+	rows, err := r.db.Query(`
+        SELECT id, license_code, client_name, client_email, product_name, is_active, max_devices, 
+               current_devices, machine_id, created_at, expires_at, last_check, notes
+        FROM product_licenses 
+        ORDER BY created_at DESC
+    `)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var licenses []ProductLicense
+	for rows.Next() {
+		var lic ProductLicense
+		var clientEmail, machineID, notes sql.NullString
+		var expiresAt, lastCheck sql.NullTime
+
+		err := rows.Scan(&lic.ID, &lic.LicenseCode, &lic.ClientName, &clientEmail, &lic.ProductName,
+			&lic.IsActive, &lic.MaxDevices, &lic.CurrentDevices, &machineID, &lic.CreatedAt,
+			&expiresAt, &lastCheck, &notes)
+		if err != nil {
+			continue
+		}
+
+		if clientEmail.Valid {
+			lic.ClientEmail = clientEmail.String
+		}
+		if machineID.Valid {
+			lic.MachineID = machineID.String
+		}
+		if expiresAt.Valid {
+			lic.ExpiresAt = &expiresAt.Time
+		}
+		if lastCheck.Valid {
+			lic.LastCheck = &lastCheck.Time
+		}
+		if notes.Valid {
+			lic.Notes = notes.String
+		}
+
+		licenses = append(licenses, lic)
+	}
+
+	return licenses, nil
+}
+
+func (r *Repository) UpdateProductLicenseStatus(id int, isActive bool) error {
+	_, err := r.db.Exec("UPDATE product_licenses SET is_active = $1 WHERE id = $2", isActive, id)
+	return err
+}
+
+func (r *Repository) DeleteProductLicense(id int) error {
+	_, err := r.db.Exec("DELETE FROM product_licenses WHERE id = $1", id)
+	return err
+}
+
+func (r *Repository) UpdateProductLicense(id int, clientName, clientEmail, productName string, maxDevices, daysValid int, notes string, isActive bool) error {
+	var expiresAt *time.Time
+	if daysValid > 0 {
+		exp := time.Now().Add(time.Duration(daysValid) * 24 * time.Hour)
+		expiresAt = &exp
+	}
+
+	_, err := r.db.Exec(`
+        UPDATE product_licenses 
+        SET client_name = $1, client_email = $2, product_name = $3, max_devices = $4, 
+            expires_at = $5, notes = $6, is_active = $7
+        WHERE id = $8
+    `, clientName, clientEmail, productName, maxDevices, expiresAt, notes, isActive, id)
+	return err
+}
+
+func (r *Repository) VerifyProductLicense(licenseCode, productName string) (*ProductLicense, error) {
+	var lic ProductLicense
+	var clientEmail, storedMachineID, notes sql.NullString
+	var expiresAt, lastCheck sql.NullTime
+
+	err := r.db.QueryRow(`
+        SELECT id, license_code, client_name, client_email, product_name, is_active, max_devices,
+               current_devices, machine_id, created_at, expires_at, last_check, notes
+        FROM product_licenses 
+        WHERE license_code = $1 AND product_name = $2
+    `, licenseCode, productName).Scan(
+		&lic.ID, &lic.LicenseCode, &lic.ClientName, &clientEmail, &lic.ProductName,
+		&lic.IsActive, &lic.MaxDevices, &lic.CurrentDevices, &storedMachineID,
+		&lic.CreatedAt, &expiresAt, &lastCheck, &notes,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if clientEmail.Valid {
+		lic.ClientEmail = clientEmail.String
+	}
+	if storedMachineID.Valid {
+		lic.MachineID = storedMachineID.String
+	}
+	if expiresAt.Valid {
+		lic.ExpiresAt = &expiresAt.Time
+	}
+	if lastCheck.Valid {
+		lic.LastCheck = &lastCheck.Time
+	}
+	if notes.Valid {
+		lic.Notes = notes.String
+	}
+
+	return &lic, nil
+}
+
+func (r *Repository) UpdateMachineID(licenseID int, machineID string) error {
+	now := time.Now()
+	_, err := r.db.Exec(`
+        UPDATE product_licenses 
+        SET machine_id = $1, current_devices = 1, last_check = $2
+        WHERE id = $3
+    `, machineID, now, licenseID)
+	return err
+}
+
+func (r *Repository) UpdateLastCheck(licenseID int) error {
+	now := time.Now()
+	_, err := r.db.Exec(`
+        UPDATE product_licenses 
+        SET last_check = $1
+        WHERE id = $2
+    `, now, licenseID)
+	return err
+}

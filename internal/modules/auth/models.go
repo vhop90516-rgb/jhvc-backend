@@ -52,3 +52,52 @@ type InvitationCode struct {
 	CreatedAt   time.Time  `json:"created_at"`
 	ExpiresAt   *time.Time `json:"expires_at,omitempty"`
 }
+
+// PRODUCT LICENSES
+type ProductLicense struct {
+	ID             int        `json:"id"`
+	LicenseCode    string     `json:"license_code"`
+	ClientName     string     `json:"client_name"`
+	ClientEmail    string     `json:"client_email,omitempty"`
+	ProductName    string     `json:"product_name"`
+	IsActive       bool       `json:"is_active"`
+	MaxDevices     int        `json:"max_devices"`
+	CurrentDevices int        `json:"current_devices"`
+	MachineID      string     `json:"machine_id,omitempty"`
+	CreatedAt      time.Time  `json:"created_at"`
+	ExpiresAt      *time.Time `json:"expires_at,omitempty"`
+	LastCheck      *time.Time `json:"last_check,omitempty"`
+	Notes          string     `json:"notes,omitempty"`
+}
+
+type CreateProductLicenseRequest struct {
+	ClientName  string `json:"client_name" binding:"required"`
+	ClientEmail string `json:"client_email"`
+	ProductName string `json:"product_name" binding:"required"`
+	MaxDevices  int    `json:"max_devices"`
+	DaysValid   int    `json:"days_valid"`
+	Notes       string `json:"notes"`
+}
+
+type UpdateProductLicenseRequest struct {
+	ClientName  string `json:"client_name" binding:"required"`
+	ClientEmail string `json:"client_email"`
+	ProductName string `json:"product_name" binding:"required"`
+	MaxDevices  int    `json:"max_devices"`
+	DaysValid   int    `json:"days_valid"`
+	Notes       string `json:"notes"`
+	IsActive    bool   `json:"is_active"`
+}
+
+type VerifyLicenseRequest struct {
+	LicenseCode string `json:"license_code" binding:"required"`
+	MachineID   string `json:"machine_id" binding:"required"`
+	ProductName string `json:"product_name" binding:"required"`
+}
+
+type VerifyLicenseResponse struct {
+	Valid      bool   `json:"valid"`
+	Message    string `json:"message"`
+	ClientName string `json:"client_name,omitempty"`
+	ExpiresAt  string `json:"expires_at,omitempty"`
+}

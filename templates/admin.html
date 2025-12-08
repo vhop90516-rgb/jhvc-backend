@@ -28,7 +28,6 @@
             background: var(--light);
         }
         
-        /* HEADER IGUAL AL DASHBOARD */
         .header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
@@ -132,7 +131,6 @@
             opacity: 0.9;
         }
         
-        /* CONTENIDO PRINCIPAL */
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -326,7 +324,8 @@
         }
         
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 10px;
             border: 2px solid var(--light);
@@ -334,8 +333,14 @@
             font-size: 14px;
         }
         
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
         }
@@ -377,7 +382,15 @@
             margin-bottom: 20px;
         }
         
-         /* RESPONSIVE */
+        .license-code {
+            background: var(--light);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
         @media (max-width: 768px) {
             .header {
                 padding: 0.75rem;
@@ -389,175 +402,30 @@
                 font-size: 1.2rem;
             }
             
-            .header-title i {
-                font-size: 1.3rem;
-            }
-            
-            .user-badge {
-                font-size: 0.75rem;
-                padding: 3px 8px;
-                margin-left: 5px;
-            }
-            
             .user-info {
                 display: none;
             }
             
-            .user-avatar {
-                width: 35px;
-                height: 35px;
-                font-size: 0.9rem;
-            }
-            
             .container {
                 padding: 10px;
-                margin-top: calc(var(--header-height) + 10px);
-            }
-            
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-            
-            .stat-card {
-                padding: 15px;
-            }
-            
-            .stat-card h3 {
-                font-size: 28px;
-            }
-            
-            .stat-card p {
-                font-size: 13px;
             }
             
             .tabs {
                 overflow-x: auto;
                 flex-wrap: nowrap;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-            }
-            
-            .tabs::-webkit-scrollbar {
-                display: none;
-            }
-            
-            .tab {
-                white-space: nowrap;
-                padding: 10px 16px;
-                font-size: 14px;
-            }
-            
-            .content {
-                padding: 15px;
-                overflow-x: auto;
             }
             
             table {
                 font-size: 11px;
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            thead, tbody {
-                display: table;
-                width: 100%;
             }
             
             th, td {
                 padding: 8px 6px;
-                min-width: 80px;
-            }
-            
-            th:first-child, td:first-child {
-                min-width: 50px;
-            }
-            
-            .btn {
-                padding: 6px 10px;
-                font-size: 11px;
-                margin: 1px;
-            }
-            
-            .btn i {
-                font-size: 12px;
-            }
-            
-            .badge {
-                padding: 3px 8px;
-                font-size: 10px;
-            }
-            
-            .back-btn {
-                padding: 10px 16px;
-                font-size: 14px;
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .modal-content {
-                padding: 20px;
-                width: 95%;
-                margin: 10px;
-            }
-            
-            .modal-content h2 {
-                font-size: 1.3rem;
-                margin-bottom: 15px;
-            }
-            
-            .form-group {
-                margin-bottom: 12px;
-            }
-            
-            .form-group label {
-                font-size: 14px;
-            }
-            
-            .form-group input,
-            .form-group select {
-                padding: 8px;
-                font-size: 14px;
-            }
-            
-            .no-access {
-                padding: 40px 20px;
-            }
-            
-            .no-access i {
-                font-size: 48px;
-            }
-            
-            .no-access h2 {
-                font-size: 1.3rem;
             }
         }
-        
-        @media (max-width: 480px) {
-            .stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .stat-card h3 {
-                font-size: 32px;
-            }
-            
-            table {
-                font-size: 10px;
-            }
-            
-            th, td {
-                padding: 6px 4px;
-                min-width: 70px;
-            }
-        }
-        
     </style>
 </head>
- <body>
+<body>
     <header class="header">
         <div class="header-left">
             <div class="header-title">
@@ -595,37 +463,40 @@
             <div class="stats">
                 <div class="stat-card">
                     <h3 id="totalUsers">0</h3>
-                    <p>Usuarios Totales</p>
+                    <p>Usuarios Web</p>
                 </div>
                 <div class="stat-card">
                     <h3 id="activeUsers">0</h3>
-                    <p>Usuarios Activos</p>
+                    <p>Activos</p>
                 </div>
                 <div class="stat-card">
-                    <h3 id="totalCodes">0</h3>
-                    <p>Códigos Generados</p>
+                    <h3 id="totalProductLicenses">0</h3>
+                    <p>Licencias Productos</p>
                 </div>
                 <div class="stat-card">
-                    <h3 id="activeLicenses">0</h3>
-                    <p>Licencias Activas</p>
+                    <h3 id="activeProductLicenses">0</h3>
+                    <p>Activas</p>
                 </div>
             </div>
             
             <div class="tabs">
                 <button class="tab active" onclick="showTab('users')">
-                    <i class="fas fa-users"></i> Usuarios
+                    <i class="fas fa-users"></i> Usuarios Web
                 </button>
                 <button class="tab" onclick="showTab('codes')">
                     <i class="fas fa-ticket-alt"></i> Códigos
                 </button>
                 <button class="tab" onclick="showTab('licenses')">
-                    <i class="fas fa-key"></i> Licencias
+                    <i class="fas fa-key"></i> Licencias Web
+                </button>
+                <button class="tab" onclick="showTab('productLicenses')">
+                    <i class="fas fa-certificate"></i> Licencias Productos
                 </button>
             </div>
             
             <div class="content">
                 <div id="usersSection" class="section active">
-                    <h2>Gestión de Usuarios</h2>
+                    <h2>Gestión de Usuarios Web</h2>
                     <table id="usersTable">
                         <thead>
                             <tr>
@@ -665,7 +536,7 @@
                 </div>
                 
                 <div id="licensesSection" class="section">
-                    <h2>Todas las Licencias</h2>
+                    <h2>Licencias Web (Usuarios Registrados)</h2>
                     <table id="licensesTable">
                         <thead>
                             <tr>
@@ -679,10 +550,35 @@
                         <tbody></tbody>
                     </table>
                 </div>
+                
+                <div id="productLicensesSection" class="section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                        <h2>Licencias de Productos (.exe)</h2>
+                        <button class="btn btn-success" onclick="showCreateProductLicenseModal()">
+                            <i class="fas fa-plus"></i> Crear Licencia
+                        </button>
+                    </div>
+                    <table id="productLicensesTable">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Producto</th>
+                                <th>Código</th>
+                                <th>Dispositivos</th>
+                                <th>Expira</th>
+                                <th>Estado</th>
+                                <th>Último Check</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
     
+    <!-- MODALES EXISTENTES -->
     <div id="createCodeModal" class="modal">
         <div class="modal-content">
             <h2>Generar Código de Invitación</h2>
@@ -709,7 +605,7 @@
     
     <div id="editLicenseModal" class="modal">
         <div class="modal-content">
-            <h2>Editar Licencia</h2>
+            <h2>Editar Licencia Web</h2>
             <form id="editLicenseForm">
                 <input type="hidden" id="editUserId">
                 <div class="form-group">
@@ -742,6 +638,96 @@
                         <i class="fas fa-save"></i> Guardar
                     </button>
                     <button type="button" class="btn btn-danger" onclick="closeModal('editLicenseModal')" style="flex: 1;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- NUEVO MODAL CREAR LICENCIA PRODUCTO -->
+    <div id="createProductLicenseModal" class="modal">
+        <div class="modal-content">
+            <h2>Crear Licencia de Producto</h2>
+            <form id="createProductLicenseForm">
+                <div class="form-group">
+                    <label>Nombre del Cliente *</label>
+                    <input type="text" id="newClientName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email del Cliente</label>
+                    <input type="email" id="newClientEmail">
+                </div>
+                <div class="form-group">
+                    <label>Nombre del Producto *</label>
+                    <input type="text" id="newProductName" placeholder="Ej: Calculadora RESICO v1.0" required>
+                </div>
+                <div class="form-group">
+                    <label>Máximo de Dispositivos</label>
+                    <input type="number" id="newMaxDevices" min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Días de Validez (0 = sin límite)</label>
+                    <input type="number" id="newDaysValid" min="0" value="365">
+                </div>
+                <div class="form-group">
+                    <label>Notas</label>
+                    <textarea id="newNotes" placeholder="Información adicional..."></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        <i class="fas fa-check"></i> Crear
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('createProductLicenseModal')" style="flex: 1;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- NUEVO MODAL EDITAR LICENCIA PRODUCTO -->
+    <div id="editProductLicenseModal" class="modal">
+        <div class="modal-content">
+            <h2>Editar Licencia de Producto</h2>
+            <form id="editProductLicenseForm">
+                <input type="hidden" id="editProductLicenseId">
+                <div class="form-group">
+                    <label>Nombre del Cliente *</label>
+                    <input type="text" id="editClientName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email del Cliente</label>
+                    <input type="email" id="editClientEmail">
+                </div>
+                <div class="form-group">
+                    <label>Nombre del Producto *</label>
+                    <input type="text" id="editProductName" required>
+                </div>
+                <div class="form-group">
+                    <label>Máximo de Dispositivos</label>
+                    <input type="number" id="editMaxDevices" min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Días de Validez (0 = sin límite)</label>
+                    <input type="number" id="editProductDaysValid" min="0" value="365">
+                </div>
+                <div class="form-group">
+                    <label>Notas</label>
+                    <textarea id="editNotes"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="editProductIsActive">
+                        <option value="true">Activa</option>
+                        <option value="false">Inactiva</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('editProductLicenseModal')" style="flex: 1;">
                         Cancelar
                     </button>
                 </div>
@@ -791,7 +777,8 @@
             await Promise.all([
                 loadUsers(),
                 loadCodes(),
-                loadLicenses()
+                loadLicenses(),
+                loadProductLicenses()
             ]);
             
             updateStats();
@@ -864,7 +851,6 @@
                 });
             } catch (error) {
                 console.error('Error loading users:', error);
-                alert('Error al cargar usuarios');
             }
         }
         
@@ -915,7 +901,6 @@
                 });
             } catch (error) {
                 console.error('Error loading codes:', error);
-                alert('Error al cargar códigos');
             }
         }
         
@@ -953,29 +938,102 @@
                 });
             } catch (error) {
                 console.error('Error loading licenses:', error);
-                alert('Error al cargar licencias');
+            }
+        }
+        
+        async function loadProductLicenses() {
+            try {
+                const response = await fetch(`${API_URL}/admin/product-licenses`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                const tbody = document.querySelector('#productLicensesTable tbody');
+                tbody.innerHTML = '';
+                
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 40px;">No hay licencias de productos</td></tr>';
+                    return;
+                }
+                
+                data.data.forEach(lic => {
+                    const expiresAt = lic.expires_at ? 
+                        new Date(lic.expires_at).toLocaleDateString() : 
+                        'Sin límite';
+                    
+                    const lastCheck = lic.last_check ?
+                        new Date(lic.last_check).toLocaleDateString() :
+                        'Nunca';
+                    
+                    const machineStatus = lic.machine_id ? 
+                        `<small title="${lic.machine_id}">Activado</small>` : 
+                        '<small>No activado</small>';
+                    
+                    const row = `
+                        <tr>
+                            <td>
+                                <strong>${lic.client_name}</strong>
+                                ${lic.client_email ? `<br><small>${lic.client_email}</small>` : ''}
+                            </td>
+                            <td>${lic.product_name}</td>
+                            <td>
+                                <span class="license-code" onclick="copyToClipboard('${lic.license_code}')" style="cursor:pointer" title="Click para copiar">
+                                    ${lic.license_code}
+                                </span>
+                            </td>
+                            <td>
+                                ${lic.current_devices} / ${lic.max_devices}
+                                <br>${machineStatus}
+                            </td>
+                            <td>${expiresAt}</td>
+                            <td>
+                                <span class="badge ${lic.is_active ? 'badge-active' : 'badge-inactive'}">
+                                    ${lic.is_active ? 'Activa' : 'Inactiva'}
+                                </span>
+                            </td>
+                            <td><small>${lastCheck}</small></td>
+                            <td>
+                                <button class="btn btn-primary" onclick="editProductLicense(${lic.id})" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn ${lic.is_active ? 'btn-warning' : 'btn-success'}" 
+                                        onclick="toggleProductLicenseStatus(${lic.id}, ${!lic.is_active})" 
+                                        title="${lic.is_active ? 'Desactivar' : 'Activar'}">
+                                    <i class="fas fa-${lic.is_active ? 'pause' : 'play'}"></i>
+                                </button>
+                                <button class="btn btn-danger" onclick="deleteProductLicense(${lic.id})" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="btn btn-success" onclick="downloadLicenseJSON(${lic.id}, '${lic.license_code}', '${lic.product_name}')" title="Descargar JSON">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error loading product licenses:', error);
             }
         }
         
         function updateStats() {
             const usersRows = document.querySelectorAll('#usersTable tbody tr');
-            const codesRows = document.querySelectorAll('#codesTable tbody tr');
-            const licensesRows = document.querySelectorAll('#licensesTable tbody tr');
-            
             let activeUsers = 0;
             usersRows.forEach(row => {
                 if (row.textContent.includes('Activo')) activeUsers++;
             });
             
-            let activeLicenses = 0;
-            licensesRows.forEach(row => {
-                if (row.textContent.includes('Activa')) activeLicenses++;
+            const productLicensesRows = document.querySelectorAll('#productLicensesTable tbody tr');
+            let activeProductLicenses = 0;
+            productLicensesRows.forEach(row => {
+                if (row.textContent.includes('Activa')) activeProductLicenses++;
             });
             
             document.getElementById('totalUsers').textContent = usersRows.length;
             document.getElementById('activeUsers').textContent = activeUsers;
-            document.getElementById('totalCodes').textContent = codesRows.length;
-            document.getElementById('activeLicenses').textContent = activeLicenses;
+            document.getElementById('totalProductLicenses').textContent = productLicensesRows.length;
+            document.getElementById('activeProductLicenses').textContent = activeProductLicenses;
         }
         
         function showTab(tabName) {
@@ -988,6 +1046,11 @@
         
         function showCreateCodeModal() {
             document.getElementById('createCodeModal').classList.add('show');
+        }
+        
+        function showCreateProductLicenseModal() {
+            document.getElementById('createProductLicenseForm').reset();
+            document.getElementById('createProductLicenseModal').classList.add('show');
         }
         
         document.getElementById('createCodeForm').addEventListener('submit', async function(e) {
@@ -1015,6 +1078,82 @@
                 alert(`Código creado: ${data.data.code}`);
                 closeModal('createCodeModal');
                 loadCodes();
+                updateStats();
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+        
+        document.getElementById('createProductLicenseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const req = {
+                client_name: document.getElementById('newClientName').value,
+                client_email: document.getElementById('newClientEmail').value,
+                product_name: document.getElementById('newProductName').value,
+                max_devices: parseInt(document.getElementById('newMaxDevices').value),
+                days_valid: parseInt(document.getElementById('newDaysValid').value),
+                notes: document.getElementById('newNotes').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/product-licenses`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(req)
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error al crear licencia');
+                }
+                
+                alert(`Licencia creada exitosamente!\n\nCódigo: ${data.data.license_code}\n\nSe ha copiado al portapapeles.`);
+                
+                navigator.clipboard.writeText(data.data.license_code);
+                
+                closeModal('createProductLicenseModal');
+                loadProductLicenses();
+                updateStats();
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+        
+        document.getElementById('editProductLicenseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const licenseId = document.getElementById('editProductLicenseId').value;
+            
+            const req = {
+                client_name: document.getElementById('editClientName').value,
+                client_email: document.getElementById('editClientEmail').value,
+                product_name: document.getElementById('editProductName').value,
+                max_devices: parseInt(document.getElementById('editMaxDevices').value),
+                days_valid: parseInt(document.getElementById('editProductDaysValid').value),
+                notes: document.getElementById('editNotes').value,
+                is_active: document.getElementById('editProductIsActive').value === 'true'
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/product-licenses/${licenseId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(req)
+                });
+                
+                if (!response.ok) throw new Error('Error al actualizar licencia');
+                
+                alert('Licencia actualizada correctamente');
+                closeModal('editProductLicenseModal');
+                loadProductLicenses();
                 updateStats();
             } catch (error) {
                 alert(error.message);
@@ -1061,6 +1200,82 @@
                 loadCodes();
             } catch (error) {
                 alert(error.message);
+            }
+        }
+        
+        async function toggleProductLicenseStatus(licenseId, isActive) {
+            if (!confirm(`¿${isActive ? 'Activar' : 'Desactivar'} esta licencia?`)) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/product-licenses/${licenseId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ is_active: isActive })
+                });
+                
+                if (!response.ok) throw new Error('Error al actualizar licencia');
+                
+                loadProductLicenses();
+                updateStats();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+        
+        async function deleteProductLicense(licenseId) {
+            if (!confirm('¿Eliminar esta licencia permanentemente?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/product-licenses/${licenseId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) throw new Error('Error al eliminar licencia');
+                
+                alert('Licencia eliminada');
+                loadProductLicenses();
+                updateStats();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+        
+        async function editProductLicense(licenseId) {
+            try {
+                const response = await fetch(`${API_URL}/admin/product-licenses`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                const license = data.data.find(l => l.id === licenseId);
+                if (!license) {
+                    alert('Licencia no encontrada');
+                    return;
+                }
+                
+                document.getElementById('editProductLicenseId').value = license.id;
+                document.getElementById('editClientName').value = license.client_name;
+                document.getElementById('editClientEmail').value = license.client_email || '';
+                document.getElementById('editProductName').value = license.product_name;
+                document.getElementById('editMaxDevices').value = license.max_devices;
+                
+                if (license.expires_at) {
+                    const daysLeft = Math.ceil((new Date(license.expires_at) - new Date()) / (1000 * 60 * 60 * 24));
+                    document.getElementById('editProductDaysValid').value = Math.max(0, daysLeft);
+                } else {
+                    document.getElementById('editProductDaysValid').value = 0;
+                }
+                
+                document.getElementById('editNotes').value = license.notes || '';
+                document.getElementById('editProductIsActive').value = license.is_active.toString();
+                
+                document.getElementById('editProductLicenseModal').classList.add('show');
+            } catch (error) {
+                alert('Error al cargar datos de la licencia');
             }
         }
         
@@ -1140,6 +1355,31 @@
                 alert(error.message);
             }
         });
+        
+        function downloadLicenseJSON(licenseId, licenseCode, productName) {
+            const jsonContent = {
+                license_code: licenseCode,
+                product_name: productName,
+                activation_url: "https://jhvc-backend.onrender.com/api/verify-license"
+            };
+            
+            const blob = new Blob([JSON.stringify(jsonContent, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `license_${licenseCode}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Archivo license.json descargado.\n\nEnvía este archivo al cliente junto con tu aplicación .exe');
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert('Código copiado al portapapeles: ' + text);
+        }
         
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('show');

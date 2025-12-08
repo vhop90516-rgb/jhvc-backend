@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -248,4 +249,88 @@ func (s *Service) UpdateLicense(userID int, modules []string, daysValid int, isA
 
 func (s *Service) GetAllLicenses() ([]License, error) {
 	return s.repo.GetAllLicenses()
+}
+
+// PRODUCT LICENSES SERVICE
+func (s *Service) GenerateProductLicenseCode() string {
+	bytes := make([]byte, 16)
+	rand.Read(bytes)
+	return strings.ToUpper(hex.EncodeToString(bytes))
+}
+
+func (s *Service) CreateProductLicense(req CreateProductLicenseRequest) (string, error) {
+	licenseCode := s.GenerateProductLicenseCode()
+
+	if req.MaxDevices == 0 {
+		req.MaxDevices = 1
+	}
+
+	err := s.repo.CreateProductLicense(licenseCode, req.ClientName, req.ClientEmail, req.ProductName, req.MaxDevices, req.DaysValid, req.Notes)
+	return licenseCode, err
+}
+
+func (s *Service) GetAllProductLicenses() ([]ProductLicense, error) {
+	return s.repo.GetAllProductLicenses()
+}
+
+func (s *Service) UpdateProductLicenseStatus(id int, isActive bool) error {
+	return s.repo.UpdateProductLicenseStatus(id, isActive)
+}
+
+func (s *Service) DeleteProductLicense(id int) error {
+	return s.repo.DeleteProductLicense(id)
+}
+
+func (s *Service) UpdateProductLicense(id int, req UpdateProductLicenseRequest) error {
+	if req.MaxDevices == 0 {
+		req.MaxDevices = 1
+	}
+	return s.repo.UpdateProductLicense(id, req.ClientName, req.ClientEmail, req.ProductName, req.MaxDevices, req.DaysValid, req.Notes, req.IsActive)
+}
+
+func (s *Service) VerifyProductLicense(req VerifyLicenseRequest) (VerifyLicenseResponse, error) {
+	license, err := s.repo.VerifyProductLicense(req.LicenseCode, req.ProductName)
+	if err != nil {
+		return VerifyLicenseResponse{
+			Valid:   false,
+			Message: "Licencia no encontrada",
+		}, nil
+	}
+
+	if !license.IsActive {
+		return VerifyLicenseResponse{
+			Valid:   false,
+			Message: "Licencia inactiva",
+		}, nil
+	}
+
+	if license.ExpiresAt != nil && time.Now().After(*license.ExpiresAt) {
+		return VerifyLicenseResponse{
+			Valid:   false,
+			Message: "Licencia expirada",
+		}, nil
+	}
+
+	if license.MachineID == "" {
+		s.repo.UpdateMachineID(license.ID, req.MachineID)
+	} else if license.MachineID != req.MachineID {
+		return VerifyLicenseResponse{
+			Valid:   false,
+			Message: "Esta licencia está activada en otro dispositivo",
+		}, nil
+	}
+
+	s.repo.UpdateLastCheck(license.ID)
+
+	expiresStr := "Sin límite"
+	if license.ExpiresAt != nil {
+		expiresStr = license.ExpiresAt.Format("2006-01-02")
+	}
+
+	return VerifyLicenseResponse{
+		Valid:      true,
+		Message:    "Licencia válida",
+		ClientName: license.ClientName,
+		ExpiresAt:  expiresStr,
+	}, nil
 }

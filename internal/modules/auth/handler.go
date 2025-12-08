@@ -242,3 +242,113 @@ func (h *Handler) GetAvailableModules(c *gin.Context) {
 		"data":    GetModulesMap(),
 	})
 }
+
+// PRODUCT LICENSE HANDLERS
+func (h *Handler) CreateProductLicense(c *gin.Context) {
+	var req CreateProductLicenseRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+
+	licenseCode, err := h.service.CreateProductLicense(req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"success": true,
+		"message": "Licencia creada",
+		"data":    gin.H{"license_code": licenseCode},
+	})
+}
+
+func (h *Handler) GetAllProductLicenses(c *gin.Context) {
+	licenses, err := h.service.GetAllProductLicenses()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    licenses,
+	})
+}
+
+func (h *Handler) UpdateProductLicenseStatus(c *gin.Context) {
+	licenseID, _ := strconv.Atoi(c.Param("id"))
+
+	var req struct {
+		IsActive bool `json:"is_active"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+
+	if err := h.service.UpdateProductLicenseStatus(licenseID, req.IsActive); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Licencia actualizada",
+	})
+}
+
+func (h *Handler) DeleteProductLicense(c *gin.Context) {
+	licenseID, _ := strconv.Atoi(c.Param("id"))
+
+	if err := h.service.DeleteProductLicense(licenseID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Licencia eliminada",
+	})
+}
+
+func (h *Handler) UpdateProductLicense(c *gin.Context) {
+	licenseID, _ := strconv.Atoi(c.Param("id"))
+
+	var req UpdateProductLicenseRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+
+	if err := h.service.UpdateProductLicense(licenseID, req); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Licencia actualizada",
+	})
+}
+
+func (h *Handler) VerifyProductLicense(c *gin.Context) {
+	var req VerifyLicenseRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+
+	resp, err := h.service.VerifyProductLicense(req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    resp,
+	})
+}

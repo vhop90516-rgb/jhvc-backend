@@ -67,6 +67,9 @@ func main() {
 		api.POST("/login", authHandler.Login)
 		api.GET("/modules", authHandler.GetAvailableModules)
 
+		// ENDPOINT PÚBLICO PARA VERIFICAR LICENCIAS DE PRODUCTOS
+		api.POST("/verify-license", authHandler.VerifyProductLicense)
+
 		protected := api.Group("")
 		protected.Use(middleware.AuthMiddleware(authService))
 		{
@@ -94,6 +97,13 @@ func main() {
 			admin.PUT("/codes/:id/status", authHandler.UpdateCodeStatus)
 
 			admin.GET("/licenses", authHandler.GetAllLicenses)
+
+			// PRODUCT LICENSES CRUD
+			admin.POST("/product-licenses", authHandler.CreateProductLicense)
+			admin.GET("/product-licenses", authHandler.GetAllProductLicenses)
+			admin.PUT("/product-licenses/:id", authHandler.UpdateProductLicense)
+			admin.PUT("/product-licenses/:id/status", authHandler.UpdateProductLicenseStatus)
+			admin.DELETE("/product-licenses/:id", authHandler.DeleteProductLicense)
 		}
 	}
 
@@ -194,6 +204,22 @@ func createTables(db *sql.DB) error {
         invitation_code_id INTEGER REFERENCES invitation_codes(id),
         user_id INTEGER REFERENCES users(id),
         used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS product_licenses (
+        id SERIAL PRIMARY KEY,
+        license_code VARCHAR(50) UNIQUE NOT NULL,
+        client_name VARCHAR(255) NOT NULL,
+        client_email VARCHAR(255),
+        product_name VARCHAR(100) NOT NULL,
+        is_active BOOLEAN DEFAULT true,
+        max_devices INTEGER DEFAULT 1,
+        current_devices INTEGER DEFAULT 0,
+        machine_id VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        expires_at TIMESTAMP,
+        last_check TIMESTAMP,
+        notes TEXT
     );
     `
 
