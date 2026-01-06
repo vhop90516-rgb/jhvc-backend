@@ -1,0 +1,20 @@
+# Binarios
+*.exe
+*.out
+/backend
+
+# Environment
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
