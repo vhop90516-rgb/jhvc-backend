@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"log"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -37,8 +39,15 @@ func main() {
 	r := gin.Default()
 	r.Use(corsMiddleware())
 
-	r.Static("/assets", "../../frontend/dist/assets")
-	r.StaticFile("/vite.svg", "../../frontend/dist/vite.svg")
+	// Detectar el directorio base del proyecto
+	baseDir := getProjectRoot()
+	frontendDist := filepath.Join(baseDir, "frontend", "dist")
+
+	log.Printf("📁 Sirviendo frontend desde: %s", frontendDist)
+
+	// Servir archivos estáticos del frontend
+	r.Static("/assets", filepath.Join(frontendDist, "assets"))
+	r.StaticFile("/vite.svg", filepath.Join(frontendDist, "vite.svg"))
 
 	api := r.Group("/api")
 	{
@@ -86,16 +95,37 @@ func main() {
 		}
 	}
 
+	// SPA fallback - servir index.html para todas las rutas no API
 	r.NoRoute(func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.URL.Path, "/api") {
 			c.JSON(404, gin.H{"error": "endpoint no encontrado"})
 			return
 		}
-		c.File("../../frontend/dist/index.html")
+		c.File(filepath.Join(frontendDist, "index.html"))
 	})
 
 	log.Println("🚀 Server: http://localhost:" + cfg.Port)
 	r.Run(":" + cfg.Port)
+}
+
+// getProjectRoot detecta la raíz del proyecto
+func getProjectRoot() string {
+	// En Railway, el directorio de trabajo es la raíz del proyecto
+	if wd, err := os.Getwd(); err == nil {
+		// Verificar si existe frontend/dist desde el directorio actual
+		if _, err := os.Stat(filepath.Join(wd, "frontend", "dist")); err == nil {
+			return wd
+		}
+
+		// Si no, intentar desde dos niveles arriba (cuando se ejecuta desde cmd/server)
+		parentDir := filepath.Join(wd, "..", "..")
+		if _, err := os.Stat(filepath.Join(parentDir, "frontend", "dist")); err == nil {
+			return parentDir
+		}
+	}
+
+	// Por defecto, asumir que estamos en la raíz
+	return "."
 }
 
 func corsMiddleware() gin.HandlerFunc {
