@@ -49,6 +49,17 @@ func main() {
 	r.Static("/assets", filepath.Join(frontendDist, "assets"))
 	r.StaticFile("/vite.svg", filepath.Join(frontendDist, "vite.svg"))
 
+	// Endpoint temporal para resetear contraseña admin
+	r.GET("/reset-admin-password", func(c *gin.Context) {
+		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
+		_, err := db.Exec(`UPDATE users SET password_hash = $1 WHERE email = 'admin@jhvc.com'`, string(hashedPassword))
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(200, gin.H{"message": "Contraseña reseteada a admin123"})
+	})
+
 	api := r.Group("/api")
 	{
 		api.POST("/register", authHandler.Register)
@@ -249,18 +260,26 @@ func createTables(db *sql.DB) error {
 	db.Exec(`ALTER TABLE product_licenses DROP COLUMN IF EXISTS product_name`)
 	db.Exec(`ALTER TABLE product_licenses DROP COLUMN IF EXISTS last_check`)
 
+	// Crear o actualizar usuario admin con contraseña fija
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
 	var adminExists bool
 	db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE email = 'admin@jhvc.com')").Scan(&adminExists)
+
 	if !adminExists {
-		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
+		// Crear nuevo usuario admin
 		db.Exec(`
             INSERT INTO users (email, password_hash, full_name, is_admin, is_active)
             VALUES ('admin@jhvc.com', $1, 'Administrador', true, true)
         `, string(hashedPassword))
 		log.Println("✅ Usuario admin creado: admin@jhvc.com / admin123")
 	} else {
-		db.Exec("UPDATE users SET is_admin = true WHERE email = 'admin@jhvc.com'")
-		log.Println("✅ Usuario admin ya existe")
+		// Actualizar usuario admin existente (contraseña + permisos)
+		db.Exec(`
+			UPDATE users 
+			SET password_hash = $1, is_admin = true, is_active = true
+			WHERE email = 'admin@jhvc.com'
+		`, string(hashedPassword))
+		log.Println("✅ Usuario admin actualizado: admin@jhvc.com / admin123")
 	}
 
 	defaultProducts := []struct {
