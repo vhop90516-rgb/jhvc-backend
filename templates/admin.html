@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - JHVC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1400px; margin: 20px auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #0c4d7b, #17a2b8); color: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { padding: 12px 24px; background: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .tab.active { background: #0c4d7b; color: white; }
+        .content { background: white; padding: 20px; border-radius: 8px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; font-weight: 600; }
+        .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; margin: 2px; }
+        .btn-primary { background: #0c4d7b; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-warning { background: #ffc107; color: white; }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; display: inline-block; }
+        .badge-active { background: #28a745; color: white; }
+        .badge-inactive { background: #dc3545; color: white; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; }
+        .form-group textarea { min-height: 80px; }
+        .license-code { background: #f5f5f5; padding: 8px 12px; border-radius: 4px; font-family: monospace; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Panel de Administración - JHVC</h1>
+            <p>Gestión de Licencias y Usuarios</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('users')">Usuarios</button>
+            <button class="tab" onclick="showTab('codes')">Códigos</button>
+            <button class="tab" onclick="showTab('licenses')">Licencias</button>
+        </div>
+        
+        <div class="content">
+            <div id="usersSection" class="section active">
+                <h2>Usuarios</h2>
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div id="codesSection" class="section">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                    <h2>Códigos de Invitación</h2>
+                    <button class="btn btn-success" onclick="showCreateCodeModal()">Generar Código</button>
+                </div>
+                <table id="codesTable">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Usos</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div id="licensesSection" class="section">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                    <h2>Licencias de Productos</h2>
+                    <button class="btn btn-success" onclick="showCreateLicenseModal()">Crear Licencia</button>
+                </div>
+                <table id="licensesTable">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Módulos</th>
+                            <th>Código</th>
+                            <th>Dispositivos</th>
+                            <th>Expira</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL CREAR CÓDIGO -->
+    <div id="createCodeModal" class="modal">
+        <div class="modal-content">
+            <h2>Generar Código de Invitación</h2>
+            <form id="createCodeForm">
+                <div class="form-group">
+                    <label>Máximo de Usos</label>
+                    <input type="number" id="maxUses" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Días de Validez (0 = sin límite)</label>
+                    <input type="number" id="daysValid" min="0" value="0">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">Crear</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('createCodeModal')" style="flex: 1;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- MODAL CREAR LICENCIA -->
+    <div id="createLicenseModal" class="modal">
+        <div class="modal-content">
+            <h2>Crear Licencia de Producto</h2>
+            <form id="createLicenseForm">
+                <div class="form-group">
+                    <label>Cliente *</label>
+                    <input type="text" id="newClientName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email del Cliente</label>
+                    <input type="email" id="newClientEmail">
+                </div>
+                <div class="form-group">
+                    <label>Módulos (Ctrl para seleccionar varios) *</label>
+                    <select id="newModules" multiple style="height: 120px;" required>
+                        <option value="CALCULADORA">Calculadora Fiscal</option>
+                        <option value="VISOR">Visor CFDI</option>
+                        <option value="CONTABILIDAD">Contabilidad</option>
+                        <option value="NOMINA">Nómina</option>
+                        <option value="FACTURACION">Facturación</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Máximo de Dispositivos</label>
+                    <input type="number" id="newMaxDevices" min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Días de Validez (0 = sin límite)</label>
+                    <input type="number" id="newDaysValid" min="0" value="365">
+                </div>
+                <div class="form-group">
+                    <label>Notas</label>
+                    <textarea id="newNotes"></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">Crear</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('createLicenseModal')" style="flex: 1;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR LICENCIA -->
+    <div id="editLicenseModal" class="modal">
+        <div class="modal-content">
+            <h2>Editar Licencia</h2>
+            <form id="editLicenseForm">
+                <input type="hidden" id="editLicenseId">
+                <div class="form-group">
+                    <label>Cliente *</label>
+                    <input type="text" id="editClientName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email del Cliente</label>
+                    <input type="email" id="editClientEmail">
+                </div>
+                <div class="form-group">
+                    <label>Máximo de Dispositivos</label>
+                    <input type="number" id="editMaxDevices" min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Días de Validez (0 = sin límite)</label>
+                    <input type="number" id="editDaysValid" min="0" value="365">
+                </div>
+                <div class="form-group">
+                    <label>Notas</label>
+                    <textarea id="editNotes"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="editIsActive">
+                        <option value="true">Activa</option>
+                        <option value="false">Inactiva</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">Guardar</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('editLicenseModal')" style="flex: 1;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- MODAL DETALLES LICENCIA -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <h2>Detalles de Licencia</h2>
+            <div id="detailsContent"></div>
+            <button class="btn btn-primary" onclick="closeModal('detailsModal')" style="width: 100%; margin-top: 20px;">Cerrar</button>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = '/api';
+        let token = localStorage.getItem('token');
+        
+        async function loadData() {
+            await Promise.all([loadUsers(), loadCodes(), loadLicenses()]);
+        }
+        
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_URL}/admin/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                const tbody = document.querySelector('#usersTable tbody');
+                tbody.innerHTML = '';
+                
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay usuarios</td></tr>';
+                    return;
+                }
+                
+                data.data.forEach(user => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.full_name}</td>
+                            <td>${user.email}</td>
+                            <td>
+                                <span class="badge ${user.is_active ? 'badge-active' : 'badge-inactive'}">
+                                    ${user.is_active ? 'Activo' : 'Inactivo'}
+                                </span>
+                            </td>
+                            <td>
+                                ${!user.is_admin ? `
+                                    <button class="btn ${user.is_active ? 'btn-danger' : 'btn-success'}" 
+                                            onclick="toggleUserStatus(${user.id}, ${!user.is_active})">
+                                        ${user.is_active ? 'Desactivar' : 'Activar'}
+                                    </button>
+                                ` : ''}
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function loadCodes() {
+            try {
+                const response = await fetch(`${API_URL}/admin/codes`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                const tbody = document.querySelector('#codesTable tbody');
+                tbody.innerHTML = '';
+                
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay códigos</td></tr>';
+                    return;
+                }
+                
+                data.data.forEach(code => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><code>${code.code}</code></td>
+                            <td>${code.current_uses} / ${code.max_uses}</td>
+                            <td>
+                                <span class="badge ${code.is_active ? 'badge-active' : 'badge-inactive'}">
+                                    ${code.is_active ? 'Activo' : 'Inactivo'}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn ${code.is_active ? 'btn-danger' : 'btn-success'}" 
+                                        onclick="toggleCodeStatus(${code.id}, ${!code.is_active})">
+                                    ${code.is_active ? 'Desactivar' : 'Activar'}
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function loadLicenses() {
+            try {
+                const response = await fetch(`${API_URL}/admin/product-licenses`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                const tbody = document.querySelector('#licensesTable tbody');
+                tbody.innerHTML = '';
+                
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay licencias</td></tr>';
+                    return;
+                }
+                
+                data.data.forEach(lic => {
+                    const expiresAt = lic.expires_at ? new Date(lic.expires_at).toLocaleDateString() : 'Sin límite';
+                    const modules = lic.modules && lic.modules.length > 0 ? lic.modules.join(', ') : 'Sin módulos';
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${lic.client_name}</strong></td>
+                            <td>${modules}</td>
+                            <td>
+                                <span class="license-code" onclick="copyToClipboard('${lic.license_code}')">
+                                    ${lic.license_code}
+                                </span>
+                            </td>
+                            <td>${lic.current_devices} / ${lic.max_devices}</td>
+                            <td>${expiresAt}</td>
+                            <td>
+                                <span class="badge ${lic.is_active ? 'badge-active' : 'badge-inactive'}">
+                                    ${lic.is_active ? 'Activa' : 'Inactiva'}
+                                </span>
+                            </td>
+                            <td>
+                            <button class="btn btn-primary" onclick="viewDetails(${lic.id})" title="Ver detalles">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                            <button class="btn btn-warning" onclick="editLicense(${lic.id})" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn ${lic.is_active ? 'btn-warning' : 'btn-success'}" 
+                                    onclick="toggleLicenseStatus(${lic.id}, ${!lic.is_active})" 
+                                    title="${lic.is_active ? 'Pausar' : 'Activar'}">
+                                <i class="fas fa-${lic.is_active ? 'pause' : 'play'}"></i>
+                            </button>
+                            <button class="btn btn-success" onclick="downloadLicenseJSON('${lic.license_code}', '${lic.modules && lic.modules.length > 0 ? lic.modules[0] : 'CALCULADORA'}')" title="Descargar license.json">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteLicense(${lic.id})" title="Eliminar permanentemente">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function editLicense(licenseId) {
+            try {
+                const response = await fetch(`${API_URL}/admin/product-licenses`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                const license = data.data.find(l => l.id === licenseId);
+                
+                if (!license) {
+                    alert('Licencia no encontrada');
+                    return;
+                }
+                
+                document.getElementById('editLicenseId').value = license.id;
+                document.getElementById('editClientName').value = license.client_name;
+                document.getElementById('editClientEmail').value = license.client_email || '';
+                document.getElementById('editMaxDevices').value = license.max_devices;
+                
+                if (license.expires_at) {
+                    const daysLeft = Math.ceil((new Date(license.expires_at) - new Date()) / (1000 * 60 * 60 * 24));
+                    document.getElementById('editDaysValid').value = Math.max(0, daysLeft);
+                } else {
+                    document.getElementById('editDaysValid').value = 0;
+                }
+                
+                document.getElementById('editNotes').value = license.notes || '';
+                document.getElementById('editIsActive').value = license.is_active.toString();
+                
+                document.getElementById('editLicenseModal').classList.add('show');
+            } catch (error) {
+                alert('Error cargando licencia');
+            }
+        }
+        
+        async function viewDetails(licenseId) {
+            try {
+                const [devicesResp, modulesResp] = await Promise.all([
+                    fetch(`${API_URL}/admin/licenses/${licenseId}/devices`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    fetch(`${API_URL}/admin/licenses/${licenseId}/modules`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                ]);
+                
+                const devicesData = await devicesResp.json();
+                const modulesData = await modulesResp.json();
+                
+                let html = '<h3>Dispositivos Registrados:</h3>';
+                if (devicesData.data && devicesData.data.length > 0) {
+                    html += '<ul style="list-style: none; padding: 0;">';
+                    devicesData.data.forEach(device => {
+                        const lastCheck = new Date(device.last_check).toLocaleString();
+                        html += `<li style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 6px;">
+                            <strong>${device.device_name || 'Sin nombre'}</strong><br>
+                            <small>ID: ${device.machine_id.substring(0, 30)}...</small><br>
+                            <small>Último check: ${lastCheck}</small><br>
+                            <button class="btn btn-danger" style="margin-top: 5px;" onclick="removeDevice(${device.id}, ${licenseId})">Eliminar</button>
+                        </li>`;
+                    });
+                    html += '</ul>';
+                } else {
+                    html += '<p>No hay dispositivos registrados</p>';
+                }
+                
+                html += '<hr><h3>Módulos Asignados:</h3>';
+                if (modulesData.data && modulesData.data.length > 0) {
+                    html += '<ul style="list-style: none; padding: 0;">';
+                    modulesData.data.forEach(module => {
+                        html += `<li style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 6px;">
+                            <strong>${module.module_name}</strong>
+                            <button class="btn btn-danger" style="margin-left: 10px;" onclick="removeModule(${module.id}, ${licenseId})">Quitar</button>
+                        </li>`;
+                    });
+                    html += '</ul>';
+                } else {
+                    html += '<p>No hay módulos asignados</p>';
+                }
+                
+                html += '<hr><h3>Agregar Módulo:</h3>';
+                html += `<div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="addModuleSelect" style="flex: 1; padding: 10px;">
+                        <option value="CALCULADORA">Calculadora</option>
+                        <option value="VISOR">Visor</option>
+                        <option value="CONTABILIDAD">Contabilidad</option>
+                        <option value="NOMINA">Nómina</option>
+                        <option value="FACTURACION">Facturación</option>
+                    </select>
+                    <button class="btn btn-success" onclick="addModule(${licenseId})">Agregar</button>
+                </div>`;
+                
+                document.getElementById('detailsContent').innerHTML = html;
+                document.getElementById('detailsModal').classList.add('show');
+            } catch (error) {
+                alert('Error cargando detalles: ' + error.message);
+                console.error(error);
+            }
+        }
+        
+        async function addModule(licenseId) {
+            const moduleName = document.getElementById('addModuleSelect').value;
+            try {
+                await fetch(`${API_URL}/admin/licenses/${licenseId}/modules`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ module_name: moduleName })
+                });
+                closeModal('detailsModal');
+                loadLicenses();
+                alert('Módulo agregado');
+            } catch (error) {
+                alert('Error agregando módulo');
+            }
+        }
+        
+        async function removeDevice(deviceId, licenseId) {
+            if (!confirm('¿Eliminar este dispositivo?')) return;
+            try {
+                await fetch(`${API_URL}/admin/licenses/${licenseId}/devices/${deviceId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                closeModal('detailsModal');
+                loadLicenses();
+                alert('Dispositivo eliminado');
+            } catch (error) {
+                alert('Error eliminando dispositivo');
+            }
+        }
+        
+        async function removeModule(moduleId, licenseId) {
+            if (!confirm('¿Quitar este módulo?')) return;
+            try {
+                await fetch(`${API_URL}/admin/licenses/${licenseId}/modules/${moduleId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                closeModal('detailsModal');
+                loadLicenses();
+                alert('Módulo eliminado');
+            } catch (error) {
+                alert('Error eliminando módulo');
+            }
+        }
+
+        async function deleteLicense(licenseId) {
+            const confirmFirst = confirm('⚠️ ¿ELIMINAR esta licencia PERMANENTEMENTE?\n\nEsto eliminará:\n- La licencia\n- Todos los dispositivos registrados\n- Todos los módulos asignados\n\nEsta acción NO se puede deshacer.');
+            
+            if (!confirmFirst) return;
+            
+            const confirmSecond = confirm('🔴 CONFIRMACIÓN FINAL\n\n¿Estás COMPLETAMENTE SEGURO de eliminar esta licencia?');
+            
+            if (!confirmSecond) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/product-licenses/${licenseId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Error en el servidor');
+                }
+                
+                alert('✅ Licencia eliminada correctamente');
+                loadLicenses();
+            } catch (error) {
+                alert('❌ Error eliminando licencia: ' + error.message);
+            }
+        }
+        
+        document.getElementById('createCodeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            try {
+                const response = await fetch(`${API_URL}/admin/codes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        max_uses: parseInt(document.getElementById('maxUses').value),
+                        days_valid: parseInt(document.getElementById('daysValid').value)
+                    })
+                });
+                const data = await response.json();
+                alert('Código creado: ' + data.data.code);
+                closeModal('createCodeModal');
+                loadCodes();
+            } catch (error) {
+                alert('Error creando código');
+            }
+        });
+        
+        document.getElementById('createLicenseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const selectedModules = Array.from(document.getElementById('newModules').selectedOptions).map(opt => opt.value);
+            
+            if (selectedModules.length === 0) {
+                alert('Debes seleccionar al menos un módulo');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/product-licenses`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        client_name: document.getElementById('newClientName').value,
+                        client_email: document.getElementById('newClientEmail').value,
+                        max_devices: parseInt(document.getElementById('newMaxDevices').value),
+                        days_valid: parseInt(document.getElementById('newDaysValid').value),
+                        notes: document.getElementById('newNotes').value,
+                        modules: selectedModules
+                    })
+                });
+                
+                const data = await response.json();
+                alert('Licencia creada!\n\nCódigo: ' + data.data.license_code + '\nMódulos: ' + selectedModules.join(', '));
+                navigator.clipboard.writeText(data.data.license_code);
+                closeModal('createLicenseModal');
+                loadLicenses();
+            } catch (error) {
+                alert('Error creando licencia');
+            }
+        });
+
+        document.getElementById('editLicenseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const licenseId = document.getElementById('editLicenseId').value;
+            
+            try {
+                await fetch(`${API_URL}/admin/product-licenses/${licenseId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        client_name: document.getElementById('editClientName').value,
+                        client_email: document.getElementById('editClientEmail').value,
+                        max_devices: parseInt(document.getElementById('editMaxDevices').value),
+                        days_valid: parseInt(document.getElementById('editDaysValid').value),
+                        notes: document.getElementById('editNotes').value,
+                        is_active: document.getElementById('editIsActive').value === 'true'
+                    })
+                });
+                
+                alert('Licencia actualizada correctamente');
+                closeModal('editLicenseModal');
+                loadLicenses();
+            } catch (error) {
+                alert('Error actualizando licencia');
+            }
+        });
+        
+        async function toggleUserStatus(userId, isActive) {
+            try {
+                await fetch(`${API_URL}/admin/users/${userId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ is_active: isActive })
+                });
+                loadUsers();
+            } catch (error) {
+                alert('Error actualizando usuario');
+            }
+        }
+        
+        async function toggleCodeStatus(codeId, isActive) {
+            try {
+                await fetch(`${API_URL}/admin/codes/${codeId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ is_active: isActive })
+                });
+                loadCodes();
+            } catch (error) {
+                alert('Error actualizando código');
+            }
+        }
+        
+        async function toggleLicenseStatus(licenseId, isActive) {
+            try {
+                await fetch(`${API_URL}/admin/product-licenses/${licenseId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ is_active: isActive })
+                });
+                loadLicenses();
+            } catch (error) {
+                alert('Error actualizando licencia');
+            }
+        }
+
+        function downloadLicenseJSON(licenseCode, moduleName) {
+        const jsonContent = {
+            license_code: licenseCode,
+            product_name: moduleName,
+            activation_url: "https://jhvc-backend-production.up.railway.app/api/verify-license"
+        };
+        
+        const blob = new Blob([JSON.stringify(jsonContent, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `license.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        alert(`✅ Archivo license_${licenseCode}.json descargado\n\nEnvía este archivo al cliente junto con la app .exe`);
+    }
+            
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Section').classList.add('active');
+        }
+        
+        function showCreateCodeModal() {
+            document.getElementById('createCodeModal').classList.add('show');
+        }
+        
+        function showCreateLicenseModal() {
+            document.getElementById('createLicenseModal').classList.add('show');
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert('Código copiado: ' + text);
+        }
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            loadData();
+        });
+    </script>
+</body>
+</html>
