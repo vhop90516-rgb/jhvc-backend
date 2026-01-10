@@ -37,8 +37,8 @@ func main() {
 	r := gin.Default()
 	r.Use(corsMiddleware())
 
-	r.Static("/assets", "./frontend/dist/assets")
-	r.StaticFile("/vite.svg", "./frontend/dist/vite.svg")
+	r.Static("/assets", "../../frontend/dist/assets")
+	r.StaticFile("/vite.svg", "../../frontend/dist/vite.svg")
 
 	api := r.Group("/api")
 	{
@@ -91,7 +91,7 @@ func main() {
 			c.JSON(404, gin.H{"error": "endpoint no encontrado"})
 			return
 		}
-		c.File("./frontend/dist/index.html")
+		c.File("../../frontend/dist/index.html")
 	})
 
 	log.Println("🚀 Server: http://localhost:" + cfg.Port)
