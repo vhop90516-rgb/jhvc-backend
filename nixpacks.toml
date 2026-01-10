@@ -1,5 +1,11 @@
+[phases.setup]
+nixPkgs = ["nodejs_20", "go_1_21"]
+
 [phases.build]
-cmds = ["go build -o out ./cmd/server"]
+cmds = [
+  "cd frontend && npm install && npm run build && cd ..",
+  "go build -o server ./cmd/server"
+]
 
 [start]
-cmd = "./out"
+cmd = "./server"
