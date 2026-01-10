@@ -20,21 +20,21 @@ const Landing = () => {
     
     @keyframes float {
       0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-30px) scale(1.05); }
+      50% { transform: translateY(-20px) scale(1.02); }
     }
     
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(60px); }
+      from { opacity: 0; transform: translateY(40px); }
       to { opacity: 1; transform: translateY(0); }
     }
     
     @keyframes scaleIn {
-      from { opacity: 0; transform: scale(0.9); }
+      from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
     }
     
     @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-60px); }
+      from { opacity: 0; transform: translateX(-40px); }
       to { opacity: 1; transform: translateX(0); }
     }
     
@@ -65,17 +65,17 @@ const Landing = () => {
         left: 0,
         right: 0,
         zIndex: 1000,
-        background: scrolled ? 'rgba(12, 77, 123, 0.95)' : 'rgba(12, 77, 123, 0.8)',
+        background: scrolled ? 'rgba(12, 77, 123, 0.95)' : 'rgba(12, 77, 123, 0.85)',
         backdropFilter: 'blur(12px)',
         borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        padding: scrolled ? '0.75rem 0' : '1.25rem 0'
+        transition: 'all 0.3s ease',
+        padding: scrolled ? '0.75rem 0' : '1rem 0'
       }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{
             fontSize: '1.5rem',
             fontWeight: 800,
-            background: 'linear-gradient(135deg, #17a2b8, #0c4d7b)',
+            background: 'linear-gradient(135deg, #17a2b8, #93c5fd)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             letterSpacing: '-0.02em',
@@ -84,7 +84,7 @@ const Landing = () => {
             JHVC Tech Solutions
           </div>
           
-          <div style={{ display: 'flex', gap: '3rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
             {[
               { name: 'Inicio', href: '#hero' },
               { name: 'Nosotros', href: '#about' },
@@ -92,44 +92,36 @@ const Landing = () => {
               { name: 'Contacto', href: '#contact' }
             ].map(item => (
               <a key={item.name} href={item.href} style={{
-                color: 'rgba(255, 255, 255, 0.8)',
+                color: 'rgba(255, 255, 255, 0.85)',
                 textDecoration: 'none',
                 fontWeight: 500,
                 fontSize: '0.95rem',
                 transition: 'all 0.3s',
-                position: 'relative',
                 letterSpacing: '0.01em'
               }}
-              onMouseEnter={e => {
-                e.target.style.color = 'white'
-                e.target.style.transform = 'translateY(-2px)'
-              }}
-              onMouseLeave={e => {
-                e.target.style.color = 'rgba(255, 255, 255, 0.8)'
-                e.target.style.transform = 'translateY(0)'
-              }}>
+              onMouseEnter={e => e.target.style.color = 'white'}
+              onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.85)'}>
                 {item.name}
               </a>
             ))}
             
             <button onClick={() => navigate('/login')} style={{
-              padding: '0.75rem 2rem',
+              padding: '0.75rem 1.75rem',
               background: 'linear-gradient(135deg, #17a2b8, #0c4d7b)',
               border: 'none',
-              borderRadius: '12px',
+              borderRadius: '10px',
               color: 'white',
               fontWeight: 600,
               fontSize: '0.95rem',
               cursor: 'pointer',
-              transition: 'all 0.3s',
-              letterSpacing: '0.01em'
+              transition: 'all 0.3s'
             }}
             onMouseEnter={e => {
-              e.target.style.transform = 'translateY(-2px) scale(1.05)'
-              e.target.style.boxShadow = '0 10px 30px rgba(23, 162, 184, 0.4)'
+              e.target.style.transform = 'translateY(-2px)'
+              e.target.style.boxShadow = '0 8px 20px rgba(23, 162, 184, 0.4)'
             }}
             onMouseLeave={e => {
-              e.target.style.transform = 'translateY(0) scale(1)'
+              e.target.style.transform = 'translateY(0)'
               e.target.style.boxShadow = 'none'
             }}>
               Iniciar Sesión
@@ -146,7 +138,7 @@ const Landing = () => {
         justifyContent: 'center',
         position: 'relative',
         overflow: 'hidden',
-        paddingTop: '6rem'
+        paddingTop: '5rem'
       }}>
         <div style={{
           position: 'absolute',
@@ -154,19 +146,19 @@ const Landing = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          opacity: 0.3
+          opacity: 0.2
         }}>
-          {[...Array(30)].map((_, i) => (
+          {[...Array(25)].map((_, i) => (
             <div key={i} style={{
               position: 'absolute',
-              width: Math.random() * 300 + 50 + 'px',
-              height: Math.random() * 300 + 50 + 'px',
+              width: Math.random() * 250 + 40 + 'px',
+              height: Math.random() * 250 + 40 + 'px',
               borderRadius: '50%',
-              background: `radial-gradient(circle, rgba(255,255,255,${Math.random() * 0.1}) 0%, transparent 70%)`,
+              background: `radial-gradient(circle, rgba(255,255,255,${Math.random() * 0.08}) 0%, transparent 70%)`,
               left: Math.random() * 100 + '%',
               top: Math.random() * 100 + '%',
-              animation: `float ${Math.random() * 20 + 10}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 5}s`
+              animation: `float ${Math.random() * 18 + 12}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 4}s`
             }} />
           ))}
         </div>
@@ -174,21 +166,21 @@ const Landing = () => {
         <div style={{ 
           maxWidth: '1400px', 
           margin: '0 auto', 
-          padding: '0 3rem', 
+          padding: '0 2rem', 
           position: 'relative', 
           zIndex: 1,
           textAlign: 'center'
         }}>
-          <div className="animate-in" style={{ marginBottom: '2rem' }}>
+          <div className="animate-in" style={{ marginBottom: '1.5rem' }}>
             <div style={{
               display: 'inline-block',
               padding: '0.5rem 1.5rem',
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.15)',
               borderRadius: '50px',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
               color: 'white',
               fontSize: '0.9rem',
-              fontWeight: 500,
+              fontWeight: 600,
               marginBottom: '2rem',
               backdropFilter: 'blur(10px)'
             }}>
@@ -197,13 +189,13 @@ const Landing = () => {
           </div>
 
           <h1 className="animate-in" style={{
-            fontSize: '5rem',
+            fontSize: '4.5rem',
             fontWeight: 900,
             color: 'white',
             lineHeight: 1.1,
-            marginBottom: '2rem',
+            marginBottom: '1.5rem',
             letterSpacing: '-0.03em',
-            animationDelay: '0.2s'
+            animationDelay: '0.15s'
           }}>
             Soluciones Contables<br/>
             <span style={{
@@ -216,12 +208,12 @@ const Landing = () => {
           </h1>
 
           <p className="animate-in" style={{
-            fontSize: '1.4rem',
-            color: 'rgba(255, 255, 255, 0.8)',
-            maxWidth: '700px',
-            margin: '0 auto 3rem',
+            fontSize: '1.35rem',
+            color: 'rgba(255, 255, 255, 0.85)',
+            maxWidth: '680px',
+            margin: '0 auto 2.5rem',
             lineHeight: 1.7,
-            animationDelay: '0.4s',
+            animationDelay: '0.3s',
             fontWeight: 400
           }}>
             Tecnología diseñada para contadores. Automatiza procesos, ahorra tiempo y enfócate en lo que realmente importa: asesorar a tus clientes
@@ -229,51 +221,50 @@ const Landing = () => {
 
           <div className="animate-in" style={{
             display: 'flex',
-            gap: '1.5rem',
+            gap: '1.25rem',
             justifyContent: 'center',
-            animationDelay: '0.6s'
+            animationDelay: '0.45s',
+            flexWrap: 'wrap'
           }}>
             <button onClick={() => navigate('/register')} style={{
-              padding: '1.25rem 3rem',
+              padding: '1.2rem 2.75rem',
               background: 'white',
               border: 'none',
-              borderRadius: '14px',
+              borderRadius: '12px',
               color: '#0c4d7b',
               fontWeight: 700,
-              fontSize: '1.1rem',
+              fontSize: '1.05rem',
               cursor: 'pointer',
               transition: 'all 0.3s',
-              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
-              letterSpacing: '0.02em'
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.2)'
             }}
             onMouseEnter={e => {
-              e.target.style.transform = 'translateY(-4px) scale(1.05)'
-              e.target.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.3)'
+              e.target.style.transform = 'translateY(-3px) scale(1.03)'
+              e.target.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.3)'
             }}
             onMouseLeave={e => {
               e.target.style.transform = 'translateY(0) scale(1)'
-              e.target.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.2)'
+              e.target.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.2)'
             }}>
               Comenzar Gratis →
             </button>
 
             <button onClick={() => document.getElementById('product').scrollIntoView({ behavior: 'smooth' })} style={{
-              padding: '1.25rem 3rem',
+              padding: '1.2rem 2.75rem',
               background: 'transparent',
               border: '2px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '14px',
+              borderRadius: '12px',
               color: 'white',
               fontWeight: 600,
-              fontSize: '1.1rem',
+              fontSize: '1.05rem',
               cursor: 'pointer',
               transition: 'all 0.3s',
-              backdropFilter: 'blur(10px)',
-              letterSpacing: '0.02em'
+              backdropFilter: 'blur(10px)'
             }}
             onMouseEnter={e => {
               e.target.style.background = 'rgba(255, 255, 255, 0.1)'
               e.target.style.borderColor = 'rgba(255, 255, 255, 0.5)'
-              e.target.style.transform = 'translateY(-4px)'
+              e.target.style.transform = 'translateY(-3px)'
             }}
             onMouseLeave={e => {
               e.target.style.background = 'transparent'
@@ -288,52 +279,53 @@ const Landing = () => {
 
       {/* ABOUT SECTION */}
       <section id="about" style={{
-        minHeight: '80vh',
+        minHeight: '85vh',
         background: '#ffffff',
-        padding: '8rem 3rem',
+        padding: '7rem 2rem',
         position: 'relative'
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
             <div className="slide-left">
               <h2 style={{
-                fontSize: '3.5rem',
+                fontSize: '3.2rem',
                 fontWeight: 900,
                 color: '#0c4d7b',
                 marginBottom: '1.5rem',
-                letterSpacing: '-0.02em'
+                letterSpacing: '-0.025em'
               }}>
                 Nuestra Historia
               </h2>
               <p style={{
-                fontSize: '1.2rem',
-                color: '#333',
-                marginBottom: '1rem',
+                fontSize: '1.15rem',
+                color: '#555',
+                marginBottom: '1.2rem',
                 lineHeight: 1.8
               }}>
                 Los contadores pasan horas en tareas repetitivas que pueden automatizarse con tecnología.
               </p>
               <p style={{
-                fontSize: '1.2rem',
-                color: '#333',
-                marginBottom: '1rem',
+                fontSize: '1.15rem',
+                color: '#555',
+                marginBottom: '1.2rem',
                 lineHeight: 1.8
               }}>
-                Por eso fundamos <strong>JHVC Tech Solutions</strong>: para desarrollar herramientas que faciliten el trabajo diario de los contadores mexicanos.
+                Por eso fundamos <strong style={{ color: '#0c4d7b' }}>JHVC Tech Solutions</strong>: para desarrollar herramientas que faciliten el trabajo diario de los contadores mexicanos.
               </p>
               <p style={{
-                fontSize: '1.2rem',
-                color: '#333',
+                fontSize: '1.15rem',
+                color: '#555',
                 lineHeight: 1.8
               }}>
-                Nuestra misión es simple: <strong>que los contadores dejen de perder tiempo en procesos manuales y se enfoquen en asesorar a sus clientes.</strong>
+                Nuestra misión es simple: <strong style={{ color: '#17a2b8' }}>que los contadores dejen de perder tiempo en procesos manuales y se enfoquen en asesorar a sus clientes.</strong>
               </p>
             </div>
             <div className="scale-in" style={{ textAlign: 'center', animationDelay: '0.2s' }}>
               <div style={{
-                fontSize: '15rem',
+                fontSize: '18rem',
                 color: '#0c4d7b',
-                opacity: 0.1
+                opacity: 0.08,
+                lineHeight: 1
               }}>
                 💼
               </div>
@@ -342,63 +334,63 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* PRODUCT SECTION - SOLO VISOR DE CFDI */}
+      {/* PRODUCT SECTION - SOLO VISOR */}
       <section id="product" style={{
         minHeight: '100vh',
-        background: '#f8f9fa',
-        padding: '8rem 3rem',
+        background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecef 100%)',
+        padding: '7rem 2rem',
         position: 'relative'
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
             <h2 className="scale-in" style={{
-              fontSize: '3.5rem',
+              fontSize: '3.2rem',
               fontWeight: 900,
               color: '#0c4d7b',
-              marginBottom: '1.5rem',
-              letterSpacing: '-0.02em'
+              marginBottom: '1.25rem',
+              letterSpacing: '-0.025em'
             }}>
               Nuestro Producto
             </h2>
             <p className="scale-in" style={{
-              fontSize: '1.3rem',
+              fontSize: '1.25rem',
               color: '#666',
               maxWidth: '600px',
               margin: '0 auto',
-              animationDelay: '0.2s'
+              animationDelay: '0.15s'
             }}>
               La herramienta más intuitiva para gestionar tus facturas electrónicas
             </p>
           </div>
 
-          {/* VISOR DE CFDI - DESTACADO */}
-          <div style={{ maxWidth: '900px', margin: '0 auto 4rem' }}>
+          {/* VISOR DESTACADO */}
+          <div style={{ maxWidth: '950px', margin: '0 auto 4rem' }}>
             <div className="scale-in" style={{
-              background: '#f0f7ff',
-              borderRadius: '24px',
+              background: 'white',
+              borderRadius: '20px',
               padding: '3rem',
               borderLeft: '6px solid #17a2b8',
-              boxShadow: '0 10px 40px rgba(23, 162, 184, 0.2)',
-              animationDelay: '0.3s'
+              boxShadow: '0 10px 40px rgba(23, 162, 184, 0.15)',
+              animationDelay: '0.25s'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '2rem' }}>
                 <div style={{ fontSize: '4rem' }}>📊</div>
                 <div>
                   <h3 style={{
-                    fontSize: '2.5rem',
-                    fontWeight: 700,
+                    fontSize: '2.3rem',
+                    fontWeight: 800,
                     color: '#0c4d7b',
-                    letterSpacing: '-0.01em',
+                    letterSpacing: '-0.02em',
                     marginBottom: '0.5rem'
                   }}>
                     Visor de CFDI Profesional
                   </h3>
                   <span style={{
-                    padding: '0.5rem 1rem',
+                    padding: '0.4rem 1rem',
                     background: '#10b981',
                     color: 'white',
-                    borderRadius: '12px',
-                    fontSize: '0.9rem',
+                    borderRadius: '10px',
+                    fontSize: '0.85rem',
                     fontWeight: 600
                   }}>
                     ✓ Disponible Ahora
@@ -407,34 +399,43 @@ const Landing = () => {
               </div>
               
               <p style={{
-                fontSize: '1.2rem',
-                color: '#333',
+                fontSize: '1.15rem',
+                color: '#555',
                 lineHeight: 1.8,
                 marginBottom: '2rem'
               }}>
-                Visualiza, gestiona y analiza tus facturas electrónicas con la herramienta más intuitiva del mercado. Diseñada específicamente para contadores que buscan eficiencia y claridad.
+                Administra tus archivos XML, visualiza la información de forma clara y exporta a Excel. Todo de manera local y segura en tu equipo.
               </p>
 
               {/* CARACTERÍSTICAS */}
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
-                gap: '1.5rem'
+                gap: '1.25rem'
               }}>
                 {[
-                  { icon: '🔍', title: 'Visualización Clara', desc: 'Interfaz intuitiva que muestra toda la información de forma organizada' },
-                  { icon: '⚡', title: 'Búsqueda Rápida', desc: 'Encuentra cualquier factura en segundos con filtros avanzados' },
-                  { icon: '📈', title: 'Reportes Automáticos', desc: 'Genera reportes fiscales y analiza tus operaciones' },
-                  { icon: '🚀', title: 'Ultra Rápido', desc: 'Procesa miles de facturas en milisegundos' }
+                  { icon: '📁', title: 'Administra XML', desc: 'Organiza y gestiona tus archivos XML de forma eficiente' },
+                  { icon: '📊', title: 'Exporta a Excel', desc: 'Convierte tus XML a hojas de cálculo en un clic' },
+                  { icon: '🔒', title: 'Todo Local', desc: 'Tus datos nunca salen de tu computadora' },
+                  { icon: '⚡', title: 'Ultra Rápido', desc: 'Procesa miles de facturas en segundos' }
                 ].map((feature, idx) => (
                   <div key={idx} style={{
-                    background: 'white',
+                    background: 'linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%)',
                     padding: '1.5rem',
                     borderRadius: '12px',
-                    border: '1px solid rgba(23, 162, 184, 0.2)'
+                    border: '1px solid rgba(23, 162, 184, 0.15)',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-4px)'
+                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(23, 162, 184, 0.2)'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = 'none'
                   }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{feature.icon}</div>
-                    <h4 style={{ color: '#0c4d7b', fontWeight: 600, marginBottom: '0.5rem', fontSize: '1.1rem' }}>
+                    <h4 style={{ color: '#0c4d7b', fontWeight: 700, marginBottom: '0.5rem', fontSize: '1.1rem' }}>
                       {feature.title}
                     </h4>
                     <p style={{ color: '#666', fontSize: '0.95rem', lineHeight: 1.6 }}>
@@ -446,24 +447,24 @@ const Landing = () => {
 
               <div style={{ marginTop: '2rem', textAlign: 'center' }}>
                 <button onClick={() => navigate('/register')} style={{
-                  padding: '1.25rem 3rem',
+                  padding: '1.2rem 3rem',
                   background: 'linear-gradient(135deg, #17a2b8, #0c4d7b)',
                   border: 'none',
-                  borderRadius: '14px',
+                  borderRadius: '12px',
                   color: 'white',
                   fontWeight: 700,
-                  fontSize: '1.1rem',
+                  fontSize: '1.05rem',
                   cursor: 'pointer',
                   transition: 'all 0.3s',
-                  boxShadow: '0 10px 30px rgba(23, 162, 184, 0.3)'
+                  boxShadow: '0 8px 25px rgba(23, 162, 184, 0.3)'
                 }}
                 onMouseEnter={e => {
-                  e.target.style.transform = 'translateY(-4px) scale(1.05)'
-                  e.target.style.boxShadow = '0 20px 50px rgba(23, 162, 184, 0.4)'
+                  e.target.style.transform = 'translateY(-3px) scale(1.03)'
+                  e.target.style.boxShadow = '0 12px 35px rgba(23, 162, 184, 0.4)'
                 }}
                 onMouseLeave={e => {
                   e.target.style.transform = 'translateY(0) scale(1)'
-                  e.target.style.boxShadow = '0 10px 30px rgba(23, 162, 184, 0.3)'
+                  e.target.style.boxShadow = '0 8px 25px rgba(23, 162, 184, 0.3)'
                 }}>
                   Probar Gratis →
                 </button>
@@ -471,16 +472,16 @@ const Landing = () => {
             </div>
           </div>
 
-          {/* BENEFICIOS ADICIONALES */}
+          {/* BENEFICIOS */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '2rem'
+            gap: '1.75rem'
           }}>
             {[
-              { icon: '🔒', title: 'Seguridad Total', desc: 'Encriptación de nivel bancario y backups automáticos' },
-              { icon: '☁️', title: 'En la Nube', desc: 'Accede desde cualquier dispositivo, sin instalaciones' },
-              { icon: '🎧', title: 'Soporte Dedicado', desc: 'Atención personalizada de contador a contador' }
+              { icon: '🔐', title: 'Máxima Seguridad', desc: 'Tus datos están protegidos en tu equipo, sin envíos a la nube' },
+              { icon: '💻', title: 'Sistema Local', desc: 'Funciona completamente en tu PC, sin dependencia de internet' },
+              { icon: '🎯', title: 'Fácil de Usar', desc: 'Interfaz intuitiva diseñada para contadores' }
             ].map((benefit, idx) => (
               <div key={idx} className="slide-left" style={{
                 background: 'white',
@@ -495,7 +496,7 @@ const Landing = () => {
               onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-8px)'
                 e.currentTarget.style.borderColor = '#17a2b8'
-                e.currentTarget.style.boxShadow = '0 15px 40px rgba(23, 162, 184, 0.2)'
+                e.currentTarget.style.boxShadow = '0 15px 35px rgba(23, 162, 184, 0.2)'
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.transform = 'translateY(0)'
@@ -503,7 +504,7 @@ const Landing = () => {
                 e.currentTarget.style.boxShadow = 'none'
               }}>
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{benefit.icon}</div>
-                <h4 style={{ color: '#0c4d7b', fontWeight: 600, marginBottom: '0.75rem', fontSize: '1.2rem' }}>
+                <h4 style={{ color: '#0c4d7b', fontWeight: 700, marginBottom: '0.75rem', fontSize: '1.15rem' }}>
                   {benefit.title}
                 </h4>
                 <p style={{ color: '#666', fontSize: '0.95rem', lineHeight: 1.6 }}>
@@ -517,49 +518,48 @@ const Landing = () => {
 
       {/* CTA SECTION */}
       <section className="gradient-bg" style={{
-        padding: '8rem 3rem',
+        padding: '7rem 2rem',
         textAlign: 'center',
         position: 'relative',
         overflow: 'hidden'
       }}>
         <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <h2 style={{
-            fontSize: '3.5rem',
+            fontSize: '3.2rem',
             fontWeight: 900,
             color: 'white',
-            marginBottom: '1.5rem',
-            letterSpacing: '-0.02em'
+            marginBottom: '1.25rem',
+            letterSpacing: '-0.025em'
           }}>
             ¿Listo para transformar tu práctica contable?
           </h2>
           <p style={{
-            fontSize: '1.3rem',
-            color: 'rgba(255, 255, 255, 0.8)',
-            marginBottom: '3rem',
+            fontSize: '1.25rem',
+            color: 'rgba(255, 255, 255, 0.85)',
+            marginBottom: '2.5rem',
             lineHeight: 1.7
           }}>
             Únete a los contadores que ya están ahorrando tiempo con nuestro Visor de CFDI
           </p>
           <button onClick={() => navigate('/register')} style={{
-            padding: '1.5rem 4rem',
+            padding: '1.4rem 3.5rem',
             background: 'white',
             border: 'none',
-            borderRadius: '16px',
+            borderRadius: '14px',
             color: '#0c4d7b',
             fontWeight: 700,
-            fontSize: '1.2rem',
+            fontSize: '1.15rem',
             cursor: 'pointer',
             transition: 'all 0.3s',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-            letterSpacing: '0.02em'
+            boxShadow: '0 15px 50px rgba(0, 0, 0, 0.3)'
           }}
           onMouseEnter={e => {
-            e.target.style.transform = 'scale(1.1) translateY(-5px)'
-            e.target.style.boxShadow = '0 30px 80px rgba(0, 0, 0, 0.4)'
+            e.target.style.transform = 'scale(1.08) translateY(-4px)'
+            e.target.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.4)'
           }}
           onMouseLeave={e => {
             e.target.style.transform = 'scale(1) translateY(0)'
-            e.target.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.3)'
+            e.target.style.boxShadow = '0 15px 50px rgba(0, 0, 0, 0.3)'
           }}>
             Crear Cuenta Gratis →
           </button>
@@ -569,7 +569,7 @@ const Landing = () => {
       {/* FOOTER */}
       <footer id="contact" style={{
         background: '#0a0f1e',
-        padding: '4rem 3rem 2rem',
+        padding: '4rem 2rem 2rem',
         borderTop: '1px solid rgba(255, 255, 255, 0.1)'
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
@@ -581,9 +581,9 @@ const Landing = () => {
           }}>
             <div>
               <div style={{
-                fontSize: '1.8rem',
+                fontSize: '1.75rem',
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #17a2b8, #0c4d7b)',
+                background: 'linear-gradient(135deg, #17a2b8, #93c5fd)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 marginBottom: '1rem'
