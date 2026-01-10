@@ -1,7 +1,6 @@
 # Binarios
 *.exe
 *.out
-/backend
 
 # Environment
 .env
