@@ -4,21 +4,11 @@ import { useState, useEffect } from 'react'
 const Landing = () => {
   const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight })
-    }
-
     window.addEventListener('scroll', handleScroll)
-    window.addEventListener('mousemove', handleMouseMove)
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const styles = `
@@ -48,28 +38,17 @@ const Landing = () => {
       to { opacity: 1; transform: translateX(0); }
     }
     
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(60px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-    
     @keyframes gradient {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
     
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
-      50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
-    }
-    
     .animate-in { animation: fadeInUp 0.8s ease-out forwards; }
     .scale-in { animation: scaleIn 0.6s ease-out forwards; }
     .slide-left { animation: slideInLeft 0.8s ease-out forwards; }
-    .slide-right { animation: slideInRight 0.8s ease-out forwards; }
     .gradient-bg { 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+      background: linear-gradient(135deg, #0c4d7b 0%, #17a2b8 50%, #0c4d7b 100%);
       background-size: 200% 200%;
       animation: gradient 15s ease infinite;
     }
@@ -86,7 +65,7 @@ const Landing = () => {
         left: 0,
         right: 0,
         zIndex: 1000,
-        background: scrolled ? 'rgba(15, 23, 42, 0.95)' : 'rgba(15, 23, 42, 0.8)',
+        background: scrolled ? 'rgba(12, 77, 123, 0.95)' : 'rgba(12, 77, 123, 0.8)',
         backdropFilter: 'blur(12px)',
         borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -96,18 +75,19 @@ const Landing = () => {
           <div style={{
             fontSize: '1.5rem',
             fontWeight: 800,
-            background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+            background: 'linear-gradient(135deg, #17a2b8, #0c4d7b)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             letterSpacing: '-0.02em',
             cursor: 'pointer'
           }} onClick={() => navigate('/')}>
-            JHVC
+            JHVC Tech Solutions
           </div>
           
           <div style={{ display: 'flex', gap: '3rem', alignItems: 'center' }}>
             {[
               { name: 'Inicio', href: '#hero' },
+              { name: 'Nosotros', href: '#about' },
               { name: 'Producto', href: '#product' },
               { name: 'Contacto', href: '#contact' }
             ].map(item => (
@@ -134,7 +114,7 @@ const Landing = () => {
             
             <button onClick={() => navigate('/login')} style={{
               padding: '0.75rem 2rem',
-              background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+              background: 'linear-gradient(135deg, #17a2b8, #0c4d7b)',
               border: 'none',
               borderRadius: '12px',
               color: 'white',
@@ -146,7 +126,7 @@ const Landing = () => {
             }}
             onMouseEnter={e => {
               e.target.style.transform = 'translateY(-2px) scale(1.05)'
-              e.target.style.boxShadow = '0 10px 30px rgba(59, 130, 246, 0.4)'
+              e.target.style.boxShadow = '0 10px 30px rgba(23, 162, 184, 0.4)'
             }}
             onMouseLeave={e => {
               e.target.style.transform = 'translateY(0) scale(1)'
@@ -168,7 +148,6 @@ const Landing = () => {
         overflow: 'hidden',
         paddingTop: '6rem'
       }}>
-        {/* Animated Background Elements */}
         <div style={{
           position: 'absolute',
           top: 0,
@@ -226,13 +205,13 @@ const Landing = () => {
             letterSpacing: '-0.03em',
             animationDelay: '0.2s'
           }}>
-            Visor de CFDI<br/>
+            Soluciones Contables<br/>
             <span style={{
               background: 'linear-gradient(135deg, #93c5fd, #ddd6fe)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              Profesional
+              Inteligentes
             </span>
           </h1>
 
@@ -245,7 +224,7 @@ const Landing = () => {
             animationDelay: '0.4s',
             fontWeight: 400
           }}>
-            Visualiza, gestiona y analiza tus facturas electrónicas con la herramienta más intuitiva del mercado
+            Tecnología diseñada para contadores. Automatiza procesos, ahorra tiempo y enfócate en lo que realmente importa: asesorar a tus clientes
           </p>
 
           <div className="animate-in" style={{
@@ -259,7 +238,7 @@ const Landing = () => {
               background: 'white',
               border: 'none',
               borderRadius: '14px',
-              color: '#667eea',
+              color: '#0c4d7b',
               fontWeight: 700,
               fontSize: '1.1rem',
               cursor: 'pointer',
@@ -301,66 +280,72 @@ const Landing = () => {
               e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)'
               e.target.style.transform = 'translateY(0)'
             }}>
-              Ver Demo
+              Ver Producto
             </button>
           </div>
+        </div>
+      </section>
 
-          {/* Floating Device Mockup */}
-          <div className="animate-in" style={{
-            marginTop: '6rem',
-            position: 'relative',
-            animationDelay: '0.8s'
-          }}>
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              borderRadius: '24px',
-              padding: '2rem',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              boxShadow: '0 30px 80px rgba(0, 0, 0, 0.3)',
-              animation: 'float 6s ease-in-out infinite'
-            }}>
-              <div style={{
-                background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-                borderRadius: '16px',
-                padding: '3rem',
-                textAlign: 'left'
+      {/* ABOUT SECTION */}
+      <section id="about" style={{
+        minHeight: '80vh',
+        background: '#ffffff',
+        padding: '8rem 3rem',
+        position: 'relative'
+      }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+            <div className="slide-left">
+              <h2 style={{
+                fontSize: '3.5rem',
+                fontWeight: 900,
+                color: '#0c4d7b',
+                marginBottom: '1.5rem',
+                letterSpacing: '-0.02em'
               }}>
-                <div style={{ marginBottom: '2rem', display: 'flex', gap: '0.5rem' }}>
-                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444' }} />
-                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#f59e0b' }} />
-                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#10b981' }} />
-                </div>
-                
-                <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.9rem', marginBottom: '1rem' }}>
-                  CFDI Visualizado
-                </div>
-                
-                <div style={{ background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px', padding: '1.5rem', marginBottom: '1rem', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-                  <div style={{ color: 'white', fontWeight: 600, marginBottom: '0.5rem' }}>Factura #12345</div>
-                  <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.9rem' }}>RFC: XAXX010101000</div>
-                </div>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div style={{ background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', padding: '1.5rem' }}>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>Subtotal</div>
-                    <div style={{ color: 'white', fontSize: '1.3rem', fontWeight: 700 }}>$12,500</div>
-                  </div>
-                  <div style={{ background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', padding: '1.5rem' }}>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>IVA</div>
-                    <div style={{ color: 'white', fontSize: '1.3rem', fontWeight: 700 }}>$2,000</div>
-                  </div>
-                </div>
+                Nuestra Historia
+              </h2>
+              <p style={{
+                fontSize: '1.2rem',
+                color: '#333',
+                marginBottom: '1rem',
+                lineHeight: 1.8
+              }}>
+                Los contadores pasan horas en tareas repetitivas que pueden automatizarse con tecnología.
+              </p>
+              <p style={{
+                fontSize: '1.2rem',
+                color: '#333',
+                marginBottom: '1rem',
+                lineHeight: 1.8
+              }}>
+                Por eso fundamos <strong>JHVC Tech Solutions</strong>: para desarrollar herramientas que faciliten el trabajo diario de los contadores mexicanos.
+              </p>
+              <p style={{
+                fontSize: '1.2rem',
+                color: '#333',
+                lineHeight: 1.8
+              }}>
+                Nuestra misión es simple: <strong>que los contadores dejen de perder tiempo en procesos manuales y se enfoquen en asesorar a sus clientes.</strong>
+              </p>
+            </div>
+            <div className="scale-in" style={{ textAlign: 'center', animationDelay: '0.2s' }}>
+              <div style={{
+                fontSize: '15rem',
+                color: '#0c4d7b',
+                opacity: 0.1
+              }}>
+                💼
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* PRODUCT SECTION */}
+      {/* PRODUCT SECTION - SOLO VISOR DE CFDI */}
       <section id="product" style={{
         minHeight: '100vh',
-        background: '#0f172a',
+        background: '#f8f9fa',
         padding: '8rem 3rem',
         position: 'relative'
       }}>
@@ -369,122 +354,161 @@ const Landing = () => {
             <h2 className="scale-in" style={{
               fontSize: '3.5rem',
               fontWeight: 900,
-              color: 'white',
+              color: '#0c4d7b',
               marginBottom: '1.5rem',
               letterSpacing: '-0.02em'
             }}>
-              Todo lo que necesitas
+              Nuestro Producto
             </h2>
             <p className="scale-in" style={{
               fontSize: '1.3rem',
-              color: 'rgba(255, 255, 255, 0.6)',
+              color: '#666',
               maxWidth: '600px',
               margin: '0 auto',
               animationDelay: '0.2s'
             }}>
-              Una solución completa para la gestión de tus facturas electrónicas
+              La herramienta más intuitiva para gestionar tus facturas electrónicas
             </p>
           </div>
 
+          {/* VISOR DE CFDI - DESTACADO */}
+          <div style={{ maxWidth: '900px', margin: '0 auto 4rem' }}>
+            <div className="scale-in" style={{
+              background: '#f0f7ff',
+              borderRadius: '24px',
+              padding: '3rem',
+              borderLeft: '6px solid #17a2b8',
+              boxShadow: '0 10px 40px rgba(23, 162, 184, 0.2)',
+              animationDelay: '0.3s'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                <div style={{ fontSize: '4rem' }}>📊</div>
+                <div>
+                  <h3 style={{
+                    fontSize: '2.5rem',
+                    fontWeight: 700,
+                    color: '#0c4d7b',
+                    letterSpacing: '-0.01em',
+                    marginBottom: '0.5rem'
+                  }}>
+                    Visor de CFDI Profesional
+                  </h3>
+                  <span style={{
+                    padding: '0.5rem 1rem',
+                    background: '#10b981',
+                    color: 'white',
+                    borderRadius: '12px',
+                    fontSize: '0.9rem',
+                    fontWeight: 600
+                  }}>
+                    ✓ Disponible Ahora
+                  </span>
+                </div>
+              </div>
+              
+              <p style={{
+                fontSize: '1.2rem',
+                color: '#333',
+                lineHeight: 1.8,
+                marginBottom: '2rem'
+              }}>
+                Visualiza, gestiona y analiza tus facturas electrónicas con la herramienta más intuitiva del mercado. Diseñada específicamente para contadores que buscan eficiencia y claridad.
+              </p>
+
+              {/* CARACTERÍSTICAS */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '1.5rem'
+              }}>
+                {[
+                  { icon: '🔍', title: 'Visualización Clara', desc: 'Interfaz intuitiva que muestra toda la información de forma organizada' },
+                  { icon: '⚡', title: 'Búsqueda Rápida', desc: 'Encuentra cualquier factura en segundos con filtros avanzados' },
+                  { icon: '📈', title: 'Reportes Automáticos', desc: 'Genera reportes fiscales y analiza tus operaciones' },
+                  { icon: '🚀', title: 'Ultra Rápido', desc: 'Procesa miles de facturas en milisegundos' }
+                ].map((feature, idx) => (
+                  <div key={idx} style={{
+                    background: 'white',
+                    padding: '1.5rem',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(23, 162, 184, 0.2)'
+                  }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{feature.icon}</div>
+                    <h4 style={{ color: '#0c4d7b', fontWeight: 600, marginBottom: '0.5rem', fontSize: '1.1rem' }}>
+                      {feature.title}
+                    </h4>
+                    <p style={{ color: '#666', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                      {feature.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+                <button onClick={() => navigate('/register')} style={{
+                  padding: '1.25rem 3rem',
+                  background: 'linear-gradient(135deg, #17a2b8, #0c4d7b)',
+                  border: 'none',
+                  borderRadius: '14px',
+                  color: 'white',
+                  fontWeight: 700,
+                  fontSize: '1.1rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                  boxShadow: '0 10px 30px rgba(23, 162, 184, 0.3)'
+                }}
+                onMouseEnter={e => {
+                  e.target.style.transform = 'translateY(-4px) scale(1.05)'
+                  e.target.style.boxShadow = '0 20px 50px rgba(23, 162, 184, 0.4)'
+                }}
+                onMouseLeave={e => {
+                  e.target.style.transform = 'translateY(0) scale(1)'
+                  e.target.style.boxShadow = '0 10px 30px rgba(23, 162, 184, 0.3)'
+                }}>
+                  Probar Gratis →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* BENEFICIOS ADICIONALES */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: '2rem'
           }}>
             {[
-              {
-                icon: '📊',
-                title: 'Visualización Clara',
-                desc: 'Interfaz intuitiva que muestra toda la información de tus CFDIs de forma organizada y fácil de entender',
-                color: '#3b82f6'
-              },
-              {
-                icon: '🔍',
-                title: 'Búsqueda Rápida',
-                desc: 'Encuentra cualquier factura en segundos con filtros avanzados por fecha, RFC, monto y más',
-                color: '#8b5cf6'
-              },
-              {
-                icon: '📈',
-                title: 'Reportes Detallados',
-                desc: 'Genera reportes fiscales automáticos y analiza tus operaciones con dashboards interactivos',
-                color: '#ec4899'
-              },
-              {
-                icon: '🔒',
-                title: 'Seguridad Total',
-                desc: 'Tus datos protegidos con encriptación de nivel bancario y backups automáticos diarios',
-                color: '#10b981'
-              },
-              {
-                icon: '☁️',
-                title: 'En la Nube',
-                desc: 'Accede desde cualquier dispositivo, en cualquier momento. Sin instalaciones ni configuraciones',
-                color: '#f59e0b'
-              },
-              {
-                icon: '⚡',
-                title: 'Ultra Rápido',
-                desc: 'Procesamiento optimizado que carga miles de facturas en milisegundos',
-                color: '#06b6d4'
-              }
-            ].map((feature, idx) => (
+              { icon: '🔒', title: 'Seguridad Total', desc: 'Encriptación de nivel bancario y backups automáticos' },
+              { icon: '☁️', title: 'En la Nube', desc: 'Accede desde cualquier dispositivo, sin instalaciones' },
+              { icon: '🎧', title: 'Soporte Dedicado', desc: 'Atención personalizada de contador a contador' }
+            ].map((benefit, idx) => (
               <div key={idx} className="slide-left" style={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                borderRadius: '20px',
-                padding: '2.5rem',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                background: 'white',
+                borderRadius: '16px',
+                padding: '2rem',
+                textAlign: 'center',
+                border: '1px solid #e5e7eb',
+                transition: 'all 0.3s',
                 cursor: 'pointer',
-                animationDelay: `${idx * 0.1}s`,
-                position: 'relative',
-                overflow: 'hidden'
+                animationDelay: `${idx * 0.1}s`
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.transform = 'translateY(-10px)'
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
-                e.currentTarget.style.borderColor = feature.color
-                e.currentTarget.style.boxShadow = `0 20px 60px ${feature.color}40`
+                e.currentTarget.style.transform = 'translateY(-8px)'
+                e.currentTarget.style.borderColor = '#17a2b8'
+                e.currentTarget.style.boxShadow = '0 15px 40px rgba(23, 162, 184, 0.2)'
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.transform = 'translateY(0)'
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)'
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                e.currentTarget.style.borderColor = '#e5e7eb'
                 e.currentTarget.style.boxShadow = 'none'
               }}>
-                <div style={{
-                  fontSize: '3rem',
-                  marginBottom: '1.5rem',
-                  filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.3))'
-                }}>
-                  {feature.icon}
-                </div>
-                <h3 style={{
-                  fontSize: '1.5rem',
-                  fontWeight: 700,
-                  color: 'white',
-                  marginBottom: '1rem',
-                  letterSpacing: '-0.01em'
-                }}>
-                  {feature.title}
-                </h3>
-                <p style={{
-                  color: 'rgba(255, 255, 255, 0.6)',
-                  lineHeight: 1.7,
-                  fontSize: '1rem'
-                }}>
-                  {feature.desc}
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{benefit.icon}</div>
+                <h4 style={{ color: '#0c4d7b', fontWeight: 600, marginBottom: '0.75rem', fontSize: '1.2rem' }}>
+                  {benefit.title}
+                </h4>
+                <p style={{ color: '#666', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  {benefit.desc}
                 </p>
-                <div style={{
-                  position: 'absolute',
-                  top: -50,
-                  right: -50,
-                  width: 100,
-                  height: 100,
-                  background: `radial-gradient(circle, ${feature.color}20 0%, transparent 70%)`,
-                  borderRadius: '50%',
-                  pointerEvents: 'none'
-                }} />
               </div>
             ))}
           </div>
@@ -506,7 +530,7 @@ const Landing = () => {
             marginBottom: '1.5rem',
             letterSpacing: '-0.02em'
           }}>
-            Comienza hoy mismo
+            ¿Listo para transformar tu práctica contable?
           </h2>
           <p style={{
             fontSize: '1.3rem',
@@ -514,14 +538,14 @@ const Landing = () => {
             marginBottom: '3rem',
             lineHeight: 1.7
           }}>
-            Únete a los contadores que ya están optimizando su tiempo con nuestro visor de CFDI
+            Únete a los contadores que ya están ahorrando tiempo con nuestro Visor de CFDI
           </p>
           <button onClick={() => navigate('/register')} style={{
             padding: '1.5rem 4rem',
             background: 'white',
             border: 'none',
             borderRadius: '16px',
-            color: '#667eea',
+            color: '#0c4d7b',
             fontWeight: 700,
             fontSize: '1.2rem',
             cursor: 'pointer',
@@ -559,27 +583,27 @@ const Landing = () => {
               <div style={{
                 fontSize: '1.8rem',
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                background: 'linear-gradient(135deg, #17a2b8, #0c4d7b)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 marginBottom: '1rem'
               }}>
-                JHVC
+                JHVC Tech Solutions
               </div>
               <p style={{
                 color: 'rgba(255, 255, 255, 0.5)',
                 lineHeight: 1.7,
                 fontSize: '0.95rem'
               }}>
-                Tecnología contable moderna para profesionales exigentes
+                Soluciones tecnológicas diseñadas para contadores mexicanos
               </p>
             </div>
 
             <div>
               <h4 style={{ color: 'white', marginBottom: '1rem', fontWeight: 600 }}>Producto</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {['Características', 'Precios', 'Demo'].map(item => (
-                  <a key={item} href="#" style={{
+                {['Visor de CFDI', 'Características', 'Precios'].map(item => (
+                  <a key={item} href="#product" style={{
                     color: 'rgba(255, 255, 255, 0.5)',
                     textDecoration: 'none',
                     fontSize: '0.95rem',
@@ -597,7 +621,7 @@ const Landing = () => {
               <h4 style={{ color: 'white', marginBottom: '1rem', fontWeight: 600 }}>Empresa</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {['Nosotros', 'Blog', 'Contacto'].map(item => (
-                  <a key={item} href="#" style={{
+                  <a key={item} href="#about" style={{
                     color: 'rgba(255, 255, 255, 0.5)',
                     textDecoration: 'none',
                     fontSize: '0.95rem',
