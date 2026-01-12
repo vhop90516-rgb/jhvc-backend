@@ -45,7 +45,7 @@ const Login = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      p: 2,
+      p: { xs: 1, sm: 2 },
       position: 'relative',
       overflow: 'hidden',
       '&::before': {
@@ -81,21 +81,21 @@ const Login = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
           sx={{ 
-            borderRadius: 5,
+            borderRadius: { xs: 3, sm: 5 },
             boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
           }}
         >
-          <CardContent sx={{ p: 5 }}>
+          <CardContent sx={{ p: { xs: 3, sm: 5 } }}>
             <MotionBox 
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              sx={{ textAlign: 'center', mb: 4 }}
+              sx={{ textAlign: 'center', mb: { xs: 3, sm: 4 } }}
             >
               <Box 
                 sx={{ 
-                  fontSize: '4rem', 
-                  mb: 2,
+                  fontSize: { xs: '3rem', sm: '4rem' },
+                  mb: { xs: 1, sm: 2 },
                   animation: 'pulse 2s ease-in-out infinite',
                   '@keyframes pulse': {
                     '0%, 100%': { transform: 'scale(1)' },
@@ -105,10 +105,22 @@ const Login = () => {
               >
                 🔐
               </Box>
-              <Typography variant="h4" sx={{ color: '#0c4d7b', fontWeight: 800, mb: 1 }}>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  color: '#0c4d7b', 
+                  fontWeight: 800, 
+                  mb: 1,
+                  fontSize: { xs: '1.75rem', sm: '2.125rem' }
+                }}
+              >
                 Iniciar Sesión
               </Typography>
-              <Typography variant="body1" color="text.secondary">
+              <Typography 
+                variant="body1" 
+                color="text.secondary"
+                sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
+              >
                 Bienvenido de nuevo
               </Typography>
             </MotionBox>
@@ -122,9 +134,10 @@ const Login = () => {
                 <Alert 
                   severity="error" 
                   sx={{ 
-                    mb: 3,
+                    mb: { xs: 2, sm: 3 },
                     borderLeft: '4px solid #dc3545',
-                    borderRadius: 2
+                    borderRadius: 2,
+                    fontSize: { xs: '0.85rem', sm: '0.9rem' }
                   }}
                 >
                   {error}
@@ -146,7 +159,7 @@ const Login = () => {
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                   sx={{ 
-                    mb: 2.5,
+                    mb: { xs: 2, sm: 2.5 },
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       backgroundColor: '#f0f7ff',
@@ -157,6 +170,12 @@ const Login = () => {
                       '&.Mui-focused': {
                         backgroundColor: '#fff',
                       }
+                    },
+                    '& .MuiInputLabel-root': {
+                      fontSize: { xs: '0.9rem', sm: '1rem' }
+                    },
+                    '& .MuiInputBase-input': {
+                      fontSize: { xs: '0.9rem', sm: '1rem' }
                     }
                   }}
                 />
@@ -175,7 +194,7 @@ const Login = () => {
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
                   sx={{ 
-                    mb: 2,
+                    mb: { xs: 1.5, sm: 2 },
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       backgroundColor: '#f0f7ff',
@@ -186,6 +205,12 @@ const Login = () => {
                       '&.Mui-focused': {
                         backgroundColor: '#fff',
                       }
+                    },
+                    '& .MuiInputLabel-root': {
+                      fontSize: { xs: '0.9rem', sm: '1rem' }
+                    },
+                    '& .MuiInputBase-input': {
+                      fontSize: { xs: '0.9rem', sm: '1rem' }
                     }
                   }}
                 />
@@ -199,7 +224,9 @@ const Login = () => {
                   display: 'flex', 
                   justifyContent: 'space-between', 
                   alignItems: 'center',
-                  mb: 3
+                  mb: { xs: 2, sm: 3 },
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  gap: { xs: 1, sm: 0 }
                 }}
               >
                 <FormControlLabel
@@ -215,7 +242,11 @@ const Login = () => {
                       }}
                     />
                   }
-                  label="Recordarme"
+                  label={
+                    <Typography sx={{ fontSize: { xs: '0.85rem', sm: '0.9rem' } }}>
+                      Recordarme
+                    </Typography>
+                  }
                 />
                 <Link 
                   to="#" 
@@ -223,7 +254,7 @@ const Login = () => {
                     color: '#17a2b8', 
                     textDecoration: 'none', 
                     fontWeight: 600,
-                    fontSize: '0.9rem',
+                    fontSize: '0.85rem',
                     transition: 'all 0.3s'
                   }}
                   onMouseEnter={(e) => e.target.style.color = '#0c4d7b'}
@@ -244,11 +275,11 @@ const Login = () => {
                   variant="contained"
                   size="large"
                   disabled={loading}
-                  startIcon={loading ? null : <LoginIcon />}
+                  startIcon={loading ? null : <LoginIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }} />}
                   sx={{ 
-                    mb: 3, 
-                    py: 1.5,
-                    fontSize: '1.05rem',
+                    mb: { xs: 2, sm: 3 },
+                    py: { xs: 1.2, sm: 1.5 },
+                    fontSize: { xs: '0.95rem', sm: '1.05rem' },
                     fontWeight: 700,
                     borderRadius: 2,
                     background: 'linear-gradient(135deg, #0c4d7b, #17a2b8)',
@@ -273,8 +304,8 @@ const Login = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Box
                         sx={{
-                          width: 20,
-                          height: 20,
+                          width: { xs: 16, sm: 20 },
+                          height: { xs: 16, sm: 20 },
                           border: '3px solid rgba(255,255,255,0.3)',
                           borderTop: '3px solid white',
                           borderRadius: '50%',
@@ -285,7 +316,9 @@ const Login = () => {
                           }
                         }}
                       />
-                      Iniciando sesión...
+                      <Typography sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+                        Iniciando sesión...
+                      </Typography>
                     </Box>
                   ) : 'Iniciar Sesión'}
                 </Button>
@@ -299,10 +332,11 @@ const Login = () => {
                 <Button
                   component={Link}
                   to="/"
-                  startIcon={<ArrowBackIcon />}
+                  startIcon={<ArrowBackIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />}
                   sx={{ 
                     color: '#0c4d7b',
                     fontWeight: 600,
+                    fontSize: { xs: '0.85rem', sm: '0.95rem' },
                     transition: 'all 0.3s',
                     '&:hover': {
                       color: '#17a2b8',

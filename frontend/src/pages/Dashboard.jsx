@@ -58,28 +58,28 @@ const Dashboard = () => {
 
   const stats = [
     {
-      icon: <DescriptionIcon sx={{ fontSize: '1.5rem' }} />,
+      icon: <DescriptionIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }} />,
       value: '0',
       label: 'Documentos Procesados',
       gradient: 'linear-gradient(135deg, #0c4d7b, #17a2b8)',
       color: '#0c4d7b'
     },
     {
-      icon: <CheckCircleIcon sx={{ fontSize: '1.5rem' }} />,
+      icon: <CheckCircleIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }} />,
       value: '10',
       label: 'Disponibles',
       gradient: 'linear-gradient(135deg, #28a745, #20c997)',
       color: '#28a745'
     },
     {
-      icon: <EmojiEventsIcon sx={{ fontSize: '1.5rem' }} />,
+      icon: <EmojiEventsIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }} />,
       value: 'Gratis',
       label: 'Plan Actual',
       gradient: 'linear-gradient(135deg, #fd7e14, #ffc107)',
       color: '#fd7e14'
     },
     {
-      icon: <AccessTimeIcon sx={{ fontSize: '1.5rem' }} />,
+      icon: <AccessTimeIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }} />,
       value: '0h',
       label: 'Tiempo Ahorrado',
       gradient: 'linear-gradient(135deg, #6f42c1, #e83e8c)',
@@ -222,7 +222,7 @@ const Dashboard = () => {
             backgroundColor: '#0c4d7b',
             color: 'white',
             borderRight: 'none',
-            top: { xs: 60, md: 70 }
+            top: { xs: 0, md: 70 }
           }
         }}
       >
@@ -234,7 +234,7 @@ const Dashboard = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: { xs: 2, sm: 3 },
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: 0 }
         }}
@@ -246,17 +246,25 @@ const Dashboard = () => {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mb: 2, display: { md: 'none' } }}
+            sx={{ 
+              mb: 2, 
+              display: { md: 'none' },
+              background: '#0c4d7b',
+              color: 'white',
+              '&:hover': {
+                background: '#17a2b8'
+              }
+            }}
           >
             <MenuIcon />
           </IconButton>
         )}
 
-        <Container maxWidth="lg" sx={{ mt: { xs: 0, md: 2 } }}>
+        <Container maxWidth="lg" sx={{ mt: { xs: 0, md: 2 }, px: { xs: 0, sm: 2 } }}>
           {/* STATS GRID */}
-          <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid container spacing={{ xs: 1.5, sm: 3 }} sx={{ mb: { xs: 3, sm: 4 } }}>
             {stats.map((stat, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
+              <Grid item xs={6} sm={6} md={3} key={index}>
                 <MotionCard
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -270,11 +278,18 @@ const Dashboard = () => {
                     }
                   }}
                 >
-                  <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <CardContent sx={{ 
+                    display: 'flex', 
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    alignItems: 'center', 
+                    gap: { xs: 1, sm: 2 },
+                    p: { xs: 1.5, sm: 2 },
+                    '&:last-child': { pb: { xs: 1.5, sm: 2 } }
+                  }}>
                     <Box
                       sx={{
-                        width: 60,
-                        height: 60,
+                        width: { xs: 45, sm: 60 },
+                        height: { xs: 45, sm: 60 },
                         borderRadius: 3,
                         background: stat.gradient,
                         display: 'flex',
@@ -286,11 +301,15 @@ const Dashboard = () => {
                     >
                       {stat.icon}
                     </Box>
-                    <Box>
-                      <Typography variant="h4" sx={{ color: stat.color, fontWeight: 700 }}>
+                    <Box sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+                      <Typography variant="h4" sx={{ 
+                        color: stat.color, 
+                        fontWeight: 700,
+                        fontSize: { xs: '1.5rem', sm: '2rem' }
+                      }}>
                         {stat.value}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.875rem' } }}>
                         {stat.label}
                       </Typography>
                     </Box>
@@ -305,9 +324,9 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            sx={{ mb: 4, borderRadius: 3, boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}
+            sx={{ mb: { xs: 3, sm: 4 }, borderRadius: 3, boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}
           >
-            <CardContent sx={{ p: 3 }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
               <Typography
                 variant="h6"
                 sx={{
@@ -316,15 +335,16 @@ const Dashboard = () => {
                   mb: 2,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 1
+                  gap: 1,
+                  fontSize: { xs: '1rem', sm: '1.25rem' }
                 }}
               >
-                <ComputerIcon /> Token para Aplicación Local
+                <ComputerIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }} /> Token para Aplicación Local
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                 Usa este token en tu aplicación de escritorio (Visor CFDI):
               </Typography>
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1, alignItems: 'stretch' }}>
                 <TextField
                   fullWidth
                   value={tokenVisible ? token : 'Haz clic en "Mostrar"'}
@@ -332,50 +352,63 @@ const Dashboard = () => {
                     readOnly: true,
                     sx: {
                       fontFamily: 'monospace',
-                      fontSize: '0.9rem'
+                      fontSize: { xs: '0.75rem', sm: '0.9rem' }
                     }
                   }}
-                  sx={{ flex: 1, minWidth: '200px' }}
+                  sx={{ flex: 1 }}
                 />
-                <Button
-                  variant="contained"
-                  startIcon={<VisibilityIcon />}
-                  onClick={handleShowToken}
-                  sx={{
-                    background: '#0c4d7b',
-                    '&:hover': {
-                      background: '#17a2b8'
-                    }
-                  }}
-                >
-                  Mostrar
-                </Button>
-                <Button
-                  variant="contained"
-                  startIcon={<ContentCopyIcon />}
-                  onClick={handleCopyToken}
-                  sx={{
-                    background: '#0c4d7b',
-                    '&:hover': {
-                      background: '#17a2b8'
-                    }
-                  }}
-                >
-                  Copiar
-                </Button>
+                <Box sx={{ display: 'flex', gap: 1, flexDirection: { xs: 'row', sm: 'row' } }}>
+                  <Button
+                    variant="contained"
+                    startIcon={<VisibilityIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />}
+                    onClick={handleShowToken}
+                    sx={{
+                      background: '#0c4d7b',
+                      flex: { xs: 1, sm: 0 },
+                      fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                      px: { xs: 2, sm: 3 },
+                      '&:hover': {
+                        background: '#17a2b8'
+                      }
+                    }}
+                  >
+                    Mostrar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<ContentCopyIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />}
+                    onClick={handleCopyToken}
+                    sx={{
+                      background: '#0c4d7b',
+                      flex: { xs: 1, sm: 0 },
+                      fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                      px: { xs: 2, sm: 3 },
+                      '&:hover': {
+                        background: '#17a2b8'
+                      }
+                    }}
+                  >
+                    Copiar
+                  </Button>
+                </Box>
               </Box>
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                 ℹ️ Solo necesitas copiarlo una vez en tu aplicación de escritorio
               </Typography>
             </CardContent>
           </MotionCard>
 
           {/* SERVICES */}
-          <Typography variant="h5" sx={{ color: '#0c4d7b', fontWeight: 700, mb: 3 }}>
+          <Typography variant="h5" sx={{ 
+            color: '#0c4d7b', 
+            fontWeight: 700, 
+            mb: { xs: 2, sm: 3 },
+            fontSize: { xs: '1.25rem', sm: '1.5rem' }
+          }}>
             Servicios Disponibles
           </Typography>
 
-          <Grid container spacing={3}>
+          <Grid container spacing={{ xs: 2, sm: 3 }}>
             {services.map((service, index) => (
               <Grid item xs={12} md={4} key={index}>
                 <MotionCard
@@ -393,7 +426,7 @@ const Dashboard = () => {
                     }
                   }}
                 >
-                  <CardContent sx={{ p: 3 }}>
+                  <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                     <Typography
                       variant="h6"
                       sx={{
@@ -402,13 +435,18 @@ const Dashboard = () => {
                         mb: 2,
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 1
+                        gap: 1,
+                        fontSize: { xs: '1rem', sm: '1.25rem' }
                       }}
                     >
                       {service.icon}
                       {service.title}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3, lineHeight: 1.6 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ 
+                      mb: { xs: 2, sm: 3 }, 
+                      lineHeight: 1.6,
+                      fontSize: { xs: '0.85rem', sm: '0.875rem' }
+                    }}>
                       {service.description}
                     </Typography>
                     <Button
@@ -419,7 +457,8 @@ const Dashboard = () => {
                       sx={{
                         background: '#0c4d7b',
                         fontWeight: 600,
-                        py: 1.2,
+                        py: { xs: 1, sm: 1.2 },
+                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
                         '&:hover': {
                           background: '#17a2b8',
                           transform: 'translateY(-2px)'

@@ -64,25 +64,26 @@ const Admin = () => {
 
   // USUARIOS COLUMNS
   const usersColumns = [
-    { field: 'id', headerName: 'ID', width: 80 },
-    { field: 'full_name', headerName: 'Nombre', width: 200 },
-    { field: 'email', headerName: 'Email', width: 250 },
+    { field: 'id', headerName: 'ID', width: 80, hide: true },
+    { field: 'full_name', headerName: 'Nombre', flex: 1, minWidth: 150 },
+    { field: 'email', headerName: 'Email', flex: 1, minWidth: 200 },
     {
       field: 'is_active',
       headerName: 'Estado',
-      width: 120,
+      width: 100,
       renderCell: (params) => (
         <Chip
           label={params.value ? 'Activo' : 'Inactivo'}
           color={params.value ? 'success' : 'error'}
           size="small"
+          sx={{ fontSize: { xs: '0.7rem', sm: '0.8rem' } }}
         />
       )
     },
     {
       field: 'actions',
       headerName: 'Acciones',
-      width: 150,
+      width: 130,
       renderCell: (params) => (
         !params.row.is_admin && (
           <Button
@@ -90,6 +91,7 @@ const Admin = () => {
             variant="contained"
             color={params.row.is_active ? 'error' : 'success'}
             onClick={() => toggleUserStatus(params.row.id, !params.row.is_active)}
+            sx={{ fontSize: { xs: '0.7rem', sm: '0.8rem' }, px: { xs: 1, sm: 2 } }}
           >
             {params.row.is_active ? 'Desactivar' : 'Activar'}
           </Button>
@@ -103,9 +105,10 @@ const Admin = () => {
     { 
       field: 'code', 
       headerName: 'Código', 
-      width: 250, 
+      flex: 1,
+      minWidth: 180,
       renderCell: (params) => (
-        <Box sx={{ fontFamily: 'monospace', fontWeight: 'bold', fontStyle: 'italic' }}>
+        <Box sx={{ fontFamily: 'monospace', fontWeight: 'bold', fontStyle: 'italic', fontSize: { xs: '0.75rem', sm: '0.9rem' } }}>
           {params.value}
         </Box>
       )
@@ -113,9 +116,9 @@ const Admin = () => {
     {
       field: 'uses',
       headerName: 'Usos',
-      width: 150,
+      width: 100,
       renderCell: (params) => (
-        <span style={{ fontStyle: 'italic' }}>
+        <span style={{ fontStyle: 'italic', fontSize: 'inherit' }}>
           {params.row.current_uses} / {params.row.max_uses}
         </span>
       )
@@ -123,25 +126,27 @@ const Admin = () => {
     {
       field: 'is_active',
       headerName: 'Estado',
-      width: 120,
+      width: 100,
       renderCell: (params) => (
         <Chip
           label={params.value ? 'Activo' : 'Inactivo'}
           color={params.value ? 'success' : 'error'}
           size="small"
+          sx={{ fontSize: { xs: '0.7rem', sm: '0.8rem' } }}
         />
       )
     },
     {
       field: 'actions',
       headerName: 'Acciones',
-      width: 150,
+      width: 130,
       renderCell: (params) => (
         <Button
           size="small"
           variant="contained"
           color={params.row.is_active ? 'error' : 'success'}
           onClick={() => toggleCodeStatus(params.row.id, !params.row.is_active)}
+          sx={{ fontSize: { xs: '0.7rem', sm: '0.8rem' }, px: { xs: 1, sm: 2 } }}
         >
           {params.row.is_active ? 'Desactivar' : 'Activar'}
         </Button>
@@ -154,17 +159,20 @@ const Admin = () => {
     { 
       field: 'client_name', 
       headerName: 'Cliente', 
-      width: 180, 
+      flex: 1,
+      minWidth: 130,
       renderCell: (params) => (
-        <strong style={{ fontStyle: 'italic' }}>{params.value}</strong>
+        <strong style={{ fontStyle: 'italic', fontSize: 'inherit' }}>{params.value}</strong>
       )
     },
     {
       field: 'modules',
       headerName: 'Módulos',
-      width: 200,
+      flex: 1,
+      minWidth: 150,
+      hide: window.innerWidth < 900,
       renderCell: (params) => (
-        <span style={{ fontStyle: 'italic' }}>
+        <span style={{ fontStyle: 'italic', fontSize: 'inherit' }}>
           {params.value?.join(', ') || 'Sin módulos'}
         </span>
       )
@@ -172,7 +180,8 @@ const Admin = () => {
     {
       field: 'license_code',
       headerName: 'Código',
-      width: 180,
+      flex: 1,
+      minWidth: 140,
       renderCell: (params) => (
         <Box
           sx={{
@@ -182,7 +191,8 @@ const Admin = () => {
             background: '#f5f5f5',
             padding: '4px 8px',
             borderRadius: '4px',
-            fontStyle: 'italic'
+            fontStyle: 'italic',
+            fontSize: { xs: '0.7rem', sm: '0.85rem' }
           }}
           onClick={() => {
             navigator.clipboard.writeText(params.value)
@@ -196,9 +206,10 @@ const Admin = () => {
     {
       field: 'devices',
       headerName: 'Dispositivos',
-      width: 120,
+      width: 100,
+      hide: window.innerWidth < 600,
       renderCell: (params) => (
-        <span style={{ fontStyle: 'italic' }}>
+        <span style={{ fontStyle: 'italic', fontSize: 'inherit' }}>
           {params.row.current_devices} / {params.row.max_devices}
         </span>
       )
@@ -206,9 +217,10 @@ const Admin = () => {
     {
       field: 'expires_at',
       headerName: 'Expira',
-      width: 120,
+      width: 100,
+      hide: window.innerWidth < 900,
       renderCell: (params) => (
-        <span style={{ fontStyle: 'italic' }}>
+        <span style={{ fontStyle: 'italic', fontSize: 'inherit' }}>
           {params.value ? new Date(params.value).toLocaleDateString() : 'Sin límite'}
         </span>
       )
@@ -216,44 +228,47 @@ const Admin = () => {
     {
       field: 'is_active',
       headerName: 'Estado',
-      width: 100,
+      width: 90,
       renderCell: (params) => (
         <Chip
           label={params.value ? 'Activa' : 'Inactiva'}
           color={params.value ? 'success' : 'error'}
           size="small"
+          sx={{ fontSize: { xs: '0.65rem', sm: '0.75rem' } }}
         />
       )
     },
     {
       field: 'actions',
       headerName: 'Acciones',
-      width: 300,
+      width: window.innerWidth < 600 ? 80 : 300,
       renderCell: (params) => (
-        <Box sx={{ display: 'flex', gap: 0.5 }}>
+        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
           <IconButton
             size="small"
             color="primary"
             onClick={() => viewDetails(params.row.id)}
             title="Ver detalles"
           >
-            <InfoIcon />
+            <InfoIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
           </IconButton>
           <IconButton
             size="small"
             color="warning"
             onClick={() => handleEditLicense(params.row)}
             title="Editar"
+            sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
           >
-            <EditIcon />
+            <EditIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
           </IconButton>
           <IconButton
             size="small"
             color={params.row.is_active ? 'warning' : 'success'}
             onClick={() => toggleLicenseStatus(params.row.id, !params.row.is_active)}
             title={params.row.is_active ? 'Pausar' : 'Activar'}
+            sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
           >
-            {params.row.is_active ? <PauseIcon /> : <PlayArrowIcon />}
+            {params.row.is_active ? <PauseIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} /> : <PlayArrowIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />}
           </IconButton>
           <IconButton
             size="small"
@@ -261,15 +276,16 @@ const Admin = () => {
             onClick={() => downloadLicenseJSON(params.row.license_code, params.row.modules?.[0] || 'CALCULADORA')}
             title="Descargar license.json"
           >
-            <DownloadIcon />
+            <DownloadIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
           </IconButton>
           <IconButton
             size="small"
             color="error"
             onClick={() => deleteLicense(params.row.id)}
             title="Eliminar"
+            sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
           >
-            <DeleteIcon />
+            <DeleteIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
           </IconButton>
         </Box>
       )
@@ -452,7 +468,7 @@ const Admin = () => {
     '& .MuiDataGrid-columnHeaders': {
       backgroundColor: '#0c4d7b',
       color: 'white',
-      fontSize: '1rem',
+      fontSize: { xs: '0.75rem', sm: '1rem' },
       fontWeight: 700
     },
     '& .MuiDataGrid-columnHeaderTitle': {
@@ -461,7 +477,8 @@ const Admin = () => {
     },
     '& .MuiDataGrid-cell': {
       color: '#666',
-      fontStyle: 'italic'
+      fontStyle: 'italic',
+      fontSize: { xs: '0.75rem', sm: '0.875rem' }
     },
     '& .MuiDataGrid-row:hover': {
       backgroundColor: '#f5f7fa'
@@ -478,7 +495,7 @@ const Admin = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+    <Box sx={{ width: '100%', minHeight: '100vh', p: { xs: 1, sm: 2, md: 3 } }}>
       {/* HEADER */}
       <MotionBox
         initial={{ opacity: 0, y: -20 }}
@@ -486,22 +503,34 @@ const Admin = () => {
         sx={{
           background: 'linear-gradient(135deg, #0c4d7b, #17a2b8)',
           color: 'white',
-          p: 3,
+          p: { xs: 2, sm: 3 },
           borderRadius: 2,
-          mb: 3
+          mb: { xs: 2, sm: 3 }
         }}
       >
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '1.5rem', sm: '2rem' } }}>
           🛡️ Panel de Administración
         </Typography>
-        <Typography variant="body1">
+        <Typography variant="body1" sx={{ fontSize: { xs: '0.85rem', sm: '1rem' } }}>
           Gestión de Licencias y Usuarios - JHVC Tech Solutions
         </Typography>
       </MotionBox>
 
       {/* TABS */}
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tabs value={tab} onChange={(e, v) => setTab(v)}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: { xs: 2, sm: 3 } }}>
+        <Tabs 
+          value={tab} 
+          onChange={(e, v) => setTab(v)}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{
+            '& .MuiTab-root': {
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              minWidth: { xs: 'auto', sm: 160 },
+              px: { xs: 1, sm: 2 }
+            }
+          }}
+        >
           <Tab label="Usuarios" />
           <Tab label="Códigos de Invitación" />
           <Tab label="Licencias de Productos" />
@@ -510,7 +539,7 @@ const Admin = () => {
 
       {/* USUARIOS TAB */}
       {tab === 0 && (
-        <Box sx={{ height: 600, width: '100%' }}>
+        <Box sx={{ height: { xs: 400, sm: 600 }, width: '100%' }}>
           <DataGrid
             rows={users}
             columns={usersColumns}
@@ -535,6 +564,8 @@ const Admin = () => {
             sx={{
               mb: 2,
               background: 'linear-gradient(135deg, #0c4d7b, #17a2b8)',
+              fontSize: { xs: '0.8rem', sm: '0.9rem' },
+              px: { xs: 2, sm: 3 },
               '&:hover': {
                 background: 'linear-gradient(135deg, #17a2b8, #0c4d7b)'
               }
@@ -542,7 +573,7 @@ const Admin = () => {
           >
             Generar Código
           </Button>
-          <Box sx={{ height: 600, width: '100%' }}>
+          <Box sx={{ height: { xs: 400, sm: 600 }, width: '100%' }}>
             <DataGrid
               rows={codes}
               columns={codesColumns}
@@ -568,6 +599,8 @@ const Admin = () => {
             sx={{
               mb: 2,
               background: 'linear-gradient(135deg, #0c4d7b, #17a2b8)',
+              fontSize: { xs: '0.8rem', sm: '0.9rem' },
+              px: { xs: 2, sm: 3 },
               '&:hover': {
                 background: 'linear-gradient(135deg, #17a2b8, #0c4d7b)'
               }
@@ -575,7 +608,7 @@ const Admin = () => {
           >
             Crear Licencia
           </Button>
-          <Box sx={{ height: 600, width: '100%' }}>
+          <Box sx={{ height: { xs: 400, sm: 600 }, width: '100%' }}>
             <DataGrid
               rows={licenses}
               columns={licensesColumns}
@@ -589,8 +622,14 @@ const Admin = () => {
       )}
 
       {/* DIALOG CREAR CÓDIGO */}
-      <Dialog open={openDialog && dialogType === 'code'} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Generar Código de Invitación</DialogTitle>
+      <Dialog 
+        open={openDialog && dialogType === 'code'} 
+        onClose={() => setOpenDialog(false)} 
+        maxWidth="sm" 
+        fullWidth
+        fullScreen={window.innerWidth < 600}
+      >
+        <DialogTitle sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }}>Generar Código de Invitación</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -599,6 +638,7 @@ const Admin = () => {
             value={codeForm.max_uses}
             onChange={(e) => setCodeForm({ ...codeForm, max_uses: parseInt(e.target.value) })}
             sx={{ mt: 2, mb: 2 }}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
           <TextField
             fullWidth
@@ -606,17 +646,24 @@ const Admin = () => {
             type="number"
             value={codeForm.days_valid}
             onChange={(e) => setCodeForm({ ...codeForm, days_valid: parseInt(e.target.value) })}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-          <Button onClick={handleCreateCode} variant="contained">Crear</Button>
+          <Button onClick={() => setOpenDialog(false)} sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>Cancelar</Button>
+          <Button onClick={handleCreateCode} variant="contained" sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>Crear</Button>
         </DialogActions>
       </Dialog>
 
       {/* DIALOG CREAR LICENCIA */}
-      <Dialog open={openDialog && dialogType === 'license'} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Crear Licencia de Producto</DialogTitle>
+      <Dialog 
+        open={openDialog && dialogType === 'license'} 
+        onClose={() => setOpenDialog(false)} 
+        maxWidth="sm" 
+        fullWidth
+        fullScreen={window.innerWidth < 600}
+      >
+        <DialogTitle sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }}>Crear Licencia de Producto</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -624,6 +671,7 @@ const Admin = () => {
             value={licenseForm.client_name}
             onChange={(e) => setLicenseForm({ ...licenseForm, client_name: e.target.value })}
             sx={{ mt: 2, mb: 2 }}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
             required
           />
           <TextField
@@ -633,13 +681,15 @@ const Admin = () => {
             value={licenseForm.client_email}
             onChange={(e) => setLicenseForm({ ...licenseForm, client_email: e.target.value })}
             sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Módulos *</InputLabel>
+            <InputLabel sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>Módulos *</InputLabel>
             <Select
               multiple
               value={licenseForm.modules}
               onChange={(e) => setLicenseForm({ ...licenseForm, modules: e.target.value })}
+              sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
             >
               <MenuItem value="CALCULADORA">Calculadora Fiscal</MenuItem>
               <MenuItem value="VISOR">Visor CFDI</MenuItem>
@@ -655,6 +705,7 @@ const Admin = () => {
             value={licenseForm.max_devices}
             onChange={(e) => setLicenseForm({ ...licenseForm, max_devices: parseInt(e.target.value) })}
             sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
           <TextField
             fullWidth
@@ -663,6 +714,7 @@ const Admin = () => {
             value={licenseForm.days_valid}
             onChange={(e) => setLicenseForm({ ...licenseForm, days_valid: parseInt(e.target.value) })}
             sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
           <TextField
             fullWidth
@@ -671,17 +723,24 @@ const Admin = () => {
             rows={3}
             value={licenseForm.notes}
             onChange={(e) => setLicenseForm({ ...licenseForm, notes: e.target.value })}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-          <Button onClick={handleCreateLicense} variant="contained">Crear</Button>
+          <Button onClick={() => setOpenDialog(false)} sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>Cancelar</Button>
+          <Button onClick={handleCreateLicense} variant="contained" sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>Crear</Button>
         </DialogActions>
       </Dialog>
 
       {/* DIALOG EDITAR LICENCIA */}
-      <Dialog open={openDialog && dialogType === 'editLicense'} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Editar Licencia</DialogTitle>
+      <Dialog 
+        open={openDialog && dialogType === 'editLicense'} 
+        onClose={() => setOpenDialog(false)} 
+        maxWidth="sm" 
+        fullWidth
+        fullScreen={window.innerWidth < 600}
+      >
+        <DialogTitle sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }}>Editar Licencia</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -689,6 +748,7 @@ const Admin = () => {
             value={editLicenseForm.client_name}
             onChange={(e) => setEditLicenseForm({ ...editLicenseForm, client_name: e.target.value })}
             sx={{ mt: 2, mb: 2 }}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
           <TextField
             fullWidth
@@ -697,6 +757,7 @@ const Admin = () => {
             value={editLicenseForm.client_email}
             onChange={(e) => setEditLicenseForm({ ...editLicenseForm, client_email: e.target.value })}
             sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
           <TextField
             fullWidth
@@ -705,6 +766,7 @@ const Admin = () => {
             value={editLicenseForm.max_devices}
             onChange={(e) => setEditLicenseForm({ ...editLicenseForm, max_devices: parseInt(e.target.value) })}
             sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
           <TextField
             fullWidth
@@ -713,6 +775,7 @@ const Admin = () => {
             value={editLicenseForm.days_valid}
             onChange={(e) => setEditLicenseForm({ ...editLicenseForm, days_valid: parseInt(e.target.value) })}
             sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
           <TextField
             fullWidth
@@ -722,12 +785,14 @@ const Admin = () => {
             value={editLicenseForm.notes}
             onChange={(e) => setEditLicenseForm({ ...editLicenseForm, notes: e.target.value })}
             sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
           />
           <FormControl fullWidth>
-            <InputLabel>Estado</InputLabel>
+            <InputLabel sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>Estado</InputLabel>
             <Select
               value={editLicenseForm.is_active}
               onChange={(e) => setEditLicenseForm({ ...editLicenseForm, is_active: e.target.value })}
+              sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
             >
               <MenuItem value={true}>Activa</MenuItem>
               <MenuItem value={false}>Inactiva</MenuItem>
@@ -735,45 +800,51 @@ const Admin = () => {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
-          <Button onClick={handleUpdateLicense} variant="contained">Guardar</Button>
+          <Button onClick={() => setOpenDialog(false)} sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>Cancelar</Button>
+          <Button onClick={handleUpdateLicense} variant="contained" sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>Guardar</Button>
         </DialogActions>
       </Dialog>
 
       {/* DIALOG DETALLES */}
-      <Dialog open={detailsDialog} onClose={() => setDetailsDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Detalles de Licencia</DialogTitle>
+      <Dialog 
+        open={detailsDialog} 
+        onClose={() => setDetailsDialog(false)} 
+        maxWidth="md" 
+        fullWidth
+        fullScreen={window.innerWidth < 600}
+      >
+        <DialogTitle sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }}>Detalles de Licencia</DialogTitle>
         <DialogContent>
-          <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>Dispositivos Registrados:</Typography>
+          <Typography variant="h6" sx={{ mt: 2, mb: 2, fontSize: { xs: '1rem', sm: '1.25rem' } }}>Dispositivos Registrados:</Typography>
           {detailsData.devices && detailsData.devices.length > 0 ? (
             detailsData.devices.map((device) => (
               <Box key={device.id} sx={{ mb: 2, p: 2, background: '#f5f5f5', borderRadius: 2 }}>
-                <Typography variant="body1"><strong>{device.device_name || 'Sin nombre'}</strong></Typography>
-                <Typography variant="caption">ID: {device.machine_id?.substring(0, 30)}...</Typography><br/>
-                <Typography variant="caption">Último check: {new Date(device.last_check).toLocaleString()}</Typography><br/>
-                <Button size="small" color="error" onClick={() => removeDevice(device.id)} sx={{ mt: 1 }}>Eliminar</Button>
+                <Typography variant="body1" sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}><strong>{device.device_name || 'Sin nombre'}</strong></Typography>
+                <Typography variant="caption" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>ID: {device.machine_id?.substring(0, 30)}...</Typography><br/>
+                <Typography variant="caption" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>Último check: {new Date(device.last_check).toLocaleString()}</Typography><br/>
+                <Button size="small" color="error" onClick={() => removeDevice(device.id)} sx={{ mt: 1, fontSize: { xs: '0.7rem', sm: '0.8rem' } }}>Eliminar</Button>
               </Box>
             ))
           ) : (
-            <Typography>No hay dispositivos registrados</Typography>
+            <Typography sx={{ fontSize: { xs: '0.85rem', sm: '1rem' } }}>No hay dispositivos registrados</Typography>
           )}
 
-          <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Módulos Asignados:</Typography>
+          <Typography variant="h6" sx={{ mt: 3, mb: 2, fontSize: { xs: '1rem', sm: '1.25rem' } }}>Módulos Asignados:</Typography>
           {detailsData.modules && detailsData.modules.length > 0 ? (
             detailsData.modules.map((module) => (
-              <Box key={module.id} sx={{ mb: 1, p: 1.5, background: '#f5f5f5', borderRadius: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography><strong>{module.module_name}</strong></Typography>
-                <Button size="small" color="error" onClick={() => removeModule(module.id)}>Quitar</Button>
+              <Box key={module.id} sx={{ mb: 1, p: 1.5, background: '#f5f5f5', borderRadius: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+                <Typography sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}><strong>{module.module_name}</strong></Typography>
+                <Button size="small" color="error" onClick={() => removeModule(module.id)} sx={{ fontSize: { xs: '0.7rem', sm: '0.8rem' } }}>Quitar</Button>
               </Box>
             ))
           ) : (
-            <Typography>No hay módulos asignados</Typography>
+            <Typography sx={{ fontSize: { xs: '0.85rem', sm: '1rem' } }}>No hay módulos asignados</Typography>
           )}
 
-          <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Agregar Módulo:</Typography>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Typography variant="h6" sx={{ mt: 3, mb: 2, fontSize: { xs: '1rem', sm: '1.25rem' } }}>Agregar Módulo:</Typography>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, alignItems: 'stretch' }}>
             <FormControl fullWidth>
-              <Select id="addModuleSelect" defaultValue="CALCULADORA">
+              <Select id="addModuleSelect" defaultValue="CALCULADORA" sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>
                 <MenuItem value="CALCULADORA">Calculadora</MenuItem>
                 <MenuItem value="VISOR">Visor</MenuItem>
                 <MenuItem value="CONTABILIDAD">Contabilidad</MenuItem>
@@ -787,16 +858,17 @@ const Admin = () => {
                 const moduleName = document.getElementById('addModuleSelect').value
                 addModule(moduleName)
               }}
+              sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' }, minWidth: { xs: '100%', sm: 'auto' } }}
             >
               Agregar
             </Button>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDetailsDialog(false)}>Cerrar</Button>
+          <Button onClick={() => setDetailsDialog(false)} sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>Cerrar</Button>
         </DialogActions>
       </Dialog>
-    </Container>
+    </Box>
   )
 }
 

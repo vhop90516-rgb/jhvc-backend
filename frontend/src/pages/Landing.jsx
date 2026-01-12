@@ -67,6 +67,21 @@ const Landing = () => {
     .gradient-bg { 
       background: linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%);
     }
+
+    @media (max-width: 768px) {
+      .mobile-hide { display: none !important; }
+      .mobile-column { flex-direction: column !important; }
+      .mobile-text-center { text-align: center !important; }
+      .mobile-full-width { width: 100% !important; max-width: 100% !important; }
+      .mobile-padding { padding: 2rem 1rem !important; }
+      .mobile-grid-1 { grid-template-columns: 1fr !important; }
+      .mobile-gap-small { gap: 1rem !important; }
+      .mobile-font-large { font-size: 2rem !important; }
+      .mobile-font-medium { font-size: 1.5rem !important; }
+      .mobile-font-small { font-size: 1rem !important; }
+      .mobile-icon-small { font-size: 6rem !important; }
+      .mobile-no-animation { animation: none !important; }
+    }
   `
 
   return (
@@ -86,9 +101,9 @@ const Landing = () => {
         transition: 'all 0.3s ease',
         padding: scrolled ? '0.75rem 0' : '1rem 0'
       }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{
-            fontSize: '1.5rem',
+            fontSize: '1.25rem',
             fontWeight: 800,
             color: 'white',
             cursor: 'pointer'
@@ -96,7 +111,7 @@ const Landing = () => {
             JHVC Tech Solutions
           </div>
           
-          <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
+          <div className="mobile-hide" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
             {[
               { name: 'Inicio', href: '#hero' },
               { name: 'Nosotros', href: '#about' },
@@ -115,35 +130,35 @@ const Landing = () => {
                 {item.name}
               </a>
             ))}
-            
-            <button onClick={() => navigate('/login')} style={{
-              padding: '0.75rem 1.75rem',
-              background: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#0c4d7b',
-              fontWeight: 700,
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-              boxShadow: '0 4px 14px rgba(0,0,0,0.2)'
-            }}
-            onMouseEnter={e => {
-              e.target.style.transform = 'translateY(-2px)'
-              e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)'
-            }}
-            onMouseLeave={e => {
-              e.target.style.transform = 'translateY(0)'
-              e.target.style.boxShadow = '0 4px 14px rgba(0,0,0,0.2)'
-            }}>
-              Iniciar Sesión
-            </button>
           </div>
+
+          <button onClick={() => navigate('/login')} style={{
+            padding: '0.6rem 1.25rem',
+            background: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            color: '#0c4d7b',
+            fontWeight: 700,
+            fontSize: '0.85rem',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+            boxShadow: '0 4px 14px rgba(0,0,0,0.2)'
+          }}
+          onMouseEnter={e => {
+            e.target.style.transform = 'translateY(-2px)'
+            e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)'
+          }}
+          onMouseLeave={e => {
+            e.target.style.transform = 'translateY(0)'
+            e.target.style.boxShadow = '0 4px 14px rgba(0,0,0,0.2)'
+          }}>
+            Iniciar Sesión
+          </button>
         </div>
       </nav>
 
       {/* HERO SECTION */}
-      <section id="hero" className="gradient-bg" style={{
+      <section id="hero" className="gradient-bg mobile-padding" style={{
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
@@ -163,7 +178,7 @@ const Landing = () => {
           borderRadius: '50%'
         }} />
 
-        <div style={{ 
+        <div className="mobile-full-width" style={{ 
           maxWidth: '1200px', 
           margin: '0 auto', 
           padding: '0 2rem', 
@@ -178,7 +193,7 @@ const Landing = () => {
               background: 'rgba(255, 255, 255, 0.2)',
               borderRadius: '50px',
               color: 'white',
-              fontSize: '0.9rem',
+              fontSize: '0.85rem',
               fontWeight: 600,
               marginBottom: '2rem'
             }}>
@@ -186,7 +201,7 @@ const Landing = () => {
             </div>
           </div>
 
-          <h1 className="animate-in" style={{
+          <h1 className="animate-in mobile-font-large" style={{
             fontSize: '3.5rem',
             fontWeight: 800,
             lineHeight: 1.2,
@@ -196,7 +211,7 @@ const Landing = () => {
             Soluciones Contables Inteligentes
           </h1>
 
-          <p className="animate-in" style={{
+          <p className="animate-in mobile-font-small" style={{
             fontSize: '1.3rem',
             opacity: 0.95,
             maxWidth: '680px',
@@ -215,8 +230,6 @@ const Landing = () => {
             animationDelay: '0.45s',
             flexWrap: 'wrap'
           }}>
-            
-
             <button onClick={() => document.getElementById('product').scrollIntoView({ behavior: 'smooth' })} style={{
               padding: '1rem 2.5rem',
               background: 'transparent',
@@ -242,15 +255,14 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* ABOUT SECTION - MEJORADA */}
-      <section id="about" style={{
+      {/* ABOUT SECTION */}
+      <section id="about" className="mobile-padding" style={{
         minHeight: '85vh',
         background: 'linear-gradient(135deg, #ffffff 0%, #f8fbfd 100%)',
         padding: '6rem 2rem',
         position: 'relative',
         overflow: 'hidden'
       }}>
-        {/* Elementos decorativos de fondo */}
         <div style={{
           position: 'absolute',
           top: '10%',
@@ -272,8 +284,8 @@ const Landing = () => {
           animation: 'pulse 5s ease-in-out infinite'
         }} />
 
-        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
+        <div className="mobile-full-width" style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
             <div className="slide-left">
               <div style={{
                 display: 'inline-block',
@@ -289,7 +301,7 @@ const Landing = () => {
                 SOBRE NOSOTROS
               </div>
 
-              <h2 style={{
+              <h2 className="mobile-font-medium" style={{
                 fontSize: '2.8rem',
                 fontWeight: 800,
                 background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
@@ -341,7 +353,7 @@ const Landing = () => {
                 </p>
               </div>
 
-              <div style={{
+              <div className="mobile-gap-small" style={{
                 display: 'flex',
                 gap: '2rem',
                 marginTop: '2rem'
@@ -379,7 +391,7 @@ const Landing = () => {
               </div>
             </div>
 
-            <div className="slide-right" style={{ 
+            <div className="slide-right mobile-hide" style={{ 
               textAlign: 'center', 
               animationDelay: '0.2s',
               position: 'relative'
@@ -388,7 +400,6 @@ const Landing = () => {
                 position: 'relative',
                 display: 'inline-block'
               }}>
-                {/* Círculos decorativos animados */}
                 <div style={{
                   position: 'absolute',
                   top: '-20px',
@@ -411,7 +422,6 @@ const Landing = () => {
                   animationDelay: '1s'
                 }} />
 
-                {/* Icono principal */}
                 <div style={{
                   fontSize: '12rem',
                   position: 'relative',
@@ -422,7 +432,6 @@ const Landing = () => {
                   💼
                 </div>
 
-                {/* Badges flotantes */}
                 <div className="pulse-slow" style={{
                   position: 'absolute',
                   top: '20%',
@@ -460,14 +469,14 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* CARACTERÍSTICAS - CARDS COMO DASHBOARD */}
-      <section style={{
+      {/* CARACTERÍSTICAS */}
+      <section className="mobile-padding" style={{
         background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecef 100%)',
         padding: '6rem 2rem',
         position: 'relative'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <h2 style={{
+        <div className="mobile-full-width" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <h2 className="mobile-font-medium" style={{
             fontSize: '2.5rem',
             fontWeight: 700,
             textAlign: 'center',
@@ -477,7 +486,7 @@ const Landing = () => {
             ¿Por qué elegir JHVC?
           </h2>
 
-          <div style={{
+          <div className="mobile-grid-1 mobile-gap-small" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: '2rem'
@@ -527,15 +536,14 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* PRODUCT SECTION - MEJORADA */}
-      <section id="product" style={{
+      {/* PRODUCT SECTION */}
+      <section id="product" className="mobile-padding" style={{
         minHeight: '100vh',
         background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
         padding: '6rem 2rem',
         position: 'relative',
         overflow: 'hidden'
       }}>
-        {/* Elementos decorativos de fondo */}
         <div style={{
           position: 'absolute',
           top: '0',
@@ -546,7 +554,7 @@ const Landing = () => {
           pointerEvents: 'none'
         }} />
 
-        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div className="mobile-full-width" style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div className="animate-in" style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <div style={{
               display: 'inline-block',
@@ -562,7 +570,7 @@ const Landing = () => {
               PRODUCTO DESTACADO
             </div>
 
-            <h2 className="animate-in" style={{
+            <h2 className="animate-in mobile-font-medium" style={{
               fontSize: '3rem',
               fontWeight: 800,
               color: 'white',
@@ -572,7 +580,7 @@ const Landing = () => {
             }}>
               Nuestro Producto
             </h2>
-            <p className="animate-in" style={{
+            <p className="animate-in mobile-font-small" style={{
               fontSize: '1.3rem',
               color: 'rgba(255, 255, 255, 0.9)',
               animationDelay: '0.2s',
@@ -582,8 +590,7 @@ const Landing = () => {
             </p>
           </div>
 
-          {/* VISOR CARD - ESTILO DASHBOARD MEJORADO */}
-          <div style={{ maxWidth: '950px', margin: '0 auto' }}>
+          <div className="mobile-full-width" style={{ maxWidth: '950px', margin: '0 auto' }}>
             <div className="scale-in" style={{
               padding: '3.5rem',
               textAlign: 'center',
@@ -604,7 +611,6 @@ const Landing = () => {
               e.currentTarget.style.transform = 'translateY(0)'
               e.currentTarget.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.3)'
             }}>
-              {/* Barra decorativa superior */}
               <div style={{
                 position: 'absolute',
                 top: 0,
@@ -616,7 +622,6 @@ const Landing = () => {
                 animation: 'shimmer 3s linear infinite'
               }} />
 
-              {/* Badge flotante */}
               <div style={{
                 position: 'absolute',
                 top: '2rem',
@@ -633,7 +638,7 @@ const Landing = () => {
               </div>
 
               <div style={{ marginBottom: '2rem' }}>
-                <div style={{
+                <div className="mobile-icon-small" style={{
                   fontSize: '4rem',
                   marginBottom: '1rem',
                   display: 'inline-block',
@@ -643,7 +648,7 @@ const Landing = () => {
                 </div>
               </div>
 
-              <h3 style={{
+              <h3 className="mobile-font-medium" style={{
                 fontSize: '2.5rem',
                 fontWeight: 800,
                 background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
@@ -655,7 +660,7 @@ const Landing = () => {
                 Visor de CFDI
               </h3>
 
-              <p style={{
+              <p className="mobile-font-small" style={{
                 fontSize: '1.15rem',
                 color: '#555',
                 marginBottom: '2.5rem',
@@ -666,7 +671,7 @@ const Landing = () => {
                 Administra tus archivos XML, visualiza la información de forma clara y exporta a Excel. Todo de manera local y segura en tu equipo.
               </p>
 
-              <div style={{
+              <div className="mobile-grid-1 mobile-gap-small" style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
                 gap: '1.25rem',
@@ -704,8 +709,6 @@ const Landing = () => {
                 ))}
               </div>
 
-               
-
               <p style={{
                 marginTop: '1.5rem',
                 color: '#999',
@@ -719,38 +722,37 @@ const Landing = () => {
       </section>
 
       {/* CTA SECTION */}
-      <section className="gradient-bg" style={{
+      <section className="gradient-bg mobile-padding" style={{
         padding: '6rem 2rem',
         textAlign: 'center',
         color: 'white'
       }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <h2 style={{
+        <div className="mobile-full-width" style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <h2 className="mobile-font-medium" style={{
             fontSize: '2.5rem',
             fontWeight: 700,
             marginBottom: '1rem'
           }}>
             ¿Listo para transformar tu práctica contable?
           </h2>
-          <p style={{
+          <p className="mobile-font-small" style={{
             fontSize: '1.2rem',
             opacity: 0.95,
             marginBottom: '2rem'
           }}>
             Únete a los contadores que ya están ahorrando tiempo con nuestro Visor de CFDI
           </p>
-          
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer id="contact" style={{
+      <footer id="contact" className="mobile-padding" style={{
         background: '#0c4d7b',
         padding: '3rem 2rem 1rem',
         color: 'white'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{
+        <div className="mobile-full-width" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div className="mobile-grid-1 mobile-gap-small" style={{
             display: 'grid',
             gridTemplateColumns: '2fr 1fr 1fr 1fr',
             gap: '3rem',
