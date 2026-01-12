@@ -260,26 +260,26 @@ func createTables(db *sql.DB) error {
 	db.Exec(`ALTER TABLE product_licenses DROP COLUMN IF EXISTS product_name`)
 	db.Exec(`ALTER TABLE product_licenses DROP COLUMN IF EXISTS last_check`)
 
-	// Crear o actualizar usuario admin con contraseña fija
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
+	// Crear usuario admin SOLO si no existe (líneas 275-290)
 	var adminExists bool
 	db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE email = 'admin@jhvc.com')").Scan(&adminExists)
 
 	if !adminExists {
-		// Crear nuevo usuario admin
+		// Crear nuevo usuario admin SOLO la primera vez
+		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
 		db.Exec(`
-            INSERT INTO users (email, password_hash, full_name, is_admin, is_active)
-            VALUES ('admin@jhvc.com', $1, 'Administrador', true, true)
-        `, string(hashedPassword))
+		INSERT INTO users (email, password_hash, full_name, is_admin, is_active)
+		VALUES ('admin@jhvc.com', $1, 'Administrador', true, true)
+	`, string(hashedPassword))
 		log.Println("✅ Usuario admin creado: admin@jhvc.com / admin123")
 	} else {
-		// Actualizar usuario admin existente (contraseña + permisos)
+		// Solo actualizar permisos, NUNCA la contraseña
 		db.Exec(`
-			UPDATE users 
-			SET password_hash = $1, is_admin = true, is_active = true
-			WHERE email = 'admin@jhvc.com'
-		`, string(hashedPassword))
-		log.Println("✅ Usuario admin actualizado: admin@jhvc.com / admin123")
+		UPDATE users 
+		SET is_admin = true, is_active = true
+		WHERE email = 'admin@jhvc.com'
+	`)
+		log.Println("✅ Usuario admin verificado (contraseña preservada)")
 	}
 
 	defaultProducts := []struct {

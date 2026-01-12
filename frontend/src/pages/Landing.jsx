@@ -38,15 +38,32 @@ const Landing = () => {
       to { opacity: 1; transform: translateX(0); }
     }
     
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
     @keyframes gradient {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
     
     .animate-in { animation: fadeInUp 0.8s ease-out forwards; }
     .scale-in { animation: scaleIn 0.6s ease-out forwards; }
     .slide-left { animation: slideInLeft 0.8s ease-out forwards; }
+    .slide-right { animation: slideInRight 0.8s ease-out forwards; }
+    .pulse-slow { animation: pulse 3s ease-in-out infinite; }
     .gradient-bg { 
       background: linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%);
     }
@@ -198,28 +215,7 @@ const Landing = () => {
             animationDelay: '0.45s',
             flexWrap: 'wrap'
           }}>
-            <button onClick={() => navigate('/register')} style={{
-              padding: '1rem 2.5rem',
-              background: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#0c4d7b',
-              fontWeight: 700,
-              fontSize: '1rem',
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-              boxShadow: '0 4px 14px rgba(0,0,0,0.2)'
-            }}
-            onMouseEnter={e => {
-              e.target.style.transform = 'translateY(-2px)'
-              e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)'
-            }}
-            onMouseLeave={e => {
-              e.target.style.transform = 'translateY(0)'
-              e.target.style.boxShadow = '0 4px 14px rgba(0,0,0,0.2)'
-            }}>
-              Comenzar Gratis
-            </button>
+            
 
             <button onClick={() => document.getElementById('product').scrollIntoView({ behavior: 'smooth' })} style={{
               padding: '1rem 2.5rem',
@@ -246,55 +242,218 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* ABOUT SECTION */}
+      {/* ABOUT SECTION - MEJORADA */}
       <section id="about" style={{
         minHeight: '85vh',
-        background: '#ffffff',
+        background: 'linear-gradient(135deg, #ffffff 0%, #f8fbfd 100%)',
         padding: '6rem 2rem',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        {/* Elementos decorativos de fondo */}
+        <div style={{
+          position: 'absolute',
+          top: '10%',
+          left: '-5%',
+          width: '300px',
+          height: '300px',
+          background: 'radial-gradient(circle, rgba(12, 77, 123, 0.05) 0%, transparent 70%)',
+          borderRadius: '50%',
+          animation: 'pulse 4s ease-in-out infinite'
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '20%',
+          right: '-5%',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(23, 162, 184, 0.05) 0%, transparent 70%)',
+          borderRadius: '50%',
+          animation: 'pulse 5s ease-in-out infinite'
+        }} />
+
+        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
             <div className="slide-left">
-              <h2 style={{
-                fontSize: '2.5rem',
-                fontWeight: 700,
+              <div style={{
+                display: 'inline-block',
+                padding: '0.5rem 1.5rem',
+                background: 'linear-gradient(135deg, rgba(12, 77, 123, 0.1) 0%, rgba(23, 162, 184, 0.1) 100%)',
+                borderRadius: '50px',
                 color: '#0c4d7b',
-                marginBottom: '1.5rem'
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                marginBottom: '1.5rem',
+                letterSpacing: '1px'
+              }}>
+                SOBRE NOSOTROS
+              </div>
+
+              <h2 style={{
+                fontSize: '2.8rem',
+                fontWeight: 800,
+                background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                marginBottom: '2rem',
+                lineHeight: 1.2
               }}>
                 Nuestra Historia
               </h2>
-              <p style={{
-                fontSize: '1.1rem',
-                color: '#333',
-                marginBottom: '1rem',
-                lineHeight: 1.8
-              }}>
-                Los contadores pasan horas en tareas repetitivas que pueden automatizarse con tecnología.
-              </p>
-              <p style={{
-                fontSize: '1.1rem',
-                color: '#333',
-                marginBottom: '1rem',
-                lineHeight: 1.8
-              }}>
-                Por eso fundamos <strong>JHVC Tech Solutions</strong>: para desarrollar herramientas que faciliten el trabajo diario de los contadores mexicanos.
-              </p>
-              <p style={{
-                fontSize: '1.1rem',
-                color: '#333',
-                lineHeight: 1.8
-              }}>
-                Nuestra misión es simple: <strong>que los contadores dejen de perder tiempo en procesos manuales y se enfoquen en asesorar a sus clientes.</strong>
-              </p>
-            </div>
-            <div className="scale-in" style={{ textAlign: 'center', animationDelay: '0.2s' }}>
+
               <div style={{
-                fontSize: '15rem',
-                opacity: 0.1,
-                lineHeight: 1
+                borderLeft: '4px solid #17a2b8',
+                paddingLeft: '1.5rem',
+                marginBottom: '1.5rem'
               }}>
-                💼
+                <p style={{
+                  fontSize: '1.15rem',
+                  color: '#2c3e50',
+                  marginBottom: '1.2rem',
+                  lineHeight: 1.8,
+                  fontWeight: 400
+                }}>
+                  Los contadores pasan horas en tareas repetitivas que pueden automatizarse con tecnología.
+                </p>
+                <p style={{
+                  fontSize: '1.15rem',
+                  color: '#2c3e50',
+                  marginBottom: '1.2rem',
+                  lineHeight: 1.8,
+                  fontWeight: 400
+                }}>
+                  Por eso fundamos <strong style={{ color: '#0c4d7b', fontWeight: 700 }}>JHVC Tech Solutions</strong>: para desarrollar herramientas que faciliten el trabajo diario de los contadores mexicanos.
+                </p>
+                <p style={{
+                  fontSize: '1.15rem',
+                  color: '#2c3e50',
+                  lineHeight: 1.8,
+                  fontWeight: 400
+                }}>
+                  Nuestra misión es simple: <strong style={{ 
+                    color: '#17a2b8', 
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, rgba(12, 77, 123, 0.1) 0%, rgba(23, 162, 184, 0.1) 100%)',
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '4px'
+                  }}>que los contadores dejen de perder tiempo en procesos manuales y se enfoquen en asesorar a sus clientes.</strong>
+                </p>
+              </div>
+
+              <div style={{
+                display: 'flex',
+                gap: '2rem',
+                marginTop: '2rem'
+              }}>
+                <div style={{
+                  textAlign: 'center',
+                  padding: '1.5rem',
+                  background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+                  borderRadius: '12px',
+                  color: 'white',
+                  flex: 1,
+                  boxShadow: '0 8px 20px rgba(12, 77, 123, 0.2)',
+                  transition: 'transform 0.3s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>100%</div>
+                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Local y Seguro</div>
+                </div>
+                <div style={{
+                  textAlign: 'center',
+                  padding: '1.5rem',
+                  background: 'linear-gradient(135deg, #17a2b8 0%, #0c4d7b 100%)',
+                  borderRadius: '12px',
+                  color: 'white',
+                  flex: 1,
+                  boxShadow: '0 8px 20px rgba(23, 162, 184, 0.2)',
+                  transition: 'transform 0.3s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>+50</div>
+                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Horas Ahorradas</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="slide-right" style={{ 
+              textAlign: 'center', 
+              animationDelay: '0.2s',
+              position: 'relative'
+            }}>
+              <div style={{
+                position: 'relative',
+                display: 'inline-block'
+              }}>
+                {/* Círculos decorativos animados */}
+                <div style={{
+                  position: 'absolute',
+                  top: '-20px',
+                  right: '-20px',
+                  width: '150px',
+                  height: '150px',
+                  background: 'linear-gradient(135deg, rgba(12, 77, 123, 0.2) 0%, rgba(23, 162, 184, 0.2) 100%)',
+                  borderRadius: '50%',
+                  animation: 'pulse 3s ease-in-out infinite'
+                }} />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-30px',
+                  left: '-30px',
+                  width: '200px',
+                  height: '200px',
+                  background: 'linear-gradient(135deg, rgba(23, 162, 184, 0.15) 0%, rgba(12, 77, 123, 0.15) 100%)',
+                  borderRadius: '50%',
+                  animation: 'pulse 4s ease-in-out infinite',
+                  animationDelay: '1s'
+                }} />
+
+                {/* Icono principal */}
+                <div style={{
+                  fontSize: '12rem',
+                  position: 'relative',
+                  zIndex: 1,
+                  filter: 'drop-shadow(0 10px 30px rgba(12, 77, 123, 0.2))',
+                  animation: 'float 6s ease-in-out infinite'
+                }}>
+                  💼
+                </div>
+
+                {/* Badges flotantes */}
+                <div className="pulse-slow" style={{
+                  position: 'absolute',
+                  top: '20%',
+                  right: '10%',
+                  background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+                  color: 'white',
+                  padding: '0.75rem 1.25rem',
+                  borderRadius: '50px',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  boxShadow: '0 8px 20px rgba(12, 77, 123, 0.3)',
+                  zIndex: 2
+                }}>
+                  ⚡ Rápido
+                </div>
+                <div className="pulse-slow" style={{
+                  position: 'absolute',
+                  bottom: '25%',
+                  left: '5%',
+                  background: 'linear-gradient(135deg, #17a2b8 0%, #0c4d7b 100%)',
+                  color: 'white',
+                  padding: '0.75rem 1.25rem',
+                  borderRadius: '50px',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  boxShadow: '0 8px 20px rgba(23, 162, 184, 0.3)',
+                  zIndex: 2,
+                  animationDelay: '1.5s'
+                }}>
+                  🔒 Seguro
+                </div>
               </div>
             </div>
           </div>
@@ -368,66 +527,141 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* PRODUCT SECTION */}
+      {/* PRODUCT SECTION - MEJORADA */}
       <section id="product" style={{
         minHeight: '100vh',
-        background: '#ffffff',
+        background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
         padding: '6rem 2rem',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h2 style={{
-              fontSize: '2.5rem',
+        {/* Elementos decorativos de fondo */}
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          width: '100%',
+          height: '100%',
+          background: 'radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%)',
+          pointerEvents: 'none'
+        }} />
+
+        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div className="animate-in" style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <div style={{
+              display: 'inline-block',
+              padding: '0.5rem 1.5rem',
+              background: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '50px',
+              color: 'white',
+              fontSize: '0.85rem',
               fontWeight: 700,
-              color: '#0c4d7b',
-              marginBottom: '1rem'
+              marginBottom: '1.5rem',
+              letterSpacing: '1px'
+            }}>
+              PRODUCTO DESTACADO
+            </div>
+
+            <h2 className="animate-in" style={{
+              fontSize: '3rem',
+              fontWeight: 800,
+              color: 'white',
+              marginBottom: '1rem',
+              animationDelay: '0.1s',
+              textShadow: '0 2px 20px rgba(0, 0, 0, 0.2)'
             }}>
               Nuestro Producto
             </h2>
-            <p style={{
-              fontSize: '1.2rem',
-              color: '#666'
+            <p className="animate-in" style={{
+              fontSize: '1.3rem',
+              color: 'rgba(255, 255, 255, 0.9)',
+              animationDelay: '0.2s',
+              fontWeight: 300
             }}>
               La herramienta más intuitiva para gestionar tus facturas electrónicas
             </p>
           </div>
 
-          {/* VISOR CARD - ESTILO DASHBOARD */}
-          <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <div style={{
-              padding: '3rem',
+          {/* VISOR CARD - ESTILO DASHBOARD MEJORADO */}
+          <div style={{ maxWidth: '950px', margin: '0 auto' }}>
+            <div className="scale-in" style={{
+              padding: '3.5rem',
               textAlign: 'center',
-              background: '#ffffff',
-              borderLeft: '6px solid #0c4d7b',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-              borderRadius: '8px',
-              transition: 'all 0.3s',
-              cursor: 'pointer'
+              background: 'white',
+              borderRadius: '20px',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+              transition: 'all 0.4s',
+              cursor: 'pointer',
+              position: 'relative',
+              overflow: 'hidden',
+              animationDelay: '0.3s'
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-10px) scale(1.02)'
-              e.currentTarget.style.boxShadow = '0 12px 24px rgba(12, 77, 123, 0.25)'
-              e.currentTarget.style.borderLeftWidth = '8px'
+              e.currentTarget.style.transform = 'translateY(-15px)'
+              e.currentTarget.style.boxShadow = '0 30px 80px rgba(0, 0, 0, 0.4)'
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(0) scale(1)'
-              e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)'
-              e.currentTarget.style.borderLeftWidth = '6px'
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.3)'
             }}>
-              <h3 style={{
-                fontSize: '2rem',
+              {/* Barra decorativa superior */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '8px',
+                background: 'linear-gradient(90deg, #0c4d7b 0%, #17a2b8 50%, #0c4d7b 100%)',
+                backgroundSize: '200% 100%',
+                animation: 'shimmer 3s linear infinite'
+              }} />
+
+              {/* Badge flotante */}
+              <div style={{
+                position: 'absolute',
+                top: '2rem',
+                right: '2rem',
+                background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '50px',
+                fontSize: '0.8rem',
                 fontWeight: 700,
-                color: '#0c4d7b',
-                marginBottom: '1rem'
+                boxShadow: '0 4px 15px rgba(12, 77, 123, 0.3)'
+              }}>
+                ⭐ POPULAR
+              </div>
+
+              <div style={{ marginBottom: '2rem' }}>
+                <div style={{
+                  fontSize: '4rem',
+                  marginBottom: '1rem',
+                  display: 'inline-block',
+                  animation: 'float 4s ease-in-out infinite'
+                }}>
+                  📊
+                </div>
+              </div>
+
+              <h3 style={{
+                fontSize: '2.5rem',
+                fontWeight: 800,
+                background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                marginBottom: '1.5rem'
               }}>
                 Visor de CFDI
               </h3>
+
               <p style={{
-                fontSize: '1.1rem',
-                color: '#666',
-                marginBottom: '2rem',
-                lineHeight: 1.7
+                fontSize: '1.15rem',
+                color: '#555',
+                marginBottom: '2.5rem',
+                lineHeight: 1.8,
+                maxWidth: '650px',
+                margin: '0 auto 2.5rem'
               }}>
                 Administra tus archivos XML, visualiza la información de forma clara y exporta a Excel. Todo de manera local y segura en tu equipo.
               </p>
@@ -435,49 +669,73 @@ const Landing = () => {
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
-                gap: '1.5rem',
-                marginBottom: '2rem'
+                gap: '1.25rem',
+                marginBottom: '2.5rem'
               }}>
                 {[
-                  'Administra XML',
-                  'Exporta a Excel',
-                  'Todo Local',
-                  'Ultra Rápido'
+                  { icon: '📁', text: 'Administra XML' },
+                  { icon: '📊', text: 'Exporta a Excel' },
+                  { icon: '💻', text: 'Todo Local' },
+                  { icon: '⚡', text: 'Ultra Rápido' }
                 ].map((feat, i) => (
                   <div key={i} style={{
-                    padding: '1rem',
-                    background: '#f5f7fa',
-                    borderRadius: '8px',
+                    padding: '1.25rem',
+                    background: 'linear-gradient(135deg, #f8fbfd 0%, #e8f4f8 100%)',
+                    borderRadius: '12px',
                     fontSize: '0.95rem',
-                    color: '#666'
+                    color: '#0c4d7b',
+                    fontWeight: 600,
+                    border: '2px solid rgba(12, 77, 123, 0.1)',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)'
+                    e.currentTarget.style.color = 'white'
+                    e.currentTarget.style.transform = 'scale(1.05)'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #f8fbfd 0%, #e8f4f8 100%)'
+                    e.currentTarget.style.color = '#0c4d7b'
+                    e.currentTarget.style.transform = 'scale(1)'
                   }}>
-                    ✓ {feat}
+                    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{feat.icon}</div>
+                    {feat.text}
                   </div>
                 ))}
               </div>
 
               <button onClick={() => navigate('/register')} style={{
-                padding: '1rem 2.5rem',
+                padding: '1.25rem 3rem',
                 background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
                 border: 'none',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 color: 'white',
-                fontWeight: 700,
-                fontSize: '1rem',
+                fontWeight: 800,
+                fontSize: '1.1rem',
                 cursor: 'pointer',
                 transition: 'all 0.3s',
-                boxShadow: '0 4px 14px rgba(0,0,0,0.2)'
+                boxShadow: '0 8px 25px rgba(12, 77, 123, 0.3)',
+                textTransform: 'uppercase',
+                letterSpacing: '1px'
               }}
               onMouseEnter={e => {
-                e.target.style.transform = 'translateY(-2px)'
-                e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)'
+                e.target.style.transform = 'translateY(-3px) scale(1.05)'
+                e.target.style.boxShadow = '0 12px 35px rgba(12, 77, 123, 0.4)'
               }}
               onMouseLeave={e => {
-                e.target.style.transform = 'translateY(0)'
-                e.target.style.boxShadow = '0 4px 14px rgba(0,0,0,0.2)'
+                e.target.style.transform = 'translateY(0) scale(1)'
+                e.target.style.boxShadow = '0 8px 25px rgba(12, 77, 123, 0.3)'
               }}>
-                Probar Gratis
+                🚀 Probar Gratis
               </button>
+
+              <p style={{
+                marginTop: '1.5rem',
+                color: '#999',
+                fontSize: '0.9rem'
+              }}>
+                Sin tarjeta de crédito requerida • Prueba todas las funciones
+              </p>
             </div>
           </div>
         </div>
@@ -504,28 +762,7 @@ const Landing = () => {
           }}>
             Únete a los contadores que ya están ahorrando tiempo con nuestro Visor de CFDI
           </p>
-          <button onClick={() => navigate('/register')} style={{
-            padding: '1rem 3rem',
-            background: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            color: '#0c4d7b',
-            fontWeight: 700,
-            fontSize: '1.1rem',
-            cursor: 'pointer',
-            transition: 'all 0.3s',
-            boxShadow: '0 4px 14px rgba(0,0,0,0.2)'
-          }}
-          onMouseEnter={e => {
-            e.target.style.transform = 'translateY(-2px) scale(1.05)'
-            e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)'
-          }}
-          onMouseLeave={e => {
-            e.target.style.transform = 'translateY(0) scale(1)'
-            e.target.style.boxShadow = '0 4px 14px rgba(0,0,0,0.2)'
-          }}>
-            Crear Cuenta Gratis
-          </button>
+          
         </div>
       </section>
 
