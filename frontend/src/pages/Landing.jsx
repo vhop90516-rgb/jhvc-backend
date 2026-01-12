@@ -704,30 +704,7 @@ const Landing = () => {
                 ))}
               </div>
 
-              <button onClick={() => navigate('/register')} style={{
-                padding: '1.25rem 3rem',
-                background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
-                border: 'none',
-                borderRadius: '12px',
-                color: 'white',
-                fontWeight: 800,
-                fontSize: '1.1rem',
-                cursor: 'pointer',
-                transition: 'all 0.3s',
-                boxShadow: '0 8px 25px rgba(12, 77, 123, 0.3)',
-                textTransform: 'uppercase',
-                letterSpacing: '1px'
-              }}
-              onMouseEnter={e => {
-                e.target.style.transform = 'translateY(-3px) scale(1.05)'
-                e.target.style.boxShadow = '0 12px 35px rgba(12, 77, 123, 0.4)'
-              }}
-              onMouseLeave={e => {
-                e.target.style.transform = 'translateY(0) scale(1)'
-                e.target.style.boxShadow = '0 8px 25px rgba(12, 77, 123, 0.3)'
-              }}>
-                🚀 Probar Gratis
-              </button>
+               
 
               <p style={{
                 marginTop: '1.5rem',

@@ -260,26 +260,36 @@ func createTables(db *sql.DB) error {
 	db.Exec(`ALTER TABLE product_licenses DROP COLUMN IF EXISTS product_name`)
 	db.Exec(`ALTER TABLE product_licenses DROP COLUMN IF EXISTS last_check`)
 
-	// Crear usuario admin SOLO si no existe (líneas 275-290)
+	// Crear usuario admin SOLO si no existe
 	var adminExists bool
-	db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE email = 'admin@jhvc.com')").Scan(&adminExists)
+	err = db.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE email = 'admin@jhvc.com')").Scan(&adminExists)
+	if err != nil {
+		log.Printf("Error verificando admin: %v", err)
+	}
 
 	if !adminExists {
-		// Crear nuevo usuario admin SOLO la primera vez
-		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
-		db.Exec(`
-		INSERT INTO users (email, password_hash, full_name, is_admin, is_active)
-		VALUES ('admin@jhvc.com', $1, 'Administrador', true, true)
-	`, string(hashedPassword))
-		log.Println("✅ Usuario admin creado: admin@jhvc.com / admin123")
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
+		if err != nil {
+			log.Printf("Error hasheando password: %v", err)
+			return nil
+		}
+
+		_, err = db.Exec("INSERT INTO users (email, password_hash, full_name, is_admin, is_active) VALUES ($1, $2, $3, $4, $5)",
+			"admin@jhvc.com",
+			string(hashedPassword),
+			"Administrador",
+			true,
+			true)
+
+		if err != nil {
+			log.Printf("ERROR CREANDO ADMIN: %v", err)
+		} else {
+			log.Println("✅ Usuario admin creado: admin@jhvc.com / admin123")
+		}
 	} else {
-		// Solo actualizar permisos, NUNCA la contraseña
-		db.Exec(`
-		UPDATE users 
-		SET is_admin = true, is_active = true
-		WHERE email = 'admin@jhvc.com'
-	`)
-		log.Println("✅ Usuario admin verificado (contraseña preservada)")
+		// Ya existe, NO tocar la contraseña
+		db.Exec("UPDATE users SET is_admin = true, is_active = true WHERE email = 'admin@jhvc.com'")
+		log.Println("✅ Usuario admin existe (contraseña NO modificada)")
 	}
 
 	defaultProducts := []struct {
