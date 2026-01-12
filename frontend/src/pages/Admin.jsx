@@ -9,7 +9,6 @@ import DownloadIcon from '@mui/icons-material/Download'
 import InfoIcon from '@mui/icons-material/Info'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import api from '../services/api'
 
 const MotionBox = motion(Box)
@@ -21,9 +20,8 @@ const Admin = () => {
   const [licenses, setLicenses] = useState([])
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogType, setDialogType] = useState('')
-  const [selectedLicense, setSelectedLicense] = useState(null)
   const [detailsDialog, setDetailsDialog] = useState(false)
-  const [detailsData, setDetailsData] = useState({ devices: [], modules: [] })
+  const [detailsData, setDetailsData] = useState({ devices: [], modules: [], licenseId: null })
 
   // Form states
   const [codeForm, setCodeForm] = useState({ max_uses: 1, days_valid: 0 })
@@ -102,12 +100,25 @@ const Admin = () => {
 
   // CÓDIGOS COLUMNS
   const codesColumns = [
-    { field: 'code', headerName: 'Código', width: 200, renderCell: (params) => <code>{params.value}</code> },
+    { 
+      field: 'code', 
+      headerName: 'Código', 
+      width: 250, 
+      renderCell: (params) => (
+        <Box sx={{ fontFamily: 'monospace', fontWeight: 'bold', fontStyle: 'italic' }}>
+          {params.value}
+        </Box>
+      )
+    },
     {
       field: 'uses',
       headerName: 'Usos',
       width: 150,
-      valueGetter: (params) => `${params.row.current_uses} / ${params.row.max_uses}`
+      renderCell: (params) => (
+        <span style={{ fontStyle: 'italic' }}>
+          {params.row.current_uses} / {params.row.max_uses}
+        </span>
+      )
     },
     {
       field: 'is_active',
@@ -140,12 +151,23 @@ const Admin = () => {
 
   // LICENCIAS COLUMNS
   const licensesColumns = [
-    { field: 'client_name', headerName: 'Cliente', width: 180, renderCell: (params) => <strong>{params.value}</strong> },
+    { 
+      field: 'client_name', 
+      headerName: 'Cliente', 
+      width: 180, 
+      renderCell: (params) => (
+        <strong style={{ fontStyle: 'italic' }}>{params.value}</strong>
+      )
+    },
     {
       field: 'modules',
       headerName: 'Módulos',
       width: 200,
-      valueGetter: (params) => params.value?.join(', ') || 'Sin módulos'
+      renderCell: (params) => (
+        <span style={{ fontStyle: 'italic' }}>
+          {params.value?.join(', ') || 'Sin módulos'}
+        </span>
+      )
     },
     {
       field: 'license_code',
@@ -159,7 +181,8 @@ const Admin = () => {
             cursor: 'pointer',
             background: '#f5f5f5',
             padding: '4px 8px',
-            borderRadius: '4px'
+            borderRadius: '4px',
+            fontStyle: 'italic'
           }}
           onClick={() => {
             navigator.clipboard.writeText(params.value)
@@ -174,13 +197,21 @@ const Admin = () => {
       field: 'devices',
       headerName: 'Dispositivos',
       width: 120,
-      valueGetter: (params) => `${params.row.current_devices} / ${params.row.max_devices}`
+      renderCell: (params) => (
+        <span style={{ fontStyle: 'italic' }}>
+          {params.row.current_devices} / {params.row.max_devices}
+        </span>
+      )
     },
     {
       field: 'expires_at',
       headerName: 'Expira',
       width: 120,
-      valueGetter: (params) => params.value ? new Date(params.value).toLocaleDateString() : 'Sin límite'
+      renderCell: (params) => (
+        <span style={{ fontStyle: 'italic' }}>
+          {params.value ? new Date(params.value).toLocaleDateString() : 'Sin límite'}
+        </span>
+      )
     },
     {
       field: 'is_active',
@@ -405,6 +436,47 @@ const Admin = () => {
     }
   }
 
+  const addModule = async (moduleName) => {
+    try {
+      await api.post(`/admin/licenses/${detailsData.licenseId}/modules`, { module_name: moduleName })
+      setDetailsDialog(false)
+      loadData()
+      alert('Módulo agregado')
+    } catch (error) {
+      alert('Error agregando módulo')
+    }
+  }
+
+  // ESTILOS PARA DATAGRID
+  const dataGridStyles = {
+    '& .MuiDataGrid-columnHeaders': {
+      backgroundColor: '#0c4d7b',
+      color: 'white',
+      fontSize: '1rem',
+      fontWeight: 700
+    },
+    '& .MuiDataGrid-columnHeaderTitle': {
+      fontWeight: 700,
+      color: 'white'
+    },
+    '& .MuiDataGrid-cell': {
+      color: '#666',
+      fontStyle: 'italic'
+    },
+    '& .MuiDataGrid-row:hover': {
+      backgroundColor: '#f5f7fa'
+    },
+    '& .MuiDataGrid-iconSeparator': {
+      color: 'white'
+    },
+    '& .MuiDataGrid-sortIcon': {
+      color: 'white'
+    },
+    '& .MuiDataGrid-menuIconButton': {
+      color: 'white'
+    }
+  }
+
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       {/* HEADER */}
@@ -445,11 +517,7 @@ const Admin = () => {
             pageSize={10}
             rowsPerPageOptions={[10, 25, 50]}
             disableSelectionOnClick
-            sx={{
-              '& .MuiDataGrid-cell:hover': {
-                color: '#0c4d7b'
-              }
-            }}
+            sx={dataGridStyles}
           />
         </Box>
       )}
@@ -481,6 +549,7 @@ const Admin = () => {
               pageSize={10}
               rowsPerPageOptions={[10, 25, 50]}
               disableSelectionOnClick
+              sx={dataGridStyles}
             />
           </Box>
         </Box>
@@ -513,6 +582,7 @@ const Admin = () => {
               pageSize={10}
               rowsPerPageOptions={[10, 25, 50]}
               disableSelectionOnClick
+              sx={dataGridStyles}
             />
           </Box>
         </Box>
@@ -675,11 +745,11 @@ const Admin = () => {
         <DialogTitle>Detalles de Licencia</DialogTitle>
         <DialogContent>
           <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>Dispositivos Registrados:</Typography>
-          {detailsData.devices.length > 0 ? (
+          {detailsData.devices && detailsData.devices.length > 0 ? (
             detailsData.devices.map((device) => (
               <Box key={device.id} sx={{ mb: 2, p: 2, background: '#f5f5f5', borderRadius: 2 }}>
                 <Typography variant="body1"><strong>{device.device_name || 'Sin nombre'}</strong></Typography>
-                <Typography variant="caption">ID: {device.machine_id.substring(0, 30)}...</Typography><br/>
+                <Typography variant="caption">ID: {device.machine_id?.substring(0, 30)}...</Typography><br/>
                 <Typography variant="caption">Último check: {new Date(device.last_check).toLocaleString()}</Typography><br/>
                 <Button size="small" color="error" onClick={() => removeDevice(device.id)} sx={{ mt: 1 }}>Eliminar</Button>
               </Box>
@@ -689,7 +759,7 @@ const Admin = () => {
           )}
 
           <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Módulos Asignados:</Typography>
-          {detailsData.modules.length > 0 ? (
+          {detailsData.modules && detailsData.modules.length > 0 ? (
             detailsData.modules.map((module) => (
               <Box key={module.id} sx={{ mb: 1, p: 1.5, background: '#f5f5f5', borderRadius: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography><strong>{module.module_name}</strong></Typography>
@@ -699,6 +769,28 @@ const Admin = () => {
           ) : (
             <Typography>No hay módulos asignados</Typography>
           )}
+
+          <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>Agregar Módulo:</Typography>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            <FormControl fullWidth>
+              <Select id="addModuleSelect" defaultValue="CALCULADORA">
+                <MenuItem value="CALCULADORA">Calculadora</MenuItem>
+                <MenuItem value="VISOR">Visor</MenuItem>
+                <MenuItem value="CONTABILIDAD">Contabilidad</MenuItem>
+                <MenuItem value="NOMINA">Nómina</MenuItem>
+                <MenuItem value="FACTURACION">Facturación</MenuItem>
+              </Select>
+            </FormControl>
+            <Button 
+              variant="contained" 
+              onClick={() => {
+                const moduleName = document.getElementById('addModuleSelect').value
+                addModule(moduleName)
+              }}
+            >
+              Agregar
+            </Button>
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDetailsDialog(false)}>Cerrar</Button>

@@ -229,7 +229,7 @@ const Login = () => {
                   onMouseEnter={(e) => e.target.style.color = '#0c4d7b'}
                   onMouseLeave={(e) => e.target.style.color = '#17a2b8'}
                 >
-                  ¿Olvidaste tu contraseña?
+              
                 </Link>
               </MotionBox>
 
@@ -320,37 +320,7 @@ const Login = () => {
                   o
                 </Typography>
               </Box>
-
-              <MotionBox
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.7, duration: 0.6 }}
-                sx={{ textAlign: 'center', mb: 2 }}
-              >
-                <Typography variant="body2">
-                  ¿No tienes cuenta?{' '}
-                  <Link 
-                    to="/register" 
-                    style={{ 
-                      color: '#17a2b8', 
-                      textDecoration: 'none', 
-                      fontWeight: 700,
-                      transition: 'all 0.3s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.color = '#0c4d7b'
-                      e.target.style.textDecoration = 'underline'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.color = '#17a2b8'
-                      e.target.style.textDecoration = 'none'
-                    }}
-                  >
-                    Crear cuenta gratis
-                  </Link>
-                </Typography>
-              </MotionBox>
-
+ 
               <MotionBox
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
