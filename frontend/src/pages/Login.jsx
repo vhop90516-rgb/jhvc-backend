@@ -290,37 +290,6 @@ const Login = () => {
                   ) : 'Iniciar Sesión'}
                 </Button>
               </MotionBox>
-
-              <Box 
-                sx={{ 
-                  textAlign: 'center',
-                  position: 'relative',
-                  mb: 3,
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    left: 0,
-                    top: '50%',
-                    width: '100%',
-                    height: 1,
-                    backgroundColor: '#e0e0e0'
-                  }
-                }}
-              >
-                <Typography 
-                  variant="body2" 
-                  sx={{ 
-                    backgroundColor: 'white',
-                    px: 2,
-                    position: 'relative',
-                    color: '#999',
-                    display: 'inline-block'
-                  }}
-                >
-                  o
-                </Typography>
-              </Box>
- 
               <MotionBox
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
