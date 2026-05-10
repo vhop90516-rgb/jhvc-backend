@@ -1,389 +1,836 @@
-import { Box, Container, Typography, Button, Grid, Card, CardContent } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
-import InfoIcon from '@mui/icons-material/Info'
-import SmartToyIcon from '@mui/icons-material/SmartToy'
-import LaptopMacIcon from '@mui/icons-material/LaptopMac'
-import SettingsIcon from '@mui/icons-material/Settings'
-import PsychologyIcon from '@mui/icons-material/Psychology'
-import AccessTimeIcon from '@mui/icons-material/AccessTime'
-import SecurityIcon from '@mui/icons-material/Security'
-import CloudIcon from '@mui/icons-material/Cloud'
-import GavelIcon from '@mui/icons-material/Gavel'
-import HeadsetMicIcon from '@mui/icons-material/HeadsetMic'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import EmailIcon from '@mui/icons-material/Email'
-import WhatsAppIcon from '@mui/icons-material/WhatsApp'
-import FacebookIcon from '@mui/icons-material/Facebook'
+import { useState, useEffect } from 'react'
 
 const Landing = () => {
   const navigate = useNavigate()
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const styles = `
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20px) scale(1.02); }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
+    
+    .animate-in { animation: fadeInUp 0.8s ease-out forwards; }
+    .scale-in { animation: scaleIn 0.6s ease-out forwards; }
+    .slide-left { animation: slideInLeft 0.8s ease-out forwards; }
+    .slide-right { animation: slideInRight 0.8s ease-out forwards; }
+    .pulse-slow { animation: pulse 3s ease-in-out infinite; }
+    .gradient-bg { 
+      background: linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%);
+    }
+
+    @media (max-width: 768px) {
+      .mobile-hide { display: none !important; }
+      .mobile-column { flex-direction: column !important; }
+      .mobile-text-center { text-align: center !important; }
+      .mobile-full-width { width: 100% !important; max-width: 100% !important; }
+      .mobile-padding { padding: 2rem 1rem !important; }
+      .mobile-grid-1 { grid-template-columns: 1fr !important; }
+      .mobile-gap-small { gap: 1rem !important; }
+      .mobile-font-large { font-size: 2rem !important; }
+      .mobile-font-medium { font-size: 1.5rem !important; }
+      .mobile-font-small { font-size: 1rem !important; }
+      .mobile-icon-small { font-size: 6rem !important; }
+      .mobile-no-animation { animation: none !important; }
+    }
+  `
 
   return (
-    <Box>
+    <>
+      <style>{styles}</style>
+      
       {/* NAVBAR */}
-      <Box sx={{ 
-        background: '#0c4d7b', 
-        position: 'sticky', 
-        top: 0, 
+      <nav style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
         zIndex: 1000,
-        boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+        background: scrolled ? 'rgba(12, 77, 123, 0.95)' : 'rgba(12, 77, 123, 0.85)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+        transition: 'all 0.3s ease',
+        padding: scrolled ? '0.75rem 0' : '1rem 0'
       }}>
-        <Container maxWidth="lg">
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            py: 2
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{
+            fontSize: '1.25rem',
+            fontWeight: 800,
+            color: 'white',
+            cursor: 'pointer'
+          }} onClick={() => navigate('/')}>
+            JHVC Tech Solutions
+          </div>
+          
+          <div className="mobile-hide" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+            {[
+              { name: 'Inicio', href: '#hero' },
+              { name: 'Nosotros', href: '#about' },
+              { name: 'Producto', href: '#product' },
+              { name: 'Contacto', href: '#contact' }
+            ].map(item => (
+              <a key={item.name} href={item.href} style={{
+                color: 'rgba(255, 255, 255, 0.85)',
+                textDecoration: 'none',
+                fontWeight: 500,
+                fontSize: '0.95rem',
+                transition: 'all 0.3s'
+              }}
+              onMouseEnter={e => e.target.style.color = 'white'}
+              onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.85)'}>
+                {item.name}
+              </a>
+            ))}
+          </div>
+
+          <button onClick={() => navigate('/login')} style={{
+            padding: '0.6rem 1.25rem',
+            background: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            color: '#0c4d7b',
+            fontWeight: 700,
+            fontSize: '0.85rem',
+            cursor: 'pointer',
+            transition: 'all 0.3s',
+            boxShadow: '0 4px 14px rgba(0,0,0,0.2)'
+          }}
+          onMouseEnter={e => {
+            e.target.style.transform = 'translateY(-2px)'
+            e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)'
+          }}
+          onMouseLeave={e => {
+            e.target.style.transform = 'translateY(0)'
+            e.target.style.boxShadow = '0 4px 14px rgba(0,0,0,0.2)'
           }}>
-            <Typography variant="h5" sx={{ 
-              color: 'white', 
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }}>
-              📊 JHVC Tech Solutions
-            </Typography>
-            
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3, alignItems: 'center' }}>
-              <Typography 
-                component="a" 
-                href="#about" 
-                sx={{ color: 'white', textDecoration: 'none', fontWeight: 500, '&:hover': { color: '#17a2b8' } }}
-              >
-                Nosotros
-              </Typography>
-              <Typography 
-                component="a" 
-                href="#services" 
-                sx={{ color: 'white', textDecoration: 'none', fontWeight: 500, '&:hover': { color: '#17a2b8' } }}
-              >
-                Servicios
-              </Typography>
-              <Typography 
-                component="a" 
-                href="#features" 
-                sx={{ color: 'white', textDecoration: 'none', fontWeight: 500, '&:hover': { color: '#17a2b8' } }}
-              >
-                Características
-              </Typography>
-              <Button 
-                variant="outlined" 
-                onClick={() => navigate('/login')}
-                sx={{ 
-                  color: 'white', 
-                  borderColor: 'white',
-                  '&:hover': { 
-                    borderColor: 'white',
-                    background: 'white',
-                    color: '#0c4d7b'
-                  }
-                }}
-              >
-                Iniciar Sesión
-              </Button>
-            </Box>
-          </Box>
-        </Container>
-      </Box>
+            Iniciar Sesión
+          </button>
+        </div>
+      </nav>
 
       {/* HERO SECTION */}
-      <Box sx={{ 
-        background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
-        color: 'white',
-        py: 8,
-        textAlign: 'center',
+      <section id="hero" className="gradient-bg mobile-padding" style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        paddingTop: '5rem',
+        color: 'white'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '-50%',
+          right: '-10%',
+          width: '60%',
+          height: '200%',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+          borderRadius: '50%'
+        }} />
+
+        <div className="mobile-full-width" style={{ 
+          maxWidth: '1200px', 
+          margin: '0 auto', 
+          padding: '0 2rem', 
+          position: 'relative', 
+          zIndex: 1,
+          textAlign: 'center'
+        }}>
+          <div className="animate-in" style={{ marginBottom: '1.5rem' }}>
+            <div style={{
+              display: 'inline-block',
+              padding: '0.5rem 1.5rem',
+              background: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '50px',
+              color: 'white',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              marginBottom: '2rem'
+            }}>
+              SISTEMA PROFESIONAL
+            </div>
+          </div>
+
+          <h1 className="animate-in mobile-font-large" style={{
+            fontSize: '3.5rem',
+            fontWeight: 800,
+            lineHeight: 1.2,
+            marginBottom: '1.5rem',
+            animationDelay: '0.15s'
+          }}>
+            Soluciones Contables Inteligentes
+          </h1>
+
+          <p className="animate-in mobile-font-small" style={{
+            fontSize: '1.3rem',
+            opacity: 0.95,
+            maxWidth: '680px',
+            margin: '0 auto 2.5rem',
+            lineHeight: 1.6,
+            animationDelay: '0.3s',
+            fontWeight: 300
+          }}>
+            Tecnología diseñada para contadores. Automatiza procesos, ahorra tiempo y enfócate en lo que realmente importa: asesorar a tus clientes
+          </p>
+
+          <div className="animate-in" style={{
+            display: 'flex',
+            gap: '1rem',
+            justifyContent: 'center',
+            animationDelay: '0.45s',
+            flexWrap: 'wrap'
+          }}>
+            <button onClick={() => document.getElementById('product').scrollIntoView({ behavior: 'smooth' })} style={{
+              padding: '1rem 2.5rem',
+              background: 'transparent',
+              border: '2px solid white',
+              borderRadius: '8px',
+              color: 'white',
+              fontWeight: 700,
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'all 0.3s'
+            }}
+            onMouseEnter={e => {
+              e.target.style.background = 'rgba(255, 255, 255, 0.15)'
+              e.target.style.transform = 'translateY(-2px)'
+            }}
+            onMouseLeave={e => {
+              e.target.style.background = 'transparent'
+              e.target.style.transform = 'translateY(0)'
+            }}>
+              Ver Producto
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT SECTION */}
+      <section id="about" className="mobile-padding" style={{
+        minHeight: '85vh',
+        background: 'linear-gradient(135deg, #ffffff 0%, #f8fbfd 100%)',
+        padding: '6rem 2rem',
         position: 'relative',
         overflow: 'hidden'
       }}>
-        <Container maxWidth="md">
-          <Typography variant="h2" sx={{ fontWeight: 700, mb: 3, fontSize: { xs: '2rem', md: '3rem' } }}>
-            Soluciones Contables Inteligentes
-          </Typography>
-          <Typography variant="h6" sx={{ mb: 4, opacity: 0.95 }}>
-            Tecnología diseñada para contadores. Automatiza procesos, ahorra tiempo y enfócate en lo que realmente importa: asesorar a tus clientes.
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Button 
-              variant="contained" 
-              size="large"
-              onClick={() => navigate('/register')}
-              startIcon={<RocketLaunchIcon />}
-              sx={{ 
-                background: '#17a2b8',
-                fontSize: '1.2rem',
-                px: 4,
-                py: 1.5,
-                '&:hover': { 
-                  background: '#138496',
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 4px 12px rgba(23, 162, 184, 0.4)'
-                }
-              }}
-            >
-              Comenzar Ahora
-            </Button>
-            <Button 
-              variant="outlined" 
-              size="large"
-              component="a"
-              href="#about"
-              startIcon={<InfoIcon />}
-              sx={{ 
-                color: 'white',
-                borderColor: 'white',
-                fontSize: '1.2rem',
-                px: 4,
-                py: 1.5,
-                '&:hover': { 
-                  borderColor: 'white',
-                  background: 'white',
-                  color: '#0c4d7b'
-                }
-              }}
-            >
-              Conocer Más
-            </Button>
-          </Box>
-        </Container>
-      </Box>
+        <div style={{
+          position: 'absolute',
+          top: '10%',
+          left: '-5%',
+          width: '300px',
+          height: '300px',
+          background: 'radial-gradient(circle, rgba(12, 77, 123, 0.05) 0%, transparent 70%)',
+          borderRadius: '50%',
+          animation: 'pulse 4s ease-in-out infinite'
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '20%',
+          right: '-5%',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(23, 162, 184, 0.05) 0%, transparent 70%)',
+          borderRadius: '50%',
+          animation: 'pulse 5s ease-in-out infinite'
+        }} />
 
-      {/* ABOUT SECTION */}
-      <Box id="about" sx={{ py: 8, background: 'white' }}>
-        <Container maxWidth="lg">
-          <Grid container spacing={6} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <Typography variant="h3" sx={{ color: '#0c4d7b', fontWeight: 700, mb: 3 }}>
+        <div className="mobile-full-width" style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
+            <div className="slide-left">
+              <div style={{
+                display: 'inline-block',
+                padding: '0.5rem 1.5rem',
+                background: 'linear-gradient(135deg, rgba(12, 77, 123, 0.1) 0%, rgba(23, 162, 184, 0.1) 100%)',
+                borderRadius: '50px',
+                color: '#0c4d7b',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                marginBottom: '1.5rem',
+                letterSpacing: '1px'
+              }}>
+                SOBRE NOSOTROS
+              </div>
+
+              <h2 className="mobile-font-medium" style={{
+                fontSize: '2.8rem',
+                fontWeight: 800,
+                background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                marginBottom: '2rem',
+                lineHeight: 1.2
+              }}>
                 Nuestra Historia
-              </Typography>
-              <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8 }}>
-                Los contadores pasan horas en tareas repetitivas que pueden automatizarse con tecnología.
-              </Typography>
-              <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8 }}>
-                Por eso fundamos <strong>JHVC Tech Solutions</strong>: para desarrollar herramientas que faciliten el trabajo diario de los contadores mexicanos.
-              </Typography>
-              <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
-                Nuestra misión es simple: <strong>que los contadores dejen de perder tiempo en procesos manuales y se enfoquen en asesorar a sus clientes.</strong>
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6} sx={{ textAlign: 'center' }}>
-              <Box sx={{ fontSize: '15rem', color: '#0c4d7b', opacity: 0.1 }}>
-                👔
-              </Box>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
+              </h2>
 
-      {/* SERVICES SECTION */}
-      <Box id="services" sx={{ py: 8, background: 'white' }}>
-        <Container maxWidth="lg">
-          <Typography variant="h3" sx={{ textAlign: 'center', color: '#0c4d7b', fontWeight: 700, mb: 6 }}>
-            Nuestros Servicios
-          </Typography>
-          <Grid container spacing={3}>
-            {[
-              {
-                icon: <SmartToyIcon sx={{ fontSize: 40 }} />,
-                title: 'Automatización con IA',
-                description: 'Herramientas impulsadas por inteligencia artificial para automatizar procesos contables repetitivos.',
-                features: ['Transcripción automática de documentos', 'Procesamiento inteligente de datos', 'Análisis predictivo', 'Conciliaciones automáticas']
-              },
-              {
-                icon: <LaptopMacIcon sx={{ fontSize: 40 }} />,
-                title: 'Software Contable',
-                description: 'Sistemas contables modernos, 100% en la nube, diseñados para contadores mexicanos.',
-                features: ['Cumplimiento fiscal automático', 'Integración con SAT', 'Multi-empresa', 'Reportes en tiempo real']
-              },
-              {
-                icon: <SettingsIcon sx={{ fontSize: 40 }} />,
-                title: 'Integraciones API',
-                description: 'Conecta tus sistemas existentes con nuestras soluciones a través de APIs robustas.',
-                features: ['API REST documentada', 'Webhooks en tiempo real', 'SDKs para múltiples lenguajes', 'Soporte técnico dedicado']
-              }
-            ].map((service, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <Card sx={{ 
-                  height: '100%',
-                  background: '#f0f7ff',
-                  borderLeft: '4px solid #0c4d7b',
-                  transition: 'all 0.3s',
-                  '&:hover': {
-                    transform: 'translateX(10px)',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
-                  }
+              <div style={{
+                borderLeft: '4px solid #17a2b8',
+                paddingLeft: '1.5rem',
+                marginBottom: '1.5rem'
+              }}>
+                <p style={{
+                  fontSize: '1.15rem',
+                  color: '#2c3e50',
+                  marginBottom: '1.2rem',
+                  lineHeight: 1.8,
+                  fontWeight: 400
                 }}>
-                  <CardContent>
-                    <Box sx={{ color: '#0c4d7b', mb: 2 }}>
-                      {service.icon}
-                    </Box>
-                    <Typography variant="h5" sx={{ color: '#0c4d7b', fontWeight: 600, mb: 2 }}>
-                      {service.title}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 2 }}>
-                      {service.description}
-                    </Typography>
-                    <Box component="ul" sx={{ listStyle: 'none', p: 0 }}>
-                      {service.features.map((feature, idx) => (
-                        <Box component="li" key={idx} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, py: 0.5 }}>
-                          <CheckCircleIcon sx={{ color: '#17a2b8', fontSize: 18, mt: 0.25 }} />
-                          <Typography variant="body2">{feature}</Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
+                  Los contadores pasan horas en tareas repetitivas que pueden automatizarse con tecnología.
+                </p>
+                <p style={{
+                  fontSize: '1.15rem',
+                  color: '#2c3e50',
+                  marginBottom: '1.2rem',
+                  lineHeight: 1.8,
+                  fontWeight: 400
+                }}>
+                  Por eso fundamos <strong style={{ color: '#0c4d7b', fontWeight: 700 }}>JHVC Tech Solutions</strong>: para desarrollar herramientas que faciliten el trabajo diario de los contadores mexicanos.
+                </p>
+                <p style={{
+                  fontSize: '1.15rem',
+                  color: '#2c3e50',
+                  lineHeight: 1.8,
+                  fontWeight: 400
+                }}>
+                  Nuestra misión es simple: <strong style={{ 
+                    color: '#17a2b8', 
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, rgba(12, 77, 123, 0.1) 0%, rgba(23, 162, 184, 0.1) 100%)',
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '4px'
+                  }}>que los contadores dejen de perder tiempo en procesos manuales y se enfoquen en asesorar a sus clientes.</strong>
+                </p>
+              </div>
 
-      {/* FEATURES SECTION */}
-      <Box id="features" sx={{ py: 8, background: '#f8f9fa' }}>
-        <Container maxWidth="lg">
-          <Typography variant="h3" sx={{ textAlign: 'center', color: '#0c4d7b', fontWeight: 700, mb: 6 }}>
-            ¿Por qué elegir JHVC?
-          </Typography>
-          <Grid container spacing={3}>
-            {[
-              { icon: <PsychologyIcon />, title: 'Hecho por Contadores', desc: 'Desarrollado por un equipo que entiende tus necesidades reales.' },
-              { icon: <AccessTimeIcon />, title: 'Ahorra Tiempo', desc: 'Automatiza tareas repetitivas y recupera horas de trabajo cada semana.' },
-              { icon: <SecurityIcon />, title: 'Seguridad Total', desc: 'Encriptación de datos, backups automáticos y cumplimiento con estándares.' },
-              { icon: <CloudIcon />, title: '100% en la Nube', desc: 'Accede desde cualquier lugar, cualquier dispositivo. Sin instalaciones.' },
-              { icon: <GavelIcon />, title: 'Cumplimiento Fiscal', desc: 'Actualizado siempre con las últimas disposiciones del SAT.' },
-              { icon: <HeadsetMicIcon />, title: 'Soporte Experto', desc: 'Atención personalizada de contador a contador. Entendemos tu lenguaje.' }
-            ].map((feature, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card sx={{ 
+              <div className="mobile-gap-small" style={{
+                display: 'flex',
+                gap: '2rem',
+                marginTop: '2rem'
+              }}>
+                <div style={{
                   textAlign: 'center',
-                  transition: 'all 0.3s',
-                  '&:hover': {
-                    transform: 'translateY(-10px)',
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.15)'
-                  }
+                  padding: '1.5rem',
+                  background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+                  borderRadius: '12px',
+                  color: 'white',
+                  flex: 1,
+                  boxShadow: '0 8px 20px rgba(12, 77, 123, 0.2)',
+                  transition: 'transform 0.3s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>100%</div>
+                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Local y Seguro</div>
+                </div>
+                <div style={{
+                  textAlign: 'center',
+                  padding: '1.5rem',
+                  background: 'linear-gradient(135deg, #17a2b8 0%, #0c4d7b 100%)',
+                  borderRadius: '12px',
+                  color: 'white',
+                  flex: 1,
+                  boxShadow: '0 8px 20px rgba(23, 162, 184, 0.2)',
+                  transition: 'transform 0.3s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>+50</div>
+                  <div style={{ fontSize: '0.9rem', opacity: 0.9 }}>Horas Ahorradas</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="slide-right mobile-hide" style={{ 
+              textAlign: 'center', 
+              animationDelay: '0.2s',
+              position: 'relative'
+            }}>
+              <div style={{
+                position: 'relative',
+                display: 'inline-block'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '-20px',
+                  right: '-20px',
+                  width: '150px',
+                  height: '150px',
+                  background: 'linear-gradient(135deg, rgba(12, 77, 123, 0.2) 0%, rgba(23, 162, 184, 0.2) 100%)',
+                  borderRadius: '50%',
+                  animation: 'pulse 3s ease-in-out infinite'
+                }} />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-30px',
+                  left: '-30px',
+                  width: '200px',
+                  height: '200px',
+                  background: 'linear-gradient(135deg, rgba(23, 162, 184, 0.15) 0%, rgba(12, 77, 123, 0.15) 100%)',
+                  borderRadius: '50%',
+                  animation: 'pulse 4s ease-in-out infinite',
+                  animationDelay: '1s'
+                }} />
+
+                <div style={{
+                  fontSize: '12rem',
+                  position: 'relative',
+                  zIndex: 1,
+                  filter: 'drop-shadow(0 10px 30px rgba(12, 77, 123, 0.2))',
+                  animation: 'float 6s ease-in-out infinite'
                 }}>
-                  <CardContent>
-                    <Box sx={{ fontSize: '3rem', color: '#0c4d7b', mb: 2 }}>
-                      {feature.icon}
-                    </Box>
-                    <Typography variant="h6" sx={{ color: '#0c4d7b', fontWeight: 600, mb: 1 }}>
-                      {feature.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {feature.desc}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
+                  💼
+                </div>
+
+                <div className="pulse-slow" style={{
+                  position: 'absolute',
+                  top: '20%',
+                  right: '10%',
+                  background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+                  color: 'white',
+                  padding: '0.75rem 1.25rem',
+                  borderRadius: '50px',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  boxShadow: '0 8px 20px rgba(12, 77, 123, 0.3)',
+                  zIndex: 2
+                }}>
+                  ⚡ Rápido
+                </div>
+                <div className="pulse-slow" style={{
+                  position: 'absolute',
+                  bottom: '25%',
+                  left: '5%',
+                  background: 'linear-gradient(135deg, #17a2b8 0%, #0c4d7b 100%)',
+                  color: 'white',
+                  padding: '0.75rem 1.25rem',
+                  borderRadius: '50px',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  boxShadow: '0 8px 20px rgba(23, 162, 184, 0.3)',
+                  zIndex: 2,
+                  animationDelay: '1.5s'
+                }}>
+                  🔒 Seguro
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CARACTERÍSTICAS */}
+      <section className="mobile-padding" style={{
+        background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecef 100%)',
+        padding: '6rem 2rem',
+        position: 'relative'
+      }}>
+        <div className="mobile-full-width" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <h2 className="mobile-font-medium" style={{
+            fontSize: '2.5rem',
+            fontWeight: 700,
+            textAlign: 'center',
+            color: '#0c4d7b',
+            marginBottom: '4rem'
+          }}>
+            ¿Por qué elegir JHVC?
+          </h2>
+
+          <div className="mobile-grid-1 mobile-gap-small" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '2rem'
+          }}>
+            {[
+              { title: 'Datos Locales', desc: 'Todo se guarda en tu equipo, sin envíos a la nube' },
+              { title: 'Exporta a Excel', desc: 'Convierte XML a hojas de cálculo en un clic' },
+              { title: 'Seguridad Total', desc: 'Tus datos nunca salen de tu PC' }
+            ].map((feature, idx) => (
+              <div key={idx} className="scale-in" style={{
+                padding: '2rem',
+                textAlign: 'center',
+                background: 'linear-gradient(135deg, #ffffff 0%, #f5f7fa 100%)',
+                borderTop: '4px solid #0c4d7b',
+                borderRadius: '8px',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                transition: 'all 0.3s',
+                cursor: 'pointer',
+                animationDelay: `${0.6 + idx * 0.1}s`
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'translateY(-8px)'
+                e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.15)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)'
+              }}>
+                <h3 style={{
+                  fontSize: '1.3rem',
+                  fontWeight: 700,
+                  color: '#0c4d7b',
+                  marginBottom: '0.75rem'
+                }}>
+                  {feature.title}
+                </h3>
+                <p style={{
+                  color: '#666',
+                  fontSize: '1rem',
+                  lineHeight: 1.6
+                }}>
+                  {feature.desc}
+                </p>
+              </div>
             ))}
-          </Grid>
-        </Container>
-      </Box>
+          </div>
+        </div>
+      </section>
+
+      {/* PRODUCT SECTION */}
+      <section id="product" className="mobile-padding" style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+        padding: '6rem 2rem',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          width: '100%',
+          height: '100%',
+          background: 'radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%)',
+          pointerEvents: 'none'
+        }} />
+
+        <div className="mobile-full-width" style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div className="animate-in" style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <div style={{
+              display: 'inline-block',
+              padding: '0.5rem 1.5rem',
+              background: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '50px',
+              color: 'white',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              marginBottom: '1.5rem',
+              letterSpacing: '1px'
+            }}>
+              PRODUCTO DESTACADO
+            </div>
+
+            <h2 className="animate-in mobile-font-medium" style={{
+              fontSize: '3rem',
+              fontWeight: 800,
+              color: 'white',
+              marginBottom: '1rem',
+              animationDelay: '0.1s',
+              textShadow: '0 2px 20px rgba(0, 0, 0, 0.2)'
+            }}>
+              Nuestro Producto
+            </h2>
+            <p className="animate-in mobile-font-small" style={{
+              fontSize: '1.3rem',
+              color: 'rgba(255, 255, 255, 0.9)',
+              animationDelay: '0.2s',
+              fontWeight: 300
+            }}>
+              La herramienta más intuitiva para gestionar tus facturas electrónicas
+            </p>
+          </div>
+
+          <div className="mobile-full-width" style={{ maxWidth: '950px', margin: '0 auto' }}>
+            <div className="scale-in" style={{
+              padding: '3.5rem',
+              textAlign: 'center',
+              background: 'white',
+              borderRadius: '20px',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+              transition: 'all 0.4s',
+              cursor: 'pointer',
+              position: 'relative',
+              overflow: 'hidden',
+              animationDelay: '0.3s'
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-15px)'
+              e.currentTarget.style.boxShadow = '0 30px 80px rgba(0, 0, 0, 0.4)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.3)'
+            }}>
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '8px',
+                background: 'linear-gradient(90deg, #0c4d7b 0%, #17a2b8 50%, #0c4d7b 100%)',
+                backgroundSize: '200% 100%',
+                animation: 'shimmer 3s linear infinite'
+              }} />
+
+              <div style={{
+                position: 'absolute',
+                top: '2rem',
+                right: '2rem',
+                background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '50px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                boxShadow: '0 4px 15px rgba(12, 77, 123, 0.3)'
+              }}>
+                ⭐ POPULAR
+              </div>
+
+              <div style={{ marginBottom: '2rem' }}>
+                <div className="mobile-icon-small" style={{
+                  fontSize: '4rem',
+                  marginBottom: '1rem',
+                  display: 'inline-block',
+                  animation: 'float 4s ease-in-out infinite'
+                }}>
+                  📊
+                </div>
+              </div>
+
+              <h3 className="mobile-font-medium" style={{
+                fontSize: '2.5rem',
+                fontWeight: 800,
+                background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                marginBottom: '1.5rem'
+              }}>
+                Visor de CFDI
+              </h3>
+
+              <p className="mobile-font-small" style={{
+                fontSize: '1.15rem',
+                color: '#555',
+                marginBottom: '2.5rem',
+                lineHeight: 1.8,
+                maxWidth: '650px',
+                margin: '0 auto 2.5rem'
+              }}>
+                Administra tus archivos XML, visualiza la información de forma clara y exporta a Excel. Todo de manera local y segura en tu equipo.
+              </p>
+
+              <div className="mobile-grid-1 mobile-gap-small" style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '1.25rem',
+                marginBottom: '2.5rem'
+              }}>
+                {[
+                  { icon: '📁', text: 'Administra XML' },
+                  { icon: '📊', text: 'Exporta a Excel' },
+                  { icon: '💻', text: 'Todo Local' },
+                  { icon: '⚡', text: 'Ultra Rápido' }
+                ].map((feat, i) => (
+                  <div key={i} style={{
+                    padding: '1.25rem',
+                    background: 'linear-gradient(135deg, #f8fbfd 0%, #e8f4f8 100%)',
+                    borderRadius: '12px',
+                    fontSize: '0.95rem',
+                    color: '#0c4d7b',
+                    fontWeight: 600,
+                    border: '2px solid rgba(12, 77, 123, 0.1)',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)'
+                    e.currentTarget.style.color = 'white'
+                    e.currentTarget.style.transform = 'scale(1.05)'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'linear-gradient(135deg, #f8fbfd 0%, #e8f4f8 100%)'
+                    e.currentTarget.style.color = '#0c4d7b'
+                    e.currentTarget.style.transform = 'scale(1)'
+                  }}>
+                    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{feat.icon}</div>
+                    {feat.text}
+                  </div>
+                ))}
+              </div>
+
+              <p style={{
+                marginTop: '1.5rem',
+                color: '#999',
+                fontSize: '0.9rem'
+              }}>
+                Sin tarjeta de crédito requerida • Prueba todas las funciones
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* CTA SECTION */}
-      <Box sx={{ 
-        background: 'linear-gradient(135deg, #0c4d7b 0%, #17a2b8 100%)',
-        color: 'white',
-        py: 6,
-        textAlign: 'center'
+      <section className="gradient-bg mobile-padding" style={{
+        padding: '6rem 2rem',
+        textAlign: 'center',
+        color: 'white'
       }}>
-        <Container maxWidth="md">
-          <Typography variant="h4" sx={{ fontWeight: 700, mb: 2 }}>
+        <div className="mobile-full-width" style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <h2 className="mobile-font-medium" style={{
+            fontSize: '2.5rem',
+            fontWeight: 700,
+            marginBottom: '1rem'
+          }}>
             ¿Listo para transformar tu práctica contable?
-          </Typography>
-          <Typography variant="h6" sx={{ mb: 4, opacity: 0.95 }}>
-            Únete a los contadores que ya están ahorrando tiempo con nuestras soluciones
-          </Typography>
-          <Button 
-            variant="contained" 
-            size="large"
-            onClick={() => navigate('/register')}
-            sx={{ 
-              background: '#17a2b8',
-              fontSize: '1.2rem',
-              px: 4,
-              py: 1.5,
-              '&:hover': { background: '#138496' }
-            }}
-          >
-            Crear Cuenta Gratis
-          </Button>
-        </Container>
-      </Box>
+          </h2>
+          <p className="mobile-font-small" style={{
+            fontSize: '1.2rem',
+            opacity: 0.95,
+            marginBottom: '2rem'
+          }}>
+            Únete a los contadores que ya están ahorrando tiempo con nuestro Visor de CFDI
+          </p>
+        </div>
+      </section>
 
       {/* FOOTER */}
-      <Box sx={{ background: '#0c4d7b', color: 'white', py: 6 }}>
-        <Container maxWidth="lg">
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+      <footer id="contact" className="mobile-padding" style={{
+        background: '#0c4d7b',
+        padding: '3rem 2rem 1rem',
+        color: 'white'
+      }}>
+        <div className="mobile-full-width" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div className="mobile-grid-1 mobile-gap-small" style={{
+            display: 'grid',
+            gridTemplateColumns: '2fr 1fr 1fr 1fr',
+            gap: '3rem',
+            marginBottom: '2rem'
+          }}>
+            <div>
+              <h3 style={{
+                fontSize: '1.5rem',
+                fontWeight: 700,
+                marginBottom: '1rem'
+              }}>
                 JHVC Tech Solutions
-              </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                Soluciones tecnológicas diseñadas para contadores mexicanos.
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Servicios</Typography>
-              <Box component="ul" sx={{ listStyle: 'none', p: 0 }}>
-                {['Automatización con IA', 'Software Contable', 'Integraciones API', 'Documentación'].map((item, idx) => (
-                  <Box component="li" key={idx} sx={{ mb: 1 }}>
-                    <Typography 
-                      component="a" 
-                      href="#services" 
-                      sx={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', '&:hover': { color: 'white' } }}
-                    >
-                      {item}
-                    </Typography>
-                  </Box>
+              </h3>
+              <p style={{
+                opacity: 0.8,
+                lineHeight: 1.6
+              }}>
+                Soluciones tecnológicas diseñadas para contadores mexicanos
+              </p>
+            </div>
+
+            <div>
+              <h4 style={{ marginBottom: '1rem', fontWeight: 600 }}>Producto</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {['Visor de CFDI', 'Características', 'Precios'].map(item => (
+                  <a key={item} href="#product" style={{
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    textDecoration: 'none',
+                    transition: 'color 0.3s'
+                  }}
+                  onMouseEnter={e => e.target.style.color = 'white'}
+                  onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
+                    {item}
+                  </a>
                 ))}
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Empresa</Typography>
-              <Box component="ul" sx={{ listStyle: 'none', p: 0 }}>
-                {['Nosotros', 'Blog', 'Casos de Éxito', 'Contacto'].map((item, idx) => (
-                  <Box component="li" key={idx} sx={{ mb: 1 }}>
-                    <Typography 
-                      component="a" 
-                      href="#about" 
-                      sx={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', '&:hover': { color: 'white' } }}
-                    >
-                      {item}
-                    </Typography>
-                  </Box>
+              </div>
+            </div>
+
+            <div>
+              <h4 style={{ marginBottom: '1rem', fontWeight: 600 }}>Empresa</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {['Nosotros', 'Blog', 'Contacto'].map(item => (
+                  <a key={item} href="#about" style={{
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    textDecoration: 'none',
+                    transition: 'color 0.3s'
+                  }}
+                  onMouseEnter={e => e.target.style.color = 'white'}
+                  onMouseLeave={e => e.target.style.color = 'rgba(255, 255, 255, 0.7)'}>
+                    {item}
+                  </a>
                 ))}
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Contacto</Typography>
-              <Box component="ul" sx={{ listStyle: 'none', p: 0 }}>
-                <Box component="li" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <EmailIcon fontSize="small" />
-                  <Typography variant="body2">bahiacontable02@gmail.com</Typography>
-                </Box>
-                <Box component="li" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <WhatsAppIcon fontSize="small" />
-                  <Typography variant="body2">+52 322 328 7655</Typography>
-                </Box>
-                <Box component="li" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <FacebookIcon fontSize="small" />
-                  <Typography variant="body2">Virtual Accounting</Typography>
-                </Box>
-              </Box>
-            </Grid>
-          </Grid>
-          <Box sx={{ borderTop: '1px solid rgba(255,255,255,0.1)', mt: 4, pt: 3, textAlign: 'center' }}>
-            <Typography variant="body2" sx={{ opacity: 0.7 }}>
-              © 2025 JHVC Tech Solutions. Todos los derechos reservados.
-            </Typography>
-          </Box>
-        </Container>
-      </Box>
-    </Box>
+              </div>
+            </div>
+
+            <div>
+              <h4 style={{ marginBottom: '1rem', fontWeight: 600 }}>Contacto</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.95rem', opacity: 0.8 }}>
+                <div>📧 bahiacontable02@gmail.com</div>
+                <div>📱 +52 322 328 7655</div>
+                <div>📘 Virtual Accounting</div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{
+            paddingTop: '2rem',
+            borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+            textAlign: 'center',
+            opacity: 0.7,
+            fontSize: '0.9rem'
+          }}>
+            © 2025 JHVC Tech Solutions. Todos los derechos reservados.
+          </div>
+        </div>
+      </footer>
+    </>
   )
 }
 
-export default Landing  
+export default Landing
