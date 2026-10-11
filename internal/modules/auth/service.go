@@ -297,6 +297,14 @@ func (s *Service) VerifyProductLicense(req VerifyLicenseRequest) (VerifyLicenseR
 		}, nil
 	}
 
+	// Validar el identificador de equipo (evita un panic con valores cortos o enormes)
+	if len(req.MachineID) < 8 || len(req.MachineID) > 255 {
+		return VerifyLicenseResponse{
+			Valid:   false,
+			Message: "Identificador de equipo inválido",
+		}, nil
+	}
+
 	// 5. Buscar si el device ya existe
 	device, err := s.repo.GetDeviceByLicenseAndMachine(license.ID, req.MachineID)
 	if err == nil {

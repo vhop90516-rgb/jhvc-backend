@@ -49,17 +49,6 @@ func main() {
 	r.Static("/assets", filepath.Join(frontendDist, "assets"))
 	r.StaticFile("/vite.svg", filepath.Join(frontendDist, "vite.svg"))
 
-	// Endpoint temporal para resetear contraseña admin
-	r.GET("/reset-admin-password", func(c *gin.Context) {
-		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
-		_, err := db.Exec(`UPDATE users SET password_hash = $1 WHERE email = 'admin@jhvc.com'`, string(hashedPassword))
-		if err != nil {
-			c.JSON(500, gin.H{"error": err.Error()})
-			return
-		}
-		c.JSON(200, gin.H{"message": "Contraseña reseteada a admin123"})
-	})
-
 	api := r.Group("/api")
 	{
 		api.POST("/register", authHandler.Register)
